@@ -157,7 +157,6 @@
     }
 
     input[type="text"],
-    input[type="password"],
     input[type="number"],
     select,
     textarea {
@@ -493,16 +492,6 @@
     </header>
 
     <section class="panel">
-      <h2 id="titleAccount">Akun &amp; Sinkronisasi</h2>
-      <div class="grid-3">
-        <input type="text" id="accUser" placeholder="Email / ID Akun (HP &amp; PC)" />
-        <input type="password" id="accPass" placeholder="Kata Sandi / Sync Key" />
-        <button type="button" id="btnSaveAcc" onclick="saveAccount()">Masuk / Simpan</button>
-      </div>
-      <p class="status-text" id="accStatus">Belum masuk — data tersimpan lokal di perangkat.</p>
-    </section>
-
-    <section class="panel">
       <h2 id="titleBrief">Brief Campaign &amp; Generator VT</h2>
       <form id="briefForm" onsubmit="generateVTs(event)">
         <div class="grid-3">
@@ -628,7 +617,6 @@
   <script src="app.js"></script>
   <script>
     const STORAGE_KEY = "brutal_klip_data_v1";
-    const ACC_KEY = "brutal_klip_acc_v1";
     const LANG_KEY = "brutal_klip_lang_v1";
     const RECAP_KEY = "brutal_klip_supporter_recap_v1";
 
@@ -637,13 +625,6 @@
     const I18N = {
       id: {
         subtitle: "Offline / Online Ready • 100% Gratis",
-        titleAccount: "Akun & Sinkronisasi",
-        accUserPh: "Email / ID Akun (HP & PC)",
-        accPassPh: "Kata Sandi / Sync Key",
-        btnSaveAcc: "Masuk / Simpan",
-        accStatusGuest: "Belum masuk — data tersimpan lokal di perangkat.",
-        accStatusEmpty: "Isi Email / ID Akun terlebih dahulu.",
-        accStatusConnected: (u) => `Terhubung sebagai ${u} (tersimpan lokal di perangkat).`,
         titleBrief: "Brief Campaign & Generator VT",
         lblProject: "Nama Proyek / Batch",
         projectPh: "Contoh: Campaign Kopi Pagi",
@@ -688,13 +669,6 @@
       },
       en: {
         subtitle: "Offline / Online Ready • 100% Free",
-        titleAccount: "Account & Sync",
-        accUserPh: "Email / Account ID (Mobile & PC)",
-        accPassPh: "Password / Sync Key",
-        btnSaveAcc: "Sign In / Save",
-        accStatusGuest: "Not signed in — data is stored locally on this device.",
-        accStatusEmpty: "Please enter an Email / Account ID first.",
-        accStatusConnected: (u) => `Connected as ${u} (stored locally on this device).`,
         titleBrief: "Campaign Brief & VT Generator",
         lblProject: "Project / Batch Name",
         projectPh: "Example: Morning Coffee Campaign",
@@ -738,14 +712,6 @@
         emptyRecap: "No supporter comments recapped on this web screen yet."
       }
     };
-
-    function getSavedAccount() {
-      try {
-        return JSON.parse(localStorage.getItem(ACC_KEY));
-      } catch {
-        return null;
-      }
-    }
 
     function loadItems() {
       try {
@@ -820,18 +786,6 @@
         .join("");
     }
 
-    function saveAccount() {
-      const t = I18N[currentLang] || I18N.id;
-      const user = document.getElementById("accUser").value.trim();
-      const status = document.getElementById("accStatus");
-      if (!user) {
-        status.textContent = t.accStatusEmpty;
-        return;
-      }
-      localStorage.setItem(ACC_KEY, JSON.stringify({ user, updatedAt: new Date().toISOString() }));
-      status.textContent = t.accStatusConnected(user);
-    }
-
     function setLang(lang) {
       currentLang = lang === "en" ? "en" : "id";
       localStorage.setItem(LANG_KEY, currentLang);
@@ -842,19 +796,6 @@
       document.getElementById("btnEN").classList.toggle("active", currentLang === "en");
 
       document.getElementById("subtitleText").textContent = t.subtitle;
-      document.getElementById("titleAccount").textContent = t.titleAccount;
-      document.getElementById("accUser").placeholder = t.accUserPh;
-      document.getElementById("accPass").placeholder = t.accPassPh;
-      document.getElementById("btnSaveAcc").textContent = t.btnSaveAcc;
-
-      const savedAcc = getSavedAccount();
-      if (savedAcc && savedAcc.user) {
-        document.getElementById("accUser").value = savedAcc.user;
-        document.getElementById("accStatus").textContent = t.accStatusConnected(savedAcc.user);
-      } else {
-        document.getElementById("accStatus").textContent = t.accStatusGuest;
-      }
-
       document.getElementById("titleBrief").textContent = t.titleBrief;
       document.getElementById("lblProject").textContent = t.lblProject;
       document.getElementById("projectName").placeholder = t.projectPh;
