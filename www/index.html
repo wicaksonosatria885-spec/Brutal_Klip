@@ -25,6 +25,9 @@
       --radius-sm: 9px;
       --shadow-card: 0 14px 34px rgba(0, 0, 0, 0.45);
       --shadow-btn: 0 6px 20px rgba(225, 29, 72, 0.35);
+      --hook-font-family: "Segoe UI", Roboto, Inter, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+      --hook-color: #ffffff;
+      --hook-bg: rgba(9, 8, 12, 0.72);
     }
 
     * {
@@ -209,7 +212,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 10px 18px;
-      margin: 14px 0 18px;
+      margin: 14px 0 12px;
       padding: 12px 14px;
       border-radius: var(--radius-md);
       background: var(--surface-elevated);
@@ -231,6 +234,83 @@
       accent-color: var(--crimson);
       width: 16px;
       height: 16px;
+    }
+
+    .wm-box {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      margin-bottom: 18px;
+    }
+
+    .wm-box-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 10px;
+    }
+
+    .wm-preview-frame {
+      position: relative;
+      height: 132px;
+      margin-top: 12px;
+      border-radius: var(--radius-sm);
+      background:
+        linear-gradient(135deg, rgba(225, 29, 72, 0.12), rgba(9, 8, 12, 0.9)),
+        repeating-linear-gradient(
+          45deg,
+          rgba(255, 255, 255, 0.02) 0px,
+          rgba(255, 255, 255, 0.02) 10px,
+          transparent 10px,
+          transparent 20px
+        );
+      border: 1px solid var(--border-accent);
+      overflow: hidden;
+    }
+
+    .wm-sample-tag {
+      position: absolute;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      border-radius: 7px;
+      background: rgba(9, 8, 12, 0.82);
+      border: 1px solid rgba(251, 113, 133, 0.55);
+      color: #ffffff;
+      font-size: 0.78rem;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+      transition: all 0.2s ease;
+    }
+
+    .wm-sample-tag img {
+      width: 20px;
+      height: 20px;
+      object-fit: contain;
+      border-radius: 4px;
+    }
+
+    .wm-pos-top-left {
+      top: 10px;
+      left: 10px;
+    }
+
+    .wm-pos-top-right {
+      top: 10px;
+      right: 10px;
+    }
+
+    .wm-pos-bottom-center {
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .wm-sample-off {
+      opacity: 0.35;
+      filter: grayscale(1);
     }
 
     button {
@@ -334,8 +414,15 @@
     }
 
     .vt-hook {
+      display: inline-block;
+      font-family: var(--hook-font-family);
+      font-size: 1.04rem;
       font-weight: 700;
-      color: #ffffff;
+      letter-spacing: 0.01em;
+      color: var(--hook-color);
+      background: var(--hook-bg);
+      padding: 5px 11px;
+      border-radius: 7px;
       margin-bottom: 6px;
     }
 
@@ -515,6 +602,30 @@
           </div>
         </div>
 
+        <div class="grid-2">
+          <div>
+            <label for="hookFontSelect" id="lblHookFont">Font Hook</label>
+            <select id="hookFontSelect" onchange="applyHookStyle()">
+              <option value="clean" id="optFontClean">Clean Modern (Segoe UI / Inter)</option>
+              <option value="impact" id="optFontImpact">Bold Impact (Impact / Arial Black)</option>
+              <option value="playful" id="optFontPlayful">Playful (Comic Sans MS / Trebuchet MS)</option>
+              <option value="mono" id="optFontMono">Mono Draft (Consolas / Courier New)</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="hookColorSelect" id="lblHookColor">Warna Teks Hook</label>
+            <select id="hookColorSelect" onchange="applyHookStyle()">
+              <option value="white" id="optColorWhite">Putih Bersih</option>
+              <option value="yellow" id="optColorYellow">Kuning Hook</option>
+              <option value="crimson" id="optColorCrimson">Merah Crimson</option>
+              <option value="mint" id="optColorMint">Hijau Mint</option>
+              <option value="blue" id="optColorBlue">Biru Sky</option>
+              <option value="black" id="optColorBlack">Hitam Pekat</option>
+            </select>
+          </div>
+        </div>
+
         <label for="sourceVideo" id="lblVideo">Unggah Video Sumber (Lokal)</label>
         <input type="file" id="sourceVideo" accept="video/*" />
 
@@ -526,11 +637,44 @@
         ></textarea>
 
         <div class="checks">
-          <label><input type="checkbox" id="optSub" checked /> <span id="lblOptSub">Auto Subtitle</span></label>
           <label><input type="checkbox" id="optEnhance" checked /> <span id="lblOptEnhance">Jernihkan Video</span></label>
           <label><input type="checkbox" id="optFace" checked /> <span id="lblOptFace">Deteksi Wajah / Pelacak Kamera</span></label>
-          <label><input type="checkbox" id="optWm" checked /> <span id="lblOptWm">Watermark</span></label>
+          <label><input type="checkbox" id="optWm" checked onchange="updateWatermarkPreview()" /> <span id="lblOptWm">Watermark</span></label>
           <label><input type="checkbox" id="optSched" checked /> <span id="lblOptSched">Pengingat Jadwal</span></label>
+        </div>
+
+        <div class="wm-box">
+          <div class="wm-box-title" id="titleWmBox">Pengaturan &amp; Contoh Watermark Klipper</div>
+          <div class="grid-2">
+            <div>
+              <label for="wmFile" id="lblWmFile">Unggah File Watermark (PNG / JPG / WebP)</label>
+              <input type="file" id="wmFile" accept="image/*" onchange="handleWatermarkFile(event)" />
+            </div>
+
+            <div>
+              <label for="wmPos" id="lblWmPos">Posisi Watermark</label>
+              <select id="wmPos" onchange="updateWatermarkPreview()">
+                <option value="top-right" id="optWmTopRight">Pojok Kanan Atas</option>
+                <option value="top-left" id="optWmTopLeft">Pojok Kiri Atas</option>
+                <option value="bottom-center" id="optWmBottomCenter">Bawah Tengah</option>
+              </select>
+            </div>
+          </div>
+
+          <p class="status-text" id="wmSampleInfo">
+            Contoh watermark aktif: <strong>Contoh_WM_BrutalKlip.png</strong> (bisa diganti dengan file watermark kamu sendiri).
+          </p>
+
+          <div class="wm-preview-frame" aria-label="Contoh Watermark">
+            <div class="wm-sample-tag wm-pos-top-right" id="wmPreviewTag">
+              <img
+                id="wmPreviewImg"
+                src="WhatsApp%20Image%202026-11-20%20at%2023.32.02.jpeg"
+                alt="Contoh Watermark"
+              />
+              <span id="wmPreviewLabel">Contoh WM • @KlipperKamu</span>
+            </div>
+          </div>
         </div>
 
         <button type="submit" id="btnGenerate">Analisis Potensi FYP &amp; Buat Paket VT</button>
@@ -619,8 +763,72 @@
     const STORAGE_KEY = "brutal_klip_data_v1";
     const LANG_KEY = "brutal_klip_lang_v1";
     const RECAP_KEY = "brutal_klip_supporter_recap_v1";
+    const HOOK_FONT_KEY = "brutal_klip_hook_font_v1";
+    const HOOK_COLOR_KEY = "brutal_klip_hook_color_v1";
+    const DEFAULT_WM_SRC = "WhatsApp%20Image%202026-11-20%20at%2023.32.02.jpeg";
+
+    const HOOK_FONT_PRESETS = {
+      clean: '"Segoe UI", Roboto, Inter, -apple-system, BlinkMacSystemFont, Arial, sans-serif',
+      impact: 'Impact, "Arial Black", Haettenschweiler, sans-serif',
+      playful: '"Comic Sans MS", "Trebuchet MS", cursive, sans-serif',
+      mono: 'Consolas, "Courier New", monospace'
+    };
+
+    const HOOK_COLOR_PRESETS = {
+      white: { color: "#ffffff", bg: "rgba(9, 8, 12, 0.72)" },
+      yellow: { color: "#fde047", bg: "rgba(9, 8, 12, 0.72)" },
+      crimson: { color: "#fb7185", bg: "rgba(9, 8, 12, 0.72)" },
+      mint: { color: "#4ade80", bg: "rgba(9, 8, 12, 0.72)" },
+      blue: { color: "#38bdf8", bg: "rgba(9, 8, 12, 0.72)" },
+      black: { color: "#09080c", bg: "rgba(248, 250, 252, 0.90)" }
+    };
 
     let currentLang = localStorage.getItem(LANG_KEY) || "id";
+    let uploadedWmName = "";
+    let uploadedWmUrl = "";
+
+    const HOOK_TEMPLATES = {
+      id: {
+        Komedi: [
+          (p, s) => `Plot twist paling nggak masuk akal di ${p}: "${s}"`,
+          (p, s) => `Serius sih ini kocak banget buat ${p} — bagian "${s}" bikin gagal fokus`,
+          (p, s) => `Jangan diminum pas lagi ngopi! Klip ${p} ini ngebahas "${s}"`,
+          (p, s) => `Kirain bakal biasa aja di ${p}, eh malah "${s}"`
+        ],
+        Horor: [
+          (p, s) => `Merinding dari detik pertama di ${p}: perhatikan "${s}"`,
+          (p, s) => `Jangan tonton sendirian kalau bahas ${p} — "${s}"`,
+          (p, s) => `Ada yang janggal di klip ${p} ini: "${s}"`,
+          (p, s) => `Detik-detik paling bikin bulu kuduk berdiri di ${p}: "${s}"`
+        ],
+        "Natural / Organik": [
+          (p, s) => `Jujur saja soal ${p}: "${s}"`,
+          (p, s) => `Cerita santai di balik ${p} — mulai dari "${s}"`,
+          (p, s) => `Hal paling relate di ${p} yang jarang dibahas: "${s}"`,
+          (p, s) => `Catatan nyata buat ${p}: "${s}"`
+        ]
+      },
+      en: {
+        Comedy: [
+          (p, s) => `Wildest plot twist in ${p}: "${s}"`,
+          (p, s) => `Can't keep a straight face on ${p} — "${s}"`,
+          (p, s) => `Don't scroll past this ${p} clip: "${s}"`,
+          (p, s) => `Thought it was normal until ${p} hit "${s}"`
+        ],
+        Horror: [
+          (p, s) => `Chills from second one on ${p}: watch "${s}"`,
+          (p, s) => `Don't watch alone on ${p} — "${s}"`,
+          (p, s) => `Something feels off in ${p}: "${s}"`,
+          (p, s) => `Creepiest moment from ${p}: "${s}"`
+        ],
+        "Natural / Organik": [
+          (p, s) => `Honest take on ${p}: "${s}"`,
+          (p, s) => `Real talk around ${p} — starting with "${s}"`,
+          (p, s) => `Most relatable part of ${p}: "${s}"`,
+          (p, s) => `Quick real-life note for ${p}: "${s}"`
+        ]
+      }
+    };
 
     const I18N = {
       id: {
@@ -630,17 +838,38 @@
         projectPh: "Contoh: Campaign Kopi Pagi",
         lblCount: "Jumlah VT (5–50)",
         lblTheme: "Tema Editing",
+        lblHookFont: "Font Hook",
+        lblHookColor: "Warna Teks Hook",
+        fontClean: "Clean Modern (Segoe UI / Inter)",
+        fontImpact: "Bold Impact (Impact / Arial Black)",
+        fontPlayful: "Playful (Comic Sans MS / Trebuchet MS)",
+        fontMono: "Mono Draft (Consolas / Courier New)",
+        colorWhite: "Putih Bersih",
+        colorYellow: "Kuning Hook",
+        colorCrimson: "Merah Crimson",
+        colorMint: "Hijau Mint",
+        colorBlue: "Biru Sky",
+        colorBlack: "Hitam Pekat",
         themeComedy: "Komedi",
         themeHorror: "Horor",
         themeNatural: "Natural / Organik",
         lblVideo: "Unggah Video Sumber (Lokal)",
         lblBrief: "Isi Brief Campaign & Instruksi",
         briefPh: "Tulis brief campaign, poin wajib, larangan, gaya hook, dan jadwal upload...",
-        optSub: "Auto Subtitle",
         optEnhance: "Jernihkan Video",
         optFace: "Deteksi Wajah / Pelacak Kamera",
         optWm: "Watermark",
         optSched: "Pengingat Jadwal",
+        titleWmBox: "Pengaturan & Contoh Watermark Klipper",
+        lblWmFile: "Unggah File Watermark (PNG / JPG / WebP)",
+        lblWmPos: "Posisi Watermark",
+        wmTopRight: "Pojok Kanan Atas",
+        wmTopLeft: "Pojok Kiri Atas",
+        wmBottomCenter: "Bawah Tengah",
+        wmSampleDefault: "Contoh watermark aktif: <strong>Contoh_WM_BrutalKlip.png</strong> (bisa diganti dengan file watermark kamu sendiri).",
+        wmSampleCustom: (name) => `File watermark terpilih: <strong>${name}</strong>.`,
+        wmPreviewDefault: "Contoh WM • @KlipperKamu",
+        wmPreviewOff: "Watermark Nonaktif",
         btnGenerate: "Analisis Potensi FYP & Buat Paket VT",
         titleStats: "Statistik Potensi FYP & Retensi",
         lblScore: "Skor Potensi FYP",
@@ -651,10 +880,10 @@
         allThemes: "Semua Tema",
         emptyHistory: "Belum ada paket VT yang tersimpan atau cocok dengan filter.",
         noVideo: "Tanpa file video",
+        wmOff: "Watermark: Nonaktif",
         schedOn: "Pengingat Jadwal: Aktif",
         schedOff: "Pengingat Jadwal: Nonaktif",
-        hookPrefix: (theme, project, idx, snippet) => `[${theme}] ${project} — Hook bagian ${idx}: ${snippet}...`,
-        descPrefix: (brief, schedText) => `${brief} | ${schedText} | Audio: Bebas Hak Cipta`,
+        descPrefix: (brief, wmText, schedText) => `${brief} | ${wmText} | ${schedText} | Audio: Bebas Hak Cipta`,
         titleSupport: "Dana Kopi dan Sebat",
         descSupport: "Aplikasi ini 100% gratis selamanya. Kalau ngebantu kerja kliping kamu, boleh kirim Dana Kopi dan Sebat lewat Trakteer.",
         btnTrakteer: "Kirim Dana Kopi dan Sebat",
@@ -674,17 +903,38 @@
         projectPh: "Example: Morning Coffee Campaign",
         lblCount: "VT Count (5–50)",
         lblTheme: "Editing Theme",
+        lblHookFont: "Hook Font",
+        lblHookColor: "Hook Text Color",
+        fontClean: "Clean Modern (Segoe UI / Inter)",
+        fontImpact: "Bold Impact (Impact / Arial Black)",
+        fontPlayful: "Playful (Comic Sans MS / Trebuchet MS)",
+        fontMono: "Mono Draft (Consolas / Courier New)",
+        colorWhite: "Crisp White",
+        colorYellow: "Hook Yellow",
+        colorCrimson: "Crimson Red",
+        colorMint: "Mint Green",
+        colorBlue: "Sky Blue",
+        colorBlack: "Pitch Black",
         themeComedy: "Comedy",
         themeHorror: "Horror",
-        themeNatural: "Natural / Organic",
+        themeNatural: "Natural / Organik",
         lblVideo: "Upload Source Video (Local)",
         lblBrief: "Campaign Brief & Instructions",
         briefPh: "Write campaign brief, mandatory points, restrictions, hook style, and upload schedule...",
-        optSub: "Auto Subtitle",
         optEnhance: "Enhance Video",
         optFace: "Face Detection / Camera Tracker",
         optWm: "Watermark",
         optSched: "Schedule Reminder",
+        titleWmBox: "Clipper Watermark Settings & Sample",
+        lblWmFile: "Upload Watermark File (PNG / JPG / WebP)",
+        lblWmPos: "Watermark Position",
+        wmTopRight: "Top Right",
+        wmTopLeft: "Top Left",
+        wmBottomCenter: "Bottom Center",
+        wmSampleDefault: "Sample watermark active: <strong>Sample_WM_BrutalKlip.png</strong> (can be replaced with your own watermark file).",
+        wmSampleCustom: (name) => `Selected watermark file: <strong>${name}</strong>.`,
+        wmPreviewDefault: "Sample WM • @YourClipper",
+        wmPreviewOff: "Watermark Off",
         btnGenerate: "Analyze FYP Potential & Generate VT Pack",
         titleStats: "FYP Potential & Retention Stats",
         lblScore: "FYP Potential Score",
@@ -695,10 +945,10 @@
         allThemes: "All Themes",
         emptyHistory: "No saved VT packs match the current filter.",
         noVideo: "No video file",
+        wmOff: "Watermark: Off",
         schedOn: "Schedule Reminder: On",
         schedOff: "Schedule Reminder: Off",
-        hookPrefix: (theme, project, idx, snippet) => `[${theme}] ${project} — Part ${idx} Hook: ${snippet}...`,
-        descPrefix: (brief, schedText) => `${brief} | ${schedText} | Audio: Royalty-Free`,
+        descPrefix: (brief, wmText, schedText) => `${brief} | ${wmText} | ${schedText} | Audio: Royalty-Free`,
         titleSupport: "Coffee & Smoke Fund",
         descSupport: "This app is 100% free forever. If it helps your clipping grind, feel free to send a coffee & smoke fund via Trakteer.",
         btnTrakteer: "Send Coffee & Smoke Fund",
@@ -712,6 +962,107 @@
         emptyRecap: "No supporter comments recapped on this web screen yet."
       }
     };
+
+    function applyHookStyle() {
+      const fontSelectEl = document.getElementById("hookFontSelect");
+      const colorSelectEl = document.getElementById("hookColorSelect");
+
+      const fontKey = fontSelectEl.value in HOOK_FONT_PRESETS ? fontSelectEl.value : "clean";
+      const colorKey = colorSelectEl.value in HOOK_COLOR_PRESETS ? colorSelectEl.value : "white";
+      const palette = HOOK_COLOR_PRESETS[colorKey];
+
+      fontSelectEl.value = fontKey;
+      colorSelectEl.value = colorKey;
+
+      document.documentElement.style.setProperty("--hook-font-family", HOOK_FONT_PRESETS[fontKey]);
+      document.documentElement.style.setProperty("--hook-color", palette.color);
+      document.documentElement.style.setProperty("--hook-bg", palette.bg);
+
+      localStorage.setItem(HOOK_FONT_KEY, fontKey);
+      localStorage.setItem(HOOK_COLOR_KEY, colorKey);
+    }
+
+    function initHookStyle() {
+      const savedFont = localStorage.getItem(HOOK_FONT_KEY) || "clean";
+      const savedColor = localStorage.getItem(HOOK_COLOR_KEY) || "white";
+
+      document.getElementById("hookFontSelect").value =
+        savedFont in HOOK_FONT_PRESETS ? savedFont : "clean";
+      document.getElementById("hookColorSelect").value =
+        savedColor in HOOK_COLOR_PRESETS ? savedColor : "white";
+
+      applyHookStyle();
+    }
+
+    function buildHookIdea(theme, project, idx, brief) {
+      const cleanSnippet = brief.replace(/\s+/g, " ").trim().slice(0, 58) || project;
+      const langBank = currentLang === "en" ? HOOK_TEMPLATES.en : HOOK_TEMPLATES.id;
+      const themeKey = currentLang === "en" && theme === "Natural / Organik" ? "Natural / Organik" : theme;
+      const list = langBank[themeKey] || langBank["Natural / Organik"];
+      const fn = list[(idx - 1) % list.length];
+      return fn(project, cleanSnippet);
+    }
+
+    function getPosLabel(posValue) {
+      const t = I18N[currentLang] || I18N.id;
+      if (posValue === "top-left") return t.wmTopLeft;
+      if (posValue === "bottom-center") return t.wmBottomCenter;
+      return t.wmTopRight;
+    }
+
+    function handleWatermarkFile(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) {
+        uploadedWmName = "";
+        uploadedWmUrl = "";
+        updateWatermarkPreview();
+        return;
+      }
+      if (uploadedWmUrl) {
+        URL.revokeObjectURL(uploadedWmUrl);
+      }
+      uploadedWmName = file.name;
+      uploadedWmUrl = URL.createObjectURL(file);
+      updateWatermarkPreview();
+    }
+
+    function updateWatermarkPreview() {
+      const t = I18N[currentLang] || I18N.id;
+      const enabled = document.getElementById("optWm").checked;
+      const posValue = document.getElementById("wmPos").value;
+      const posLabel = getPosLabel(posValue);
+
+      const tagEl = document.getElementById("wmPreviewTag");
+      const imgEl = document.getElementById("wmPreviewImg");
+      const labelEl = document.getElementById("wmPreviewLabel");
+      const infoEl = document.getElementById("wmSampleInfo");
+
+      tagEl.classList.remove("wm-pos-top-right", "wm-pos-top-left", "wm-pos-bottom-center");
+      if (posValue === "top-left") {
+        tagEl.classList.add("wm-pos-top-left");
+      } else if (posValue === "bottom-center") {
+        tagEl.classList.add("wm-pos-bottom-center");
+      } else {
+        tagEl.classList.add("wm-pos-top-right");
+      }
+
+      imgEl.src = uploadedWmUrl || DEFAULT_WM_SRC;
+      tagEl.classList.toggle("wm-sample-off", !enabled);
+
+      if (!enabled) {
+        labelEl.textContent = t.wmPreviewOff;
+      } else if (uploadedWmName) {
+        labelEl.textContent = `${uploadedWmName} • ${posLabel}`;
+      } else {
+        labelEl.textContent = `${t.wmPreviewDefault} • ${posLabel}`;
+      }
+
+      if (uploadedWmName) {
+        infoEl.innerHTML = t.wmSampleCustom(uploadedWmName);
+      } else {
+        infoEl.innerHTML = t.wmSampleDefault;
+      }
+    }
 
     function loadItems() {
       try {
@@ -801,6 +1152,18 @@
       document.getElementById("projectName").placeholder = t.projectPh;
       document.getElementById("lblCount").textContent = t.lblCount;
       document.getElementById("lblTheme").textContent = t.lblTheme;
+      document.getElementById("lblHookFont").textContent = t.lblHookFont;
+      document.getElementById("lblHookColor").textContent = t.lblHookColor;
+      document.getElementById("optFontClean").textContent = t.fontClean;
+      document.getElementById("optFontImpact").textContent = t.fontImpact;
+      document.getElementById("optFontPlayful").textContent = t.fontPlayful;
+      document.getElementById("optFontMono").textContent = t.fontMono;
+      document.getElementById("optColorWhite").textContent = t.colorWhite;
+      document.getElementById("optColorYellow").textContent = t.colorYellow;
+      document.getElementById("optColorCrimson").textContent = t.colorCrimson;
+      document.getElementById("optColorMint").textContent = t.colorMint;
+      document.getElementById("optColorBlue").textContent = t.colorBlue;
+      document.getElementById("optColorBlack").textContent = t.colorBlack;
       document.getElementById("optThemeComedy").textContent = t.themeComedy;
       document.getElementById("optThemeHorror").textContent = t.themeHorror;
       document.getElementById("optThemeNatural").textContent = t.themeNatural;
@@ -809,11 +1172,18 @@
       document.getElementById("lblBrief").textContent = t.lblBrief;
       document.getElementById("briefText").placeholder = t.briefPh;
 
-      document.getElementById("lblOptSub").textContent = t.optSub;
       document.getElementById("lblOptEnhance").textContent = t.optEnhance;
       document.getElementById("lblOptFace").textContent = t.optFace;
       document.getElementById("lblOptWm").textContent = t.optWm;
       document.getElementById("lblOptSched").textContent = t.optSched;
+
+      document.getElementById("titleWmBox").textContent = t.titleWmBox;
+      document.getElementById("lblWmFile").textContent = t.lblWmFile;
+      document.getElementById("lblWmPos").textContent = t.lblWmPos;
+      document.getElementById("optWmTopRight").textContent = t.wmTopRight;
+      document.getElementById("optWmTopLeft").textContent = t.wmTopLeft;
+      document.getElementById("optWmBottomCenter").textContent = t.wmBottomCenter;
+
       document.getElementById("btnGenerate").textContent = t.btnGenerate;
 
       document.getElementById("titleStats").textContent = t.titleStats;
@@ -837,6 +1207,7 @@
       document.getElementById("btnAddRecap").textContent = t.btnAddRecap;
       document.getElementById("titleRecapList").textContent = t.titleRecapList;
 
+      updateWatermarkPreview();
       renderHistory();
       renderRecaps();
     }
@@ -848,6 +1219,10 @@
       const count = Math.min(50, Math.max(5, Number(document.getElementById("vtCount").value) || 10));
       const theme = document.getElementById("themeSelect").value;
       const brief = document.getElementById("briefText").value.trim();
+      const wmChecked = document.getElementById("optWm").checked;
+      const posValue = document.getElementById("wmPos").value;
+      const posLabel = getPosLabel(posValue);
+      const wmSourceLabel = uploadedWmName || "Contoh_WM_BrutalKlip.png";
       const schedChecked = document.getElementById("optSched").checked;
       const fileInput = document.getElementById("sourceVideo");
       const fileName = fileInput.files && fileInput.files[0] ? fileInput.files[0].name : t.noVideo;
@@ -860,7 +1235,9 @@
 
       const existing = loadItems();
       const nowStr = new Date().toLocaleString(currentLang === "en" ? "en-US" : "id-ID");
+      const wmText = wmChecked ? `Watermark: ${wmSourceLabel} (${posLabel})` : t.wmOff;
       const schedText = schedChecked ? t.schedOn : t.schedOff;
+      const wmTag = wmChecked ? " #Watermark" : "";
 
       const created = [];
       for (let i = 1; i <= count; i++) {
@@ -871,9 +1248,9 @@
           theme,
           fileName,
           date: nowStr,
-          hook: t.hookPrefix(theme, project, i, brief.slice(0, 70)),
-          desc: t.descPrefix(brief, schedText),
-          tags: `#BrutalKlip #${theme.replace(/[^a-zA-Z0-9]/g, "")} #FYP #ShortClip`
+          hook: buildHookIdea(theme, project, i, brief),
+          desc: t.descPrefix(brief, wmText, schedText),
+          tags: `#BrutalKlip #${theme.replace(/[^a-zA-Z0-9]/g, "")} #FYP #ShortClip${wmTag}`
         });
       }
 
@@ -918,6 +1295,7 @@
         .join("");
     }
 
+    initHookStyle();
     setLang(currentLang);
   </script>
 </body>
