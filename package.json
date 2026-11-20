@@ -1,13 +1,10 @@
 {
   "name": "brutal-klip",
   "version": "1.0.0",
-  "description": "Brutal Klip - Campaign brief clip planner, FYP analyzer, and batch VT workspace",
   "private": true,
-  "scripts": {
-    "cap:sync": "npx cap sync android"
-  },
   "dependencies": {
     "@capacitor/android": "^6.1.2",
+    "@capacitor/cli": "^6.1.2",
     "@capacitor/core": "^6.1.2"
   }
 }
