@@ -7,32 +7,51 @@
   <link rel="stylesheet" href="style.css" />
   <style>
     :root {
-      --bg: #0b0f17;
-      --card: #131a26;
-      --card-2: #192232;
-      --text: #f3f6fb;
-      --muted: #94a3b8;
-      --accent: #ef4444;
-      --accent-hover: #dc2626;
-      --border: rgba(255, 255, 255, 0.1);
-      --radius: 14px;
+      --bg-main: #09080c;
+      --bg-glow: rgba(225, 29, 72, 0.16);
+      --surface: #121017;
+      --surface-elevated: #1b1722;
+      --surface-hover: #241e2e;
+      --text-primary: #f8fafc;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
+      --crimson: #e11d48;
+      --crimson-bright: #fb7185;
+      --crimson-dark: #9f1239;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(225, 29, 72, 0.38);
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 9px;
+      --shadow-card: 0 14px 34px rgba(0, 0, 0, 0.45);
+      --shadow-btn: 0 6px 20px rgba(225, 29, 72, 0.35);
     }
 
     * {
       box-sizing: border-box;
     }
 
+    html,
     body {
       margin: 0;
-      padding: 24px 16px 64px;
-      font-family: "Segoe UI", Roboto, Inter, Arial, sans-serif;
-      background: radial-gradient(circle at top, #1b2538 0%, var(--bg) 55%);
-      color: var(--text);
-      line-height: 1.5;
+      padding: 0;
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      font-family: "Segoe UI", Roboto, Inter, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+      line-height: 1.55;
+    }
+
+    body {
+      min-height: 100vh;
+      padding: 24px 16px 72px;
+      background-image:
+        radial-gradient(circle at 12% 0%, var(--bg-glow), transparent 45%),
+        radial-gradient(circle at 88% 8%, rgba(159, 18, 57, 0.14), transparent 42%),
+        linear-gradient(180deg, #0c0a10 0%, var(--bg-main) 100%);
     }
 
     .wrap {
-      max-width: 960px;
+      max-width: 980px;
       margin: 0 auto;
     }
 
@@ -41,12 +60,13 @@
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
-      gap: 14px;
+      gap: 16px;
+      padding: 18px 22px;
       margin-bottom: 18px;
-      padding: 16px 20px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
+      background: linear-gradient(135deg, rgba(27, 23, 34, 0.95), rgba(18, 16, 23, 0.98));
+      border: 1px solid var(--border-accent);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-card), 0 0 0 1px rgba(225, 29, 72, 0.08);
     }
 
     .brand-header {
@@ -56,25 +76,29 @@
     }
 
     .brand-logo {
-      width: 52px;
-      height: 52px;
+      width: 56px;
+      height: 56px;
       object-fit: cover;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: var(--card-2);
+      border-radius: 14px;
+      border: 2px solid var(--crimson);
+      background: var(--surface-elevated);
+      box-shadow: 0 0 18px rgba(225, 29, 72, 0.35);
     }
 
     .brand-header h1 {
       margin: 0;
-      font-size: 1.75rem;
+      font-size: 1.85rem;
       font-weight: 800;
-      letter-spacing: -0.02em;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      text-shadow: 0 2px 14px rgba(225, 29, 72, 0.25);
     }
 
     .subtitle {
-      margin: 2px 0 0;
+      margin: 3px 0 0;
       font-size: 0.88rem;
-      color: var(--muted);
+      color: var(--crimson-bright);
+      font-weight: 600;
     }
 
     .lang-group {
@@ -83,38 +107,53 @@
     }
 
     .panel {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 18px 20px;
+      background: var(--surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 20px 22px;
       margin-bottom: 16px;
-      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+      box-shadow: var(--shadow-card);
     }
 
     .panel h2 {
       margin: 0 0 14px;
+      padding-bottom: 10px;
       font-size: 1.15rem;
       font-weight: 700;
+      color: #ffffff;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .panel h2::before {
+      content: "";
+      display: inline-block;
+      width: 4px;
+      height: 18px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, var(--crimson-bright), var(--crimson));
     }
 
     .grid-2 {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
+      gap: 14px;
     }
 
     .grid-3 {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
+      gap: 14px;
     }
 
     label {
       display: block;
-      margin: 10px 0 6px;
+      margin: 12px 0 6px;
       font-size: 0.88rem;
       font-weight: 600;
-      color: #e2e8f0;
+      color: var(--text-secondary);
     }
 
     input[type="text"],
@@ -123,114 +162,150 @@
     select,
     textarea {
       width: 100%;
-      padding: 10px 12px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: var(--card-2);
-      color: var(--text);
+      padding: 11px 13px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+      background: var(--surface-elevated);
+      color: var(--text-primary);
       font-size: 0.94rem;
+      font-family: inherit;
       outline: none;
     }
 
     input:focus,
     select:focus,
     textarea:focus {
-      border-color: var(--accent);
+      border-color: var(--crimson);
+      background: var(--surface-hover);
+      box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.2);
     }
 
     textarea {
-      min-height: 92px;
+      min-height: 98px;
       resize: vertical;
     }
 
     input[type="file"] {
       width: 100%;
-      padding: 8px;
-      border-radius: 10px;
-      border: 1px dashed var(--border);
-      background: var(--card-2);
-      color: var(--muted);
+      padding: 9px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px dashed var(--border-accent);
+      background: var(--surface-elevated);
+      color: var(--text-muted);
       font-size: 0.88rem;
+    }
+
+    input[type="file"]::file-selector-button {
+      margin-right: 12px;
+      padding: 6px 12px;
+      border-radius: 7px;
+      border: 1px solid var(--border-accent);
+      background: rgba(225, 29, 72, 0.16);
+      color: #fda4af;
+      font-weight: 600;
+      cursor: pointer;
     }
 
     .checks {
       display: flex;
       flex-wrap: wrap;
-      gap: 14px;
-      margin: 14px 0 16px;
+      gap: 10px 18px;
+      margin: 14px 0 18px;
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
+      background: var(--surface-elevated);
+      border: 1px solid var(--border-subtle);
     }
 
     .checks label {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 7px;
       margin: 0;
+      font-size: 0.88rem;
       font-weight: 500;
+      color: var(--text-primary);
       cursor: pointer;
     }
 
     .checks input[type="checkbox"] {
-      accent-color: var(--accent);
-      transform: scale(1.1);
+      accent-color: var(--crimson);
+      width: 16px;
+      height: 16px;
     }
 
     button {
-      background: var(--accent);
+      background: linear-gradient(135deg, var(--crimson), var(--crimson-dark));
       color: #ffffff;
-      border: none;
-      border-radius: 10px;
-      padding: 10px 16px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-sm);
+      padding: 11px 18px;
       font-size: 0.92rem;
       font-weight: 700;
+      font-family: inherit;
       cursor: pointer;
-      transition: background 0.15s ease, transform 0.12s ease;
+      box-shadow: var(--shadow-btn);
     }
 
     button:hover {
-      background: var(--accent-hover);
+      filter: brightness(1.08);
       transform: translateY(-1px);
     }
 
     button.secondary {
-      background: var(--card-2);
-      border: 1px solid var(--border);
-      color: var(--text);
+      background: var(--surface-elevated);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      box-shadow: none;
+      padding: 8px 14px;
     }
 
     button.secondary.active {
-      background: var(--accent);
-      border-color: var(--accent);
+      background: linear-gradient(135deg, var(--crimson), var(--crimson-dark));
+      border-color: var(--crimson-bright);
       color: #ffffff;
+      box-shadow: var(--shadow-btn);
     }
 
     .status-text {
       margin: 10px 0 0;
       font-size: 0.88rem;
-      color: var(--muted);
+      color: var(--text-muted);
     }
 
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
+      gap: 14px;
     }
 
     .stat-box {
-      background: var(--card-2);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 14px;
+      background: linear-gradient(160deg, var(--surface-elevated), var(--surface));
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-box::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--crimson), transparent);
     }
 
     .stat-label {
       font-size: 0.82rem;
-      color: var(--muted);
+      color: var(--text-muted);
     }
 
     .stat-val {
-      margin-top: 4px;
-      font-size: 1.35rem;
+      margin-top: 6px;
+      font-size: 1.45rem;
       font-weight: 800;
+      color: #ffffff;
     }
 
     .filter-row {
@@ -246,34 +321,114 @@
     }
 
     .vt-item {
-      background: var(--card-2);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 14px;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-left: 4px solid var(--crimson);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
     }
 
     .vt-meta {
       font-size: 0.8rem;
-      color: var(--muted);
+      color: var(--text-muted);
       margin-bottom: 6px;
     }
 
     .vt-hook {
       font-weight: 700;
+      color: #ffffff;
       margin-bottom: 6px;
     }
 
     .vt-tags {
-      font-size: 0.85rem;
-      color: #fca5a5;
+      margin-top: 8px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--crimson-bright);
+    }
+
+    .support-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .support-row h2 {
+      border-bottom: none;
+      padding-bottom: 0;
+      margin-bottom: 6px;
+    }
+
+    .support-btn {
+      display: inline-block;
+      text-decoration: none;
+      background: linear-gradient(135deg, var(--crimson), var(--crimson-dark));
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-sm);
+      padding: 11px 18px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      box-shadow: var(--shadow-btn);
+    }
+
+    .support-btn:hover {
+      filter: brightness(1.08);
+      transform: translateY(-1px);
+    }
+
+    .supporter-form {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr auto;
+      gap: 10px;
+      margin-top: 12px;
+      margin-bottom: 14px;
+    }
+
+    .supporter-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .supporter-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border-accent);
+      font-size: 0.84rem;
+      color: #ffffff;
+    }
+
+    .supporter-chip span.note {
+      color: var(--crimson-bright);
+      font-weight: 600;
     }
 
     @media (max-width: 720px) {
       .grid-2,
       .grid-3,
       .stats-grid,
-      .filter-row {
+      .filter-row,
+      .supporter-form {
         grid-template-columns: 1fr;
+      }
+
+      button,
+      .support-btn {
+        width: 100%;
+        text-align: center;
+      }
+
+      .lang-group button {
+        width: auto;
       }
     }
   </style>
@@ -326,9 +481,9 @@
           <div>
             <label for="themeSelect" id="lblTheme">Tema Editing</label>
             <select id="themeSelect">
-              <option value="Komedi">Komedi</option>
-              <option value="Horor">Horor</option>
-              <option value="Natural / Organik">Natural / Organik</option>
+              <option value="Komedi" id="optThemeComedy">Komedi</option>
+              <option value="Horor" id="optThemeHorror">Horor</option>
+              <option value="Natural / Organik" id="optThemeNatural">Natural / Organik</option>
             </select>
           </div>
         </div>
@@ -344,11 +499,11 @@
         ></textarea>
 
         <div class="checks">
-          <label><input type="checkbox" id="optSub" checked /> Auto Subtitle</label>
-          <label><input type="checkbox" id="optEnhance" checked /> Jernihkan Video</label>
-          <label><input type="checkbox" id="optFace" checked /> Deteksi Wajah / Pelacak Kamera</label>
-          <label><input type="checkbox" id="optWm" checked /> Watermark</label>
-          <label><input type="checkbox" id="optSched" checked /> Pengingat Jadwal</label>
+          <label><input type="checkbox" id="optSub" checked /> <span id="lblOptSub">Auto Subtitle</span></label>
+          <label><input type="checkbox" id="optEnhance" checked /> <span id="lblOptEnhance">Jernihkan Video</span></label>
+          <label><input type="checkbox" id="optFace" checked /> <span id="lblOptFace">Deteksi Wajah / Pelacak Kamera</span></label>
+          <label><input type="checkbox" id="optWm" checked /> <span id="lblOptWm">Watermark</span></label>
+          <label><input type="checkbox" id="optSched" checked /> <span id="lblOptSched">Pengingat Jadwal</span></label>
         </div>
 
         <button type="submit" id="btnGenerate">Analisis Potensi FYP &amp; Buat Paket VT</button>
@@ -383,13 +538,48 @@
           oninput="renderHistory()"
         />
         <select id="filterTheme" onchange="renderHistory()">
-          <option value="">Semua Tema</option>
-          <option value="Komedi">Komedi</option>
-          <option value="Horor">Horor</option>
-          <option value="Natural / Organik">Natural / Organik</option>
+          <option value="" id="optFilterAll">Semua Tema</option>
+          <option value="Komedi" id="optFilterComedy">Komedi</option>
+          <option value="Horor" id="optFilterHorror">Horor</option>
+          <option value="Natural / Organik" id="optFilterNatural">Natural / Organik</option>
         </select>
       </div>
       <div class="vt-list" id="vtList"></div>
+    </section>
+
+    <section class="panel">
+      <div class="support-row">
+        <div>
+          <h2 id="titleSupport">Dana Kopi dan Sebat</h2>
+          <p class="status-text" id="descSupport">
+            Aplikasi ini 100% gratis selamanya. Kalau ngebantu kerja kliping kamu, boleh kirim Dana Kopi dan Sebat lewat Trakteer.
+          </p>
+        </div>
+        <a
+          href="https://trakteer.id/brutal_klip"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="support-btn"
+          id="btnTrakteer"
+        >
+          Kirim Dana Kopi dan Sebat
+        </a>
+      </div>
+
+      <h3 id="titleSupporters" style="margin: 10px 0 6px; font-size: 0.98rem; color: #ffffff;">
+        Daftar Pendukung
+      </h3>
+      <p class="status-text" id="descSupporters">
+        Tambahkan nama/channel pendukung yang sudah kirim Dana Kopi dan Sebat (tersimpan lokal di perangkat ini):
+      </p>
+
+      <form class="supporter-form" onsubmit="addSupporter(event)">
+        <input type="text" id="supporterName" placeholder="Nama / Channel Pendukung" required />
+        <input type="text" id="supporterNote" placeholder="Pesan / Traktiran (opsional)" />
+        <button type="submit" id="btnAddSupporter">Tambah Pendukung</button>
+      </form>
+
+      <div class="supporter-badges" id="supporterList"></div>
     </section>
   </div>
 
@@ -397,6 +587,119 @@
   <script>
     const STORAGE_KEY = "brutal_klip_data_v1";
     const ACC_KEY = "brutal_klip_acc_v1";
+    const LANG_KEY = "brutal_klip_lang_v1";
+    const SUPPORTER_KEY = "brutal_klip_supporters_v1";
+
+    let currentLang = localStorage.getItem(LANG_KEY) || "id";
+
+    const I18N = {
+      id: {
+        subtitle: "Offline / Online Ready • 100% Gratis",
+        titleAccount: "Akun & Sinkronisasi",
+        accUserPh: "Email / ID Akun (HP & PC)",
+        accPassPh: "Kata Sandi / Sync Key",
+        btnSaveAcc: "Masuk / Simpan",
+        accStatusGuest: "Belum masuk — data tersimpan lokal di perangkat.",
+        accStatusEmpty: "Isi Email / ID Akun terlebih dahulu.",
+        accStatusConnected: (u) => `Terhubung sebagai ${u} (tersimpan lokal di perangkat).`,
+        titleBrief: "Brief Campaign & Generator VT",
+        lblProject: "Nama Proyek / Batch",
+        projectPh: "Contoh: Campaign Kopi Pagi",
+        lblCount: "Jumlah VT (5–50)",
+        lblTheme: "Tema Editing",
+        themeComedy: "Komedi",
+        themeHorror: "Horor",
+        themeNatural: "Natural / Organik",
+        lblVideo: "Unggah Video Sumber (Lokal)",
+        lblBrief: "Isi Brief Campaign & Instruksi",
+        briefPh: "Tulis brief campaign, poin wajib, larangan, gaya hook, dan jadwal upload...",
+        optSub: "Auto Subtitle",
+        optEnhance: "Jernihkan Video",
+        optFace: "Deteksi Wajah / Pelacak Kamera",
+        optWm: "Watermark",
+        optSched: "Pengingat Jadwal",
+        btnGenerate: "Analisis Potensi FYP & Buat Paket VT",
+        titleStats: "Statistik Potensi FYP & Retensi",
+        lblScore: "Skor Potensi FYP",
+        lblRetention: "Estimasi Retensi 3 Detik",
+        lblTotalVT: "Total Paket VT Tersimpan",
+        titleHistory: "Tempat Rapihin VT & Riwayat",
+        searchPh: "Cari nama, hook, tagar...",
+        allThemes: "Semua Tema",
+        emptyHistory: "Belum ada paket VT yang tersimpan atau cocok dengan filter.",
+        noVideo: "Tanpa file video",
+        schedOn: "Pengingat Jadwal: Aktif",
+        schedOff: "Pengingat Jadwal: Nonaktif",
+        hookPrefix: (theme, project, idx, snippet) => `[${theme}] ${project} — Hook bagian ${idx}: ${snippet}...`,
+        descPrefix: (brief, schedText) => `${brief} | ${schedText} | Audio: Bebas Hak Cipta`,
+        titleSupport: "Dana Kopi dan Sebat",
+        descSupport: "Aplikasi ini 100% gratis selamanya. Kalau ngebantu kerja kliping kamu, boleh kirim Dana Kopi dan Sebat lewat Trakteer.",
+        btnTrakteer: "Kirim Dana Kopi dan Sebat",
+        titleSupporters: "Daftar Pendukung",
+        descSupporters: "Tambahkan nama/channel pendukung yang sudah kirim Dana Kopi dan Sebat (tersimpan lokal di perangkat ini):",
+        supporterNamePh: "Nama / Channel Pendukung",
+        supporterNotePh: "Pesan / Traktiran (opsional)",
+        btnAddSupporter: "Tambah Pendukung",
+        emptySupporters: "Belum ada daftar pendukung yang ditambahkan di perangkat ini."
+      },
+      en: {
+        subtitle: "Offline / Online Ready • 100% Free",
+        titleAccount: "Account & Sync",
+        accUserPh: "Email / Account ID (Mobile & PC)",
+        accPassPh: "Password / Sync Key",
+        btnSaveAcc: "Sign In / Save",
+        accStatusGuest: "Not signed in — data is stored locally on this device.",
+        accStatusEmpty: "Please enter an Email / Account ID first.",
+        accStatusConnected: (u) => `Connected as ${u} (stored locally on this device).`,
+        titleBrief: "Campaign Brief & VT Generator",
+        lblProject: "Project / Batch Name",
+        projectPh: "Example: Morning Coffee Campaign",
+        lblCount: "VT Count (5–50)",
+        lblTheme: "Editing Theme",
+        themeComedy: "Comedy",
+        themeHorror: "Horror",
+        themeNatural: "Natural / Organic",
+        lblVideo: "Upload Source Video (Local)",
+        lblBrief: "Campaign Brief & Instructions",
+        briefPh: "Write campaign brief, mandatory points, restrictions, hook style, and upload schedule...",
+        optSub: "Auto Subtitle",
+        optEnhance: "Enhance Video",
+        optFace: "Face Detection / Camera Tracker",
+        optWm: "Watermark",
+        optSched: "Schedule Reminder",
+        btnGenerate: "Analyze FYP Potential & Generate VT Pack",
+        titleStats: "FYP Potential & Retention Stats",
+        lblScore: "FYP Potential Score",
+        lblRetention: "Estimated 3-Sec Retention",
+        lblTotalVT: "Total Saved VT Packs",
+        titleHistory: "VT Organizer & History",
+        searchPh: "Search name, hook, hashtags...",
+        allThemes: "All Themes",
+        emptyHistory: "No saved VT packs match the current filter.",
+        noVideo: "No video file",
+        schedOn: "Schedule Reminder: On",
+        schedOff: "Schedule Reminder: Off",
+        hookPrefix: (theme, project, idx, snippet) => `[${theme}] ${project} — Part ${idx} Hook: ${snippet}...`,
+        descPrefix: (brief, schedText) => `${brief} | ${schedText} | Audio: Royalty-Free`,
+        titleSupport: "Coffee & Smoke Fund",
+        descSupport: "This app is 100% free forever. If it helps your clipping grind, feel free to send a coffee & smoke fund via Trakteer.",
+        btnTrakteer: "Send Coffee & Smoke Fund",
+        titleSupporters: "Supporters List",
+        descSupporters: "Add supporter names/channels who sent support (stored locally on this device):",
+        supporterNamePh: "Supporter Name / Channel",
+        supporterNotePh: "Message / Support note (optional)",
+        btnAddSupporter: "Add Supporter",
+        emptySupporters: "No supporters added on this device yet."
+      }
+    };
+
+    function getSavedAccount() {
+      try {
+        return JSON.parse(localStorage.getItem(ACC_KEY));
+      } catch {
+        return null;
+      }
+    }
 
     function loadItems() {
       try {
@@ -410,32 +713,145 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
     }
 
+    function loadSupporters() {
+      try {
+        return JSON.parse(localStorage.getItem(SUPPORTER_KEY)) || [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveSupporters(list) {
+      localStorage.setItem(SUPPORTER_KEY, JSON.stringify(list));
+    }
+
+    function addSupporter(e) {
+      e.preventDefault();
+      const nameEl = document.getElementById("supporterName");
+      const noteEl = document.getElementById("supporterNote");
+      const name = nameEl.value.trim();
+      const note = noteEl.value.trim();
+      if (!name) return;
+
+      const list = loadSupporters();
+      list.unshift({ id: Date.now(), name, note });
+      saveSupporters(list);
+
+      nameEl.value = "";
+      noteEl.value = "";
+      renderSupporters();
+    }
+
+    function renderSupporters() {
+      const t = I18N[currentLang] || I18N.id;
+      const list = loadSupporters();
+      const el = document.getElementById("supporterList");
+      if (!list.length) {
+        el.innerHTML = `<p class="status-text">${t.emptySupporters}</p>`;
+        return;
+      }
+      el.innerHTML = list
+        .map(
+          (s) => `
+          <div class="supporter-chip">
+            <strong>${s.name}</strong>
+            ${s.note ? `<span class="note">• ${s.note}</span>` : ""}
+          </div>
+        `
+        )
+        .join("");
+    }
+
     function saveAccount() {
+      const t = I18N[currentLang] || I18N.id;
       const user = document.getElementById("accUser").value.trim();
       const status = document.getElementById("accStatus");
       if (!user) {
-        status.textContent = "Isi Email / ID Akun terlebih dahulu.";
+        status.textContent = t.accStatusEmpty;
         return;
       }
       localStorage.setItem(ACC_KEY, JSON.stringify({ user, updatedAt: new Date().toISOString() }));
-      status.textContent = `Terhubung sebagai ${user} (tersimpan lokal di perangkat).`;
+      status.textContent = t.accStatusConnected(user);
     }
 
     function setLang(lang) {
-      document.getElementById("btnID").classList.toggle("active", lang === "id");
-      document.getElementById("btnEN").classList.toggle("active", lang === "en");
-      document.getElementById("subtitleText").textContent =
-        lang === "en" ? "Offline / Online Ready • 100% Free" : "Offline / Online Ready • 100% Gratis";
+      currentLang = lang === "en" ? "en" : "id";
+      localStorage.setItem(LANG_KEY, currentLang);
+      const t = I18N[currentLang];
+
+      document.documentElement.lang = currentLang;
+      document.getElementById("btnID").classList.toggle("active", currentLang === "id");
+      document.getElementById("btnEN").classList.toggle("active", currentLang === "en");
+
+      document.getElementById("subtitleText").textContent = t.subtitle;
+      document.getElementById("titleAccount").textContent = t.titleAccount;
+      document.getElementById("accUser").placeholder = t.accUserPh;
+      document.getElementById("accPass").placeholder = t.accPassPh;
+      document.getElementById("btnSaveAcc").textContent = t.btnSaveAcc;
+
+      const savedAcc = getSavedAccount();
+      if (savedAcc && savedAcc.user) {
+        document.getElementById("accUser").value = savedAcc.user;
+        document.getElementById("accStatus").textContent = t.accStatusConnected(savedAcc.user);
+      } else {
+        document.getElementById("accStatus").textContent = t.accStatusGuest;
+      }
+
+      document.getElementById("titleBrief").textContent = t.titleBrief;
+      document.getElementById("lblProject").textContent = t.lblProject;
+      document.getElementById("projectName").placeholder = t.projectPh;
+      document.getElementById("lblCount").textContent = t.lblCount;
+      document.getElementById("lblTheme").textContent = t.lblTheme;
+      document.getElementById("optThemeComedy").textContent = t.themeComedy;
+      document.getElementById("optThemeHorror").textContent = t.themeHorror;
+      document.getElementById("optThemeNatural").textContent = t.themeNatural;
+
+      document.getElementById("lblVideo").textContent = t.lblVideo;
+      document.getElementById("lblBrief").textContent = t.lblBrief;
+      document.getElementById("briefText").placeholder = t.briefPh;
+
+      document.getElementById("lblOptSub").textContent = t.optSub;
+      document.getElementById("lblOptEnhance").textContent = t.optEnhance;
+      document.getElementById("lblOptFace").textContent = t.optFace;
+      document.getElementById("lblOptWm").textContent = t.optWm;
+      document.getElementById("lblOptSched").textContent = t.optSched;
+      document.getElementById("btnGenerate").textContent = t.btnGenerate;
+
+      document.getElementById("titleStats").textContent = t.titleStats;
+      document.getElementById("lblScore").textContent = t.lblScore;
+      document.getElementById("lblRetention").textContent = t.lblRetention;
+      document.getElementById("lblTotalVT").textContent = t.lblTotalVT;
+
+      document.getElementById("titleHistory").textContent = t.titleHistory;
+      document.getElementById("searchHistory").placeholder = t.searchPh;
+      document.getElementById("optFilterAll").textContent = t.allThemes;
+      document.getElementById("optFilterComedy").textContent = t.themeComedy;
+      document.getElementById("optFilterHorror").textContent = t.themeHorror;
+      document.getElementById("optFilterNatural").textContent = t.themeNatural;
+
+      document.getElementById("titleSupport").textContent = t.titleSupport;
+      document.getElementById("descSupport").textContent = t.descSupport;
+      document.getElementById("btnTrakteer").textContent = t.btnTrakteer;
+      document.getElementById("titleSupporters").textContent = t.titleSupporters;
+      document.getElementById("descSupporters").textContent = t.descSupporters;
+      document.getElementById("supporterName").placeholder = t.supporterNamePh;
+      document.getElementById("supporterNote").placeholder = t.supporterNotePh;
+      document.getElementById("btnAddSupporter").textContent = t.btnAddSupporter;
+
+      renderHistory();
+      renderSupporters();
     }
 
     function generateVTs(e) {
       e.preventDefault();
+      const t = I18N[currentLang] || I18N.id;
       const project = document.getElementById("projectName").value.trim();
       const count = Math.min(50, Math.max(5, Number(document.getElementById("vtCount").value) || 10));
       const theme = document.getElementById("themeSelect").value;
       const brief = document.getElementById("briefText").value.trim();
+      const schedChecked = document.getElementById("optSched").checked;
       const fileInput = document.getElementById("sourceVideo");
-      const fileName = fileInput.files && fileInput.files[0] ? fileInput.files[0].name : "Tanpa file video";
+      const fileName = fileInput.files && fileInput.files[0] ? fileInput.files[0].name : t.noVideo;
 
       const score = Math.min(98, 76 + (brief.length % 19));
       const retention = Math.min(92, 64 + (count % 23));
@@ -444,7 +860,8 @@
       document.getElementById("statRetention").textContent = `${retention}%`;
 
       const existing = loadItems();
-      const nowStr = new Date().toLocaleString("id-ID");
+      const nowStr = new Date().toLocaleString(currentLang === "en" ? "en-US" : "id-ID");
+      const schedText = schedChecked ? t.schedOn : t.schedOff;
 
       const created = [];
       for (let i = 1; i <= count; i++) {
@@ -455,9 +872,9 @@
           theme,
           fileName,
           date: nowStr,
-          hook: `[${theme}] ${project} — Hook bagian ${i}: ${brief.slice(0, 70)}...`,
-          desc: `${brief} | Audio: Bebas Hak Cipta / Royalty Free`,
-          tags: `#BrutalKlip #${theme.replace(/[^a-zA-Z0-9]/g, "")} #FYP #KlipPendek`
+          hook: t.hookPrefix(theme, project, i, brief.slice(0, 70)),
+          desc: t.descPrefix(brief, schedText),
+          tags: `#BrutalKlip #${theme.replace(/[^a-zA-Z0-9]/g, "")} #FYP #ShortClip`
         });
       }
 
@@ -467,6 +884,7 @@
     }
 
     function renderHistory() {
+      const t = I18N[currentLang] || I18N.id;
       const query = document.getElementById("searchHistory").value.trim().toLowerCase();
       const themeFilter = document.getElementById("filterTheme").value;
       const all = loadItems();
@@ -482,7 +900,7 @@
 
       const listEl = document.getElementById("vtList");
       if (!filtered.length) {
-        listEl.innerHTML = `<p class="status-text">Belum ada paket VT yang cocok dengan filter.</p>`;
+        listEl.innerHTML = `<p class="status-text">${t.emptyHistory}</p>`;
         return;
       }
 
@@ -501,20 +919,7 @@
         .join("");
     }
 
-    const savedAcc = (() => {
-      try {
-        return JSON.parse(localStorage.getItem(ACC_KEY));
-      } catch {
-        return null;
-      }
-    })();
-
-    if (savedAcc && savedAcc.user) {
-      document.getElementById("accUser").value = savedAcc.user;
-      document.getElementById("accStatus").textContent = `Terhubung sebagai ${savedAcc.user} (tersimpan lokal di perangkat).`;
-    }
-
-    renderHistory();
+    setLang(currentLang);
   </script>
 </body>
 </html>
