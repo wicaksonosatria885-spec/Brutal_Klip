@@ -380,36 +380,74 @@
       transform: translateY(-1px);
     }
 
+    .notice-box {
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      background: rgba(225, 29, 72, 0.1);
+      border: 1px solid var(--border-accent);
+      color: #fda4af;
+      font-size: 0.85rem;
+      margin-top: 8px;
+    }
+
     .supporter-form {
       display: grid;
-      grid-template-columns: 1fr 1.4fr auto;
+      grid-template-columns: 1fr 1.5fr auto;
       gap: 10px;
       margin-top: 12px;
       margin-bottom: 14px;
     }
 
-    .supporter-badges {
+    .recap-header {
       display: flex;
       flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
       gap: 8px;
-      margin-top: 10px;
+      margin-top: 12px;
+      margin-bottom: 10px;
     }
 
-    .supporter-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      border-radius: 999px;
+    .recap-badge {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--crimson-bright);
       background: var(--surface-elevated);
       border: 1px solid var(--border-accent);
-      font-size: 0.84rem;
-      color: #ffffff;
+      padding: 4px 10px;
+      border-radius: 999px;
     }
 
-    .supporter-chip span.note {
-      color: var(--crimson-bright);
-      font-weight: 600;
+    .recap-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .recap-card {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-left: 4px solid var(--crimson);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+    }
+
+    .recap-meta {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .recap-name {
+      font-weight: 700;
+      color: #ffffff;
+      font-size: 0.94rem;
+    }
+
+    .recap-msg {
+      margin-top: 4px;
+      font-size: 0.88rem;
+      color: var(--text-secondary);
     }
 
     @media (max-width: 720px) {
@@ -566,20 +604,24 @@
         </a>
       </div>
 
-      <h3 id="titleSupporters" style="margin: 10px 0 6px; font-size: 0.98rem; color: #ffffff;">
-        Daftar Pendukung
-      </h3>
-      <p class="status-text" id="descSupporters">
-        Tambahkan nama/channel pendukung yang sudah kirim Dana Kopi dan Sebat (tersimpan lokal di perangkat ini):
-      </p>
+      <div class="notice-box" id="noticeSeparate">
+        Catatan: Kolom nama &amp; komentar di bawah ini <strong>terpisah dari trakteer.id</strong> dan khusus untuk pesan/komentar yang langsung kerekap &amp; tampil di layar web <strong>Brutal Klip</strong>.
+      </div>
 
-      <form class="supporter-form" onsubmit="addSupporter(event)">
+      <form class="supporter-form" onsubmit="addSupporterRecap(event)">
         <input type="text" id="supporterName" placeholder="Nama / Channel Pendukung" required />
-        <input type="text" id="supporterNote" placeholder="Pesan / Traktiran (opsional)" />
-        <button type="submit" id="btnAddSupporter">Tambah Pendukung</button>
+        <input type="text" id="supporterMsg" placeholder="Tulis komentar / pesan untuk tampil di web Brutal Klip..." required />
+        <button type="submit" id="btnAddRecap">Kirim &amp; Rekap</button>
       </form>
 
-      <div class="supporter-badges" id="supporterList"></div>
+      <div class="recap-header">
+        <strong id="titleRecapList" style="font-size: 0.96rem; color: #ffffff;">
+          Rekap Komentar Pendukung (Layar Web Brutal Klip)
+        </strong>
+        <span class="recap-badge" id="recapCountBadge">0 Rekap</span>
+      </div>
+
+      <div class="recap-list" id="supporterRecapList"></div>
     </section>
   </div>
 
@@ -588,7 +630,7 @@
     const STORAGE_KEY = "brutal_klip_data_v1";
     const ACC_KEY = "brutal_klip_acc_v1";
     const LANG_KEY = "brutal_klip_lang_v1";
-    const SUPPORTER_KEY = "brutal_klip_supporters_v1";
+    const RECAP_KEY = "brutal_klip_supporter_recap_v1";
 
     let currentLang = localStorage.getItem(LANG_KEY) || "id";
 
@@ -635,12 +677,14 @@
         titleSupport: "Dana Kopi dan Sebat",
         descSupport: "Aplikasi ini 100% gratis selamanya. Kalau ngebantu kerja kliping kamu, boleh kirim Dana Kopi dan Sebat lewat Trakteer.",
         btnTrakteer: "Kirim Dana Kopi dan Sebat",
-        titleSupporters: "Daftar Pendukung",
-        descSupporters: "Tambahkan nama/channel pendukung yang sudah kirim Dana Kopi dan Sebat (tersimpan lokal di perangkat ini):",
+        noticeSeparate: "Catatan: Kolom nama &amp; komentar di bawah ini <strong>terpisah dari trakteer.id</strong> dan khusus untuk pesan/komentar yang langsung kerekap &amp; tampil di layar web <strong>Brutal Klip</strong>.",
         supporterNamePh: "Nama / Channel Pendukung",
-        supporterNotePh: "Pesan / Traktiran (opsional)",
-        btnAddSupporter: "Tambah Pendukung",
-        emptySupporters: "Belum ada daftar pendukung yang ditambahkan di perangkat ini."
+        supporterMsgPh: "Tulis komentar / pesan untuk tampil di web Brutal Klip...",
+        btnAddRecap: "Kirim & Rekap",
+        titleRecapList: "Rekap Komentar Pendukung (Layar Web Brutal Klip)",
+        recapBadge: (n) => `${n} Rekap`,
+        recapSource: "Web Brutal Klip",
+        emptyRecap: "Belum ada komentar pendukung yang kerekap di layar web ini."
       },
       en: {
         subtitle: "Offline / Online Ready • 100% Free",
@@ -684,12 +728,14 @@
         titleSupport: "Coffee & Smoke Fund",
         descSupport: "This app is 100% free forever. If it helps your clipping grind, feel free to send a coffee & smoke fund via Trakteer.",
         btnTrakteer: "Send Coffee & Smoke Fund",
-        titleSupporters: "Supporters List",
-        descSupporters: "Add supporter names/channels who sent support (stored locally on this device):",
+        noticeSeparate: "Note: The name &amp; comment fields below are <strong>separate from trakteer.id</strong> and are strictly for messages/comments that get automatically recapped &amp; displayed on the <strong>Brutal Klip</strong> web screen.",
         supporterNamePh: "Supporter Name / Channel",
-        supporterNotePh: "Message / Support note (optional)",
-        btnAddSupporter: "Add Supporter",
-        emptySupporters: "No supporters added on this device yet."
+        supporterMsgPh: "Write a comment / message to show on the Brutal Klip web screen...",
+        btnAddRecap: "Send & Recap",
+        titleRecapList: "Supporter Comment Recap (Brutal Klip Web Screen)",
+        recapBadge: (n) => `${n} Recaps`,
+        recapSource: "Brutal Klip Web",
+        emptyRecap: "No supporter comments recapped on this web screen yet."
       }
     };
 
@@ -713,52 +759,64 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
     }
 
-    function loadSupporters() {
+    function loadRecaps() {
       try {
-        return JSON.parse(localStorage.getItem(SUPPORTER_KEY)) || [];
+        return JSON.parse(localStorage.getItem(RECAP_KEY)) || [];
       } catch {
         return [];
       }
     }
 
-    function saveSupporters(list) {
-      localStorage.setItem(SUPPORTER_KEY, JSON.stringify(list));
+    function saveRecaps(list) {
+      localStorage.setItem(RECAP_KEY, JSON.stringify(list));
     }
 
-    function addSupporter(e) {
+    function addSupporterRecap(e) {
       e.preventDefault();
       const nameEl = document.getElementById("supporterName");
-      const noteEl = document.getElementById("supporterNote");
+      const msgEl = document.getElementById("supporterMsg");
       const name = nameEl.value.trim();
-      const note = noteEl.value.trim();
-      if (!name) return;
+      const msg = msgEl.value.trim();
+      if (!name || !msg) return;
 
-      const list = loadSupporters();
-      list.unshift({ id: Date.now(), name, note });
-      saveSupporters(list);
+      const list = loadRecaps();
+      const timeStr = new Date().toLocaleString(currentLang === "en" ? "en-US" : "id-ID");
+      list.unshift({
+        id: Date.now(),
+        name,
+        msg,
+        time: timeStr
+      });
+      saveRecaps(list);
 
       nameEl.value = "";
-      noteEl.value = "";
-      renderSupporters();
+      msgEl.value = "";
+      renderRecaps();
     }
 
-    function renderSupporters() {
+    function renderRecaps() {
       const t = I18N[currentLang] || I18N.id;
-      const list = loadSupporters();
-      const el = document.getElementById("supporterList");
+      const list = loadRecaps();
+      document.getElementById("recapCountBadge").textContent = t.recapBadge(list.length);
+
+      const el = document.getElementById("supporterRecapList");
       if (!list.length) {
-        el.innerHTML = `<p class="status-text">${t.emptySupporters}</p>`;
+        el.innerHTML = `<p class="status-text">${t.emptyRecap}</p>`;
         return;
       }
+
+      const total = list.length;
       el.innerHTML = list
-        .map(
-          (s) => `
-          <div class="supporter-chip">
-            <strong>${s.name}</strong>
-            ${s.note ? `<span class="note">• ${s.note}</span>` : ""}
-          </div>
-        `
-        )
+        .map((item, idx) => {
+          const recapNo = total - idx;
+          return `
+            <div class="recap-card">
+              <div class="recap-meta">#${recapNo} • ${item.time} • ${t.recapSource}</div>
+              <div class="recap-name">${item.name}</div>
+              <div class="recap-msg">${item.msg}</div>
+            </div>
+          `;
+        })
         .join("");
     }
 
@@ -832,14 +890,14 @@
       document.getElementById("titleSupport").textContent = t.titleSupport;
       document.getElementById("descSupport").textContent = t.descSupport;
       document.getElementById("btnTrakteer").textContent = t.btnTrakteer;
-      document.getElementById("titleSupporters").textContent = t.titleSupporters;
-      document.getElementById("descSupporters").textContent = t.descSupporters;
+      document.getElementById("noticeSeparate").innerHTML = t.noticeSeparate;
       document.getElementById("supporterName").placeholder = t.supporterNamePh;
-      document.getElementById("supporterNote").placeholder = t.supporterNotePh;
-      document.getElementById("btnAddSupporter").textContent = t.btnAddSupporter;
+      document.getElementById("supporterMsg").placeholder = t.supporterMsgPh;
+      document.getElementById("btnAddRecap").textContent = t.btnAddRecap;
+      document.getElementById("titleRecapList").textContent = t.titleRecapList;
 
       renderHistory();
-      renderSupporters();
+      renderRecaps();
     }
 
     function generateVTs(e) {
