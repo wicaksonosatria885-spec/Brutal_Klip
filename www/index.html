@@ -555,24 +555,10 @@
 
       <div class="support-detail-box">
         <div>
-          <div class="box-tag">Link Trakteer Aktif</div>
+          <div class="box-tag">Trakteer Resmi Brutal Klip</div>
           <div id="dana-tampil" class="support-val">https://trakteer.id/brutal_klip</div>
         </div>
-        <button id="btn-toggle-dana" class="mini-btn" type="button">Ubah Link</button>
-      </div>
-
-      <div id="dana-edit-panel" style="display: none; margin-top: 12px;">
-        <div class="grid-2" style="margin-bottom: 8px;">
-          <div class="field" style="margin-bottom: 0;">
-            <label for="dana-jalur">URL Trakteer</label>
-            <input id="dana-jalur" class="input" type="text" placeholder="https://trakteer.id/brutal_klip" />
-          </div>
-          <div class="field" style="margin-bottom: 0;">
-            <label for="dana-pesan">Catatan Singkat</label>
-            <input id="dana-pesan" class="input" type="text" placeholder="Contoh: Buat kopi & sebat" />
-          </div>
-        </div>
-        <button id="btn-simpan-dana" class="btn btn-secondary" type="button">Simpan Link</button>
+        <span class="pill">Kopi &amp; Sebat</span>
       </div>
     </section>
 
@@ -711,21 +697,16 @@
 
   <script>
     (function () {
-      const STORAGE_KEY = "brutal_klip_full_state_v7";
-      const DEFAULT_TRAKTEER = "https://trakteer.id/brutal_klip";
+      const STORAGE_KEY = "brutal_klip_full_state_v8";
+      const TRAKTEER_URL = "https://trakteer.id/brutal_klip";
 
       const elFileInput = document.getElementById("file-input");
       const elFileLabel = document.getElementById("file-label");
       const elFileList = document.getElementById("file-list");
 
-      const elDanaJalur = document.getElementById("dana-jalur");
-      const elDanaPesan = document.getElementById("dana-pesan");
       const elDanaTampil = document.getElementById("dana-tampil");
       const btnBukaTrakteer = document.getElementById("btn-buka-trakteer");
       const btnSalinDana = document.getElementById("btn-salin-dana");
-      const btnToggleDana = document.getElementById("btn-toggle-dana");
-      const btnSimpanDana = document.getElementById("btn-simpan-dana");
-      const danaEditPanel = document.getElementById("dana-edit-panel");
 
       const elKomenInput = document.getElementById("komen-input");
       const elKomenTag = document.getElementById("komen-tag");
@@ -755,10 +736,6 @@
             watermark: ""
           },
           files: [],
-          support: {
-            jalur: DEFAULT_TRAKTEER,
-            pesan: ""
-          },
           comments: [],
           items: []
         };
@@ -773,7 +750,6 @@
           return {
             config: { ...def.config, ...(parsed.config || {}) },
             files: Array.isArray(parsed.files) ? parsed.files : [],
-            support: { ...def.support, ...(parsed.support || {}) },
             comments: Array.isArray(parsed.comments) ? parsed.comments : [],
             items: Array.isArray(parsed.items) ? parsed.items : []
           };
@@ -868,48 +844,13 @@
         renderFiles();
       });
 
-      // --- PENDANAAN KOPI & SEBAT ---
-      function normalizeTrakteerUrl(rawUrl) {
-        const clean = (rawUrl || "").trim();
-        if (!clean) return DEFAULT_TRAKTEER;
-        if (/^https?:\/\//i.test(clean)) return clean;
-        return "https://" + clean.replace(/^\/+/, "");
-      }
-
-      function updateSupport() {
-        const st = loadState();
-        const url = normalizeTrakteerUrl(st.support.jalur);
-        const pesan = (st.support.pesan || "").trim();
-
-        btnBukaTrakteer.href = url;
-        elDanaTampil.textContent = pesan ? `${url} • ${pesan}` : url;
-      }
-
-      btnToggleDana.addEventListener("click", () => {
-        const st = loadState();
-        elDanaJalur.value = normalizeTrakteerUrl(st.support.jalur);
-        elDanaPesan.value = st.support.pesan || "";
-        const isHidden = danaEditPanel.style.display === "none";
-        danaEditPanel.style.display = isHidden ? "block" : "none";
-        if (isHidden) elDanaJalur.focus();
-      });
-
-      btnSimpanDana.addEventListener("click", () => {
-        const st = loadState();
-        st.support = {
-          jalur: normalizeTrakteerUrl(elDanaJalur.value),
-          pesan: elDanaPesan.value
-        };
-        saveState(st);
-        updateSupport();
-        danaEditPanel.style.display = "none";
-      });
+      // --- PENDANAAN KOPI & SEBAT (TERKUNCI KE TRAKTEER BRUTAL KLIP) ---
+      btnBukaTrakteer.href = TRAKTEER_URL;
+      elDanaTampil.textContent = TRAKTEER_URL;
 
       btnSalinDana.addEventListener("click", () => {
-        const st = loadState();
-        const url = normalizeTrakteerUrl(st.support.jalur);
         if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(url).catch(() => {});
+          navigator.clipboard.writeText(TRAKTEER_URL).catch(() => {});
         }
         const labelAsli = btnSalinDana.textContent;
         btnSalinDana.textContent = "Tersalin!";
@@ -1139,7 +1080,6 @@
       elWatermark.value = initState.config.watermark;
 
       applyHookStyle();
-      updateSupport();
       renderFiles();
       renderComments();
       renderList();
