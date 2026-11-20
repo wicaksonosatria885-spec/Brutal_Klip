@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#120f16" />
   <title>Brutal Klip — Workspace VT &amp; Hook</title>
   <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" href="logo.png" />
   <style>
     :root {
       --bg-page: #0c0a0f;
@@ -59,17 +60,23 @@
       gap: 12px;
     }
 
-    .brand-badge {
-      width: 40px;
-      height: 40px;
+    .brand-logo-wrap {
+      width: 44px;
+      height: 44px;
       border-radius: 12px;
-      background: linear-gradient(135deg, #f43f5e, #fb7185);
+      background: var(--bg-panel);
+      border: 1px solid rgba(244, 63, 94, 0.4);
       display: grid;
       place-items: center;
-      font-weight: 800;
-      font-size: 16px;
-      color: #fff;
-      box-shadow: 0 6px 18px rgba(244, 63, 94, 0.35);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .brand-logo-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
     .brand h1 {
@@ -167,6 +174,97 @@
       min-height: 115px;
       resize: vertical;
       line-height: 1.55;
+    }
+
+    .upload-box {
+      background: var(--bg-panel);
+      border: 1px dashed rgba(255, 255, 255, 0.22);
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .file-list {
+      margin-top: 10px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .file-row {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 12px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    .support-banner {
+      background: linear-gradient(135deg, rgba(244, 63, 94, 0.16), rgba(30, 25, 37, 0.95));
+      border: 1px solid rgba(244, 63, 94, 0.32);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .support-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #fff;
+      margin: 0 0 4px;
+    }
+
+    .support-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .support-detail-box {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .support-val {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ok);
+      word-break: break-word;
+    }
+
+    .comment-item {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 10px 12px;
+      margin-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13px;
+    }
+
+    .comment-meta {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 3px;
     }
 
     .hook-preview-stage {
@@ -368,13 +466,33 @@
 </head>
 <body>
   <div class="app-shell">
-    <!-- HEADER -->
+    <!-- HEADER & LOGO -->
     <header class="topbar">
       <div class="brand">
-        <div class="brand-badge">BK</div>
+        <div class="brand-logo-wrap" title="Logo Brutal Klip">
+          <img
+            id="brand-logo"
+            class="brand-logo-img"
+            src="logo.png"
+            alt="Logo Brutal Klip"
+            onerror="this.style.display='none'; document.getElementById('brand-logo-svg').style.display='block';"
+          />
+          <svg
+            id="brand-logo-svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            style="display: none;"
+            aria-hidden="true"
+          >
+            <path d="M5 5L19 12L5 19V5Z" fill="#f43f5e" />
+            <circle cx="17" cy="6" r="2.5" fill="#fbbf24" />
+          </svg>
+        </div>
         <div>
           <h1>Brutal Klip</h1>
-          <p>Workspace Klipper: Pahami Brief, Racik Hook &amp; Deskripsi VT Fresh, Atur Gaya Hook</p>
+          <p>Workspace Klipper: Upload File, Pendanaan Kopi &amp; Sebat, Komen, Gaya Hook, &amp; VT Fresh</p>
         </div>
       </div>
       <div class="pill-row">
@@ -384,7 +502,92 @@
       </div>
     </header>
 
-    <!-- PENGATURAN GAYA HOOK & DETAIL KLIP -->
+    <!-- TEMPAT UPLOAD FILE -->
+    <section class="card">
+      <div class="sec-head">
+        <h2>Tempat Upload File</h2>
+        <p>Catat atau pilih file klip, aset, maupun watermark yang dipakai untuk campaign</p>
+      </div>
+      <div class="upload-box">
+        <div class="grid-2" style="margin-bottom: 0;">
+          <div class="field" style="margin-bottom: 0;">
+            <label for="file-input">Pilih File dari Perangkat</label>
+            <input id="file-input" class="input" type="file" multiple />
+          </div>
+          <div class="field" style="margin-bottom: 0;">
+            <label for="file-label">Atau Tulis Nama / Link File Manual</label>
+            <div style="display: flex; gap: 8px;">
+              <input id="file-label" class="input" type="text" placeholder="Contoh: watermark_pojok_kanan.png atau klip_01.mp4" />
+              <button id="btn-add-file" class="btn btn-secondary" type="button">Simpan</button>
+            </div>
+          </div>
+        </div>
+        <div id="file-list" class="file-list"></div>
+      </div>
+    </section>
+
+    <!-- PENDANAAN (SUPORT DANA KOPI & SEBAT) -->
+    <section class="card">
+      <div class="sec-head">
+        <h2>Pendanaan — Kopi &amp; Sebat</h2>
+        <p>Ruang suport dana sukarela untuk kopi &amp; sebat pengelola Brutal Klip</p>
+      </div>
+
+      <div class="support-banner">
+        <div>
+          <p class="support-title">Suport Dana Kopi &amp; Sebat</p>
+          <p class="support-sub">Brutal Klip gratis dipakai—kalau mau ngasih suport buat kopi &amp; sebat, atur info atau catatan suportmu di bawah ini.</p>
+        </div>
+        <span class="pill">Kopi &amp; Sebat</span>
+      </div>
+
+      <div class="grid-2">
+        <div class="field">
+          <label for="dana-jalur">Jalur Suport (E-Wallet / Bank / Link)</label>
+          <input id="dana-jalur" class="input" type="text" placeholder="Contoh: DANA / GoPay / BCA • 08xxxxxxxxxx" />
+        </div>
+        <div class="field">
+          <label for="dana-pesan">Pesan Suport Kopi &amp; Sebat</label>
+          <input id="dana-pesan" class="input" type="text" placeholder="Contoh: Buat nambah kopi & sebat pas ngeracik klip" />
+        </div>
+      </div>
+
+      <div class="support-detail-box">
+        <div>
+          <div class="box-tag">Info Suport Aktif</div>
+          <div id="dana-tampil" class="support-val">Belum diatur — isi jalur suport kopi &amp; sebat di atas</div>
+        </div>
+        <button id="btn-salin-dana" class="mini-btn" type="button">Salin Info Suport</button>
+      </div>
+    </section>
+
+    <!-- KOMEN -->
+    <section class="card">
+      <div class="sec-head">
+        <h2>Komen</h2>
+        <p>Simpan catatan komen, revisi, atau ide komentar untuk klip kamu</p>
+      </div>
+      <div class="grid-2" style="margin-bottom: 0;">
+        <div class="field" style="margin-bottom: 0;">
+          <label for="komen-input">Tulis Komen / Catatan</label>
+          <input id="komen-input" class="input" type="text" placeholder="Contoh: Cek hook 3 detik pertama & pastikan aman dari pelanggaran" />
+        </div>
+        <div class="field" style="margin-bottom: 0;">
+          <label for="komen-tag">Label Komen</label>
+          <div style="display: flex; gap: 8px;">
+            <select id="komen-tag" class="select">
+              <option value="Catatan">Catatan</option>
+              <option value="Revisi">Revisi</option>
+              <option value="Ide Komen">Ide Komen</option>
+            </select>
+            <button id="btn-add-komen" class="btn btn-primary" type="button">Tambah</button>
+          </div>
+        </div>
+      </div>
+      <div id="komen-list"></div>
+    </section>
+
+    <!-- PRESET FONT & WARNA TEKS HOOK -->
     <section class="card">
       <div class="sec-head">
         <h2>Preset Font &amp; Warna Teks Hook</h2>
@@ -493,7 +696,20 @@
 
   <script>
     (function () {
-      const STORAGE_KEY = "brutal_klip_full_state_v1";
+      const STORAGE_KEY = "brutal_klip_full_state_v4";
+
+      const elFileInput = document.getElementById("file-input");
+      const elFileLabel = document.getElementById("file-label");
+      const elFileList = document.getElementById("file-list");
+
+      const elDanaJalur = document.getElementById("dana-jalur");
+      const elDanaPesan = document.getElementById("dana-pesan");
+      const elDanaTampil = document.getElementById("dana-tampil");
+      const btnSalinDana = document.getElementById("btn-salin-dana");
+
+      const elKomenInput = document.getElementById("komen-input");
+      const elKomenTag = document.getElementById("komen-tag");
+      const elKomenList = document.getElementById("komen-list");
 
       const elFont = document.getElementById("cfg-font");
       const elColor = document.getElementById("cfg-color");
@@ -518,6 +734,12 @@
             color: "#FFFFFF",
             watermark: ""
           },
+          files: [],
+          support: {
+            jalur: "",
+            pesan: ""
+          },
+          comments: [],
           items: []
         };
       }
@@ -527,8 +749,12 @@
           const raw = localStorage.getItem(STORAGE_KEY);
           if (!raw) return getDefaultState();
           const parsed = JSON.parse(raw);
+          const def = getDefaultState();
           return {
-            config: { ...getDefaultState().config, ...(parsed.config || {}) },
+            config: { ...def.config, ...(parsed.config || {}) },
+            files: Array.isArray(parsed.files) ? parsed.files : [],
+            support: { ...def.support, ...(parsed.support || {}) },
+            comments: Array.isArray(parsed.comments) ? parsed.comments : [],
             items: Array.isArray(parsed.items) ? parsed.items : []
           };
         } catch (err) {
@@ -542,13 +768,184 @@
         } catch (err) {}
       }
 
+      function nowLabel(date = new Date()) {
+        const p = (n) => String(n).padStart(2, "0");
+        return `${p(date.getDate())}/${p(date.getMonth() + 1)}/${date.getFullYear()}, ${p(date.getHours())}.${p(date.getMinutes())}.${p(date.getSeconds())}`;
+      }
+
+      function esc(str) {
+        return String(str || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      // --- UPLOAD FILE ---
+      function renderFiles() {
+        const st = loadState();
+        if (!st.files.length) {
+          elFileList.innerHTML = `<div style="font-size: 12px; color: var(--muted);">Belum ada file atau catatan aset yang disimpan.</div>`;
+          return;
+        }
+        elFileList.innerHTML = st.files
+          .map(
+            (f) => `
+          <div class="file-row">
+            <div>
+              <strong>${esc(f.name)}</strong>
+              <span style="color: var(--muted); margin-left: 6px;">${f.sizeLabel ? `(${esc(f.sizeLabel)})` : ""} • ${esc(f.waktu)}</span>
+            </div>
+            <button type="button" class="mini-btn" data-del-file="${esc(f.id)}">Hapus</button>
+          </div>
+        `
+          )
+          .join("");
+      }
+
+      function addFileEntries(entries) {
+        if (!entries.length) return;
+        const st = loadState();
+        entries.forEach((e) => {
+          st.files.unshift({
+            id: "fl_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
+            name: e.name,
+            sizeLabel: e.sizeLabel || "",
+            waktu: nowLabel()
+          });
+        });
+        saveState(st);
+        renderFiles();
+      }
+
+      elFileInput.addEventListener("change", () => {
+        const picked = Array.from(elFileInput.files || []).map((file) => {
+          const kb = Math.max(1, Math.round(file.size / 1024));
+          const sizeLabel = kb >= 1024 ? `${(kb / 1024).toFixed(1)} MB` : `${kb} KB`;
+          return { name: file.name, sizeLabel };
+        });
+        addFileEntries(picked);
+        elFileInput.value = "";
+      });
+
+      document.getElementById("btn-add-file").addEventListener("click", () => {
+        const val = (elFileLabel.value || "").trim();
+        if (!val) {
+          elFileLabel.focus();
+          return;
+        }
+        addFileEntries([{ name: val, sizeLabel: "Manual" }]);
+        elFileLabel.value = "";
+      });
+
+      elFileList.addEventListener("click", (e) => {
+        const btn = e.target.closest("button[data-del-file]");
+        if (!btn) return;
+        const id = btn.getAttribute("data-del-file");
+        const st = loadState();
+        st.files = st.files.filter((x) => x.id !== id);
+        saveState(st);
+        renderFiles();
+      });
+
+      // --- PENDANAAN KOPI & SEBAT ---
+      function updateSupport() {
+        const jalur = (elDanaJalur.value || "").trim();
+        const pesan = (elDanaPesan.value || "").trim();
+
+        const st = loadState();
+        st.support = {
+          jalur: elDanaJalur.value,
+          pesan: elDanaPesan.value
+        };
+        saveState(st);
+
+        if (!jalur && !pesan) {
+          elDanaTampil.textContent = "Belum diatur — isi jalur suport kopi & sebat di atas";
+        } else if (jalur && pesan) {
+          elDanaTampil.textContent = `${jalur} — ${pesan}`;
+        } else {
+          elDanaTampil.textContent = jalur || pesan;
+        }
+      }
+
+      elDanaJalur.addEventListener("input", updateSupport);
+      elDanaPesan.addEventListener("input", updateSupport);
+
+      btnSalinDana.addEventListener("click", () => {
+        const teks = elDanaTampil.textContent || "";
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(teks).catch(() => {});
+        }
+        btnSalinDana.textContent = "Tersalin";
+        btnSalinDana.classList.add("copied");
+        setTimeout(() => {
+          btnSalinDana.textContent = "Salin Info Suport";
+          btnSalinDana.classList.remove("copied");
+        }, 1400);
+      });
+
+      // --- KOMEN ---
+      function renderComments() {
+        const st = loadState();
+        if (!st.comments.length) {
+          elKomenList.innerHTML = `<div style="font-size: 12px; color: var(--muted); margin-top: 10px;">Belum ada komen atau catatan tersimpan.</div>`;
+          return;
+        }
+        elKomenList.innerHTML = st.comments
+          .map(
+            (c) => `
+          <div class="comment-item">
+            <div>
+              <div><strong>[${esc(c.tag)}]</strong> ${esc(c.text)}</div>
+              <div class="comment-meta">${esc(c.waktu)}</div>
+            </div>
+            <button type="button" class="mini-btn" data-del-komen="${esc(c.id)}">Hapus</button>
+          </div>
+        `
+          )
+          .join("");
+      }
+
+      document.getElementById("btn-add-komen").addEventListener("click", () => {
+        const text = (elKomenInput.value || "").trim();
+        if (!text) {
+          elKomenInput.focus();
+          return;
+        }
+        const st = loadState();
+        st.comments.unshift({
+          id: "km_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
+          tag: elKomenTag.value,
+          text,
+          waktu: nowLabel()
+        });
+        saveState(st);
+        elKomenInput.value = "";
+        renderComments();
+      });
+
+      elKomenList.addEventListener("click", (e) => {
+        const btn = e.target.closest("button[data-del-komen]");
+        if (!btn) return;
+        const id = btn.getAttribute("data-del-komen");
+        const st = loadState();
+        st.comments = st.comments.filter((x) => x.id !== id);
+        saveState(st);
+        renderComments();
+      });
+
+      // --- GAYA HOOK ---
       function applyHookStyle(textOverride) {
         const state = loadState();
         const color = state.config.color || "#FFFFFF";
         const font = state.config.font || 'system-ui, -apple-system, sans-serif';
         const wm = (state.config.watermark || "").trim();
 
-        const isBlackText = color.toUpperCase() === "#09090B" || color.toLowerCase() === "#000000" || color.toLowerCase() === "black";
+        const isBlackText =
+          color.toUpperCase() === "#09090B" ||
+          color.toLowerCase() === "#000000" ||
+          color.toLowerCase() === "black";
         const bgBackdrop = isBlackText ? "rgba(255, 255, 255, 0.88)" : "rgba(0, 0, 0, 0.65)";
         const borderBackdrop = isBlackText ? "rgba(255, 255, 255, 0.95)" : "rgba(255, 255, 255, 0.16)";
 
@@ -565,6 +962,7 @@
         elWmMode.textContent = wm ? `Watermark: ${wm}` : "Watermark: Default";
       }
 
+      // --- Pahami Brief & Racik Pembahasan Fresh ---
       function extractTopic(judul, briefText) {
         const cleanJudul = (judul || "").trim();
         if (cleanJudul) return cleanJudul;
@@ -641,19 +1039,6 @@
         return { hook, desc, tags, topic };
       }
 
-      function nowLabel(date = new Date()) {
-        const p = (n) => String(n).padStart(2, "0");
-        return `${p(date.getDate())}/${p(date.getMonth() + 1)}/${date.getFullYear()}, ${p(date.getHours())}.${p(date.getMinutes())}.${p(date.getSeconds())}`;
-      }
-
-      function esc(str) {
-        return String(str || "")
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
-          .replace(/"/g, "&quot;");
-      }
-
       function renderList() {
         const state = loadState();
         const q = (elCari.value || "").toLowerCase().trim();
@@ -711,12 +1096,18 @@
           .join("");
       }
 
-      // Inisialisasi konfigurasi tersimpan
+      // Inisialisasi state tersimpan
       const initState = loadState();
       elFont.value = initState.config.font;
       elColor.value = initState.config.color;
       elWatermark.value = initState.config.watermark;
+      elDanaJalur.value = initState.support.jalur;
+      elDanaPesan.value = initState.support.pesan;
+
       applyHookStyle();
+      updateSupport();
+      renderFiles();
+      renderComments();
       renderList();
 
       function handleConfigChange() {
