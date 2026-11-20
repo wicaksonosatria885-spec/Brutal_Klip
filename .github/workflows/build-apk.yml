@@ -36,16 +36,16 @@ jobs:
           yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_HOME "platform-tools" "platforms;android-34" "build-tools;34.0.0"
 
       - name: Install dependencies
-        run: npm install
+        run: npm install --no-audit --no-fund
 
       - name: Initialize Capacitor Android if missing
         run: |
           export ANDROID_HOME=/usr/local/lib/android/sdk
           export ANDROID_SDK_ROOT=$ANDROID_HOME
           if [ ! -d "android" ]; then
-            npx cap add android
+            ./node_modules/.bin/cap add android
           fi
-          npx cap sync android
+          ./node_modules/.bin/cap sync android
 
       - name: Build Debug APK
         run: |
