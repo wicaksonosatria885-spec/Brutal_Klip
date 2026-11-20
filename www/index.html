@@ -186,13 +186,6 @@
       margin-bottom: 12px;
     }
 
-    .grid-4 {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
     .field label {
       display: block;
       font-size: 12px;
@@ -250,7 +243,7 @@
     .vt-studio-grid {
       margin-top: 14px;
       display: grid;
-      grid-template-columns: minmax(220px, 290px) 1fr;
+      grid-template-columns: minmax(230px, 300px) 1fr;
       gap: 16px;
       align-items: start;
     }
@@ -275,6 +268,7 @@
       font-size: 11px;
       color: var(--muted);
       margin-bottom: 8px;
+      gap: 6px;
     }
 
     .tiktok-916-stage {
@@ -285,39 +279,56 @@
       border-radius: 14px;
       overflow: hidden;
       border: 1px solid rgba(255, 255, 255, 0.14);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .tiktok-blur-bg {
+      position: absolute;
+      inset: -18px;
+      width: calc(100% + 36px);
+      height: calc(100% + 36px);
+      object-fit: cover;
+      filter: blur(18px) brightness(0.45) saturate(1.15);
+      transform: scale(1.08);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .tiktok-dim-scrim {
+      position: absolute;
+      inset: 0;
+      background: rgba(6, 5, 8, 0.28);
+      pointer-events: none;
+      z-index: 2;
     }
 
     .tiktok-video-el {
-      position: absolute;
-      inset: 0;
+      position: relative;
       width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center center;
-      transition: transform 0.2s ease, object-position 0.2s ease;
-      background: #060508;
-    }
-
-    .tiktok-video-el.auto-crop-16-9 {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+      height: auto;
+      max-height: 100%;
+      object-fit: contain;
+      z-index: 3;
+      background: transparent;
     }
 
     .video-hook-overlay {
       position: absolute;
-      top: 20%;
+      top: 18%;
       left: 50%;
       transform: translate(-50%, -50%);
       max-width: 88%;
       padding: 6px 12px;
       border-radius: 8px;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 800;
       line-height: 1.35;
       text-align: center;
       pointer-events: none;
-      z-index: 3;
+      z-index: 5;
+      transition: opacity 0.18s ease;
     }
 
     .video-hook-overlay.is-impact {
@@ -327,37 +338,25 @@
       word-spacing: 0.14em;
     }
 
-    .cutter-panel {
+    .auto-summary-panel {
       background: var(--bg-panel);
       border: 1px solid var(--border);
       border-radius: 16px;
       padding: 14px;
     }
 
-    .cutter-note {
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 10px;
-    }
-
-    .cut-list {
-      margin-top: 12px;
-      display: grid;
-      gap: 8px;
-    }
-
-    .cut-item {
+    .auto-info-box {
       background: var(--bg-input);
       border: 1px solid var(--border);
-      border-left: 3px solid var(--ok);
-      border-radius: 11px;
-      padding: 10px 12px;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 12px;
       font-size: 12px;
+      color: var(--muted);
+    }
+
+    .auto-info-box strong {
+      color: var(--text);
     }
 
     .wm-box {
@@ -483,7 +482,7 @@
       padding: 3px 7px;
       border-radius: 7px;
       pointer-events: none;
-      z-index: 4;
+      z-index: 6;
     }
 
     .stage-wm-badge.pos-top-right {
@@ -589,6 +588,17 @@
       font-size: 12px;
       color: var(--muted);
       margin-bottom: 10px;
+    }
+
+    .vt-time-strip {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 9px 12px;
+      margin-bottom: 10px;
+      font-size: 12px;
+      color: var(--ok);
+      font-weight: 600;
     }
 
     .vt-hook-box {
@@ -709,7 +719,7 @@
         </div>
         <div>
           <h1>Brutal Klip</h1>
-          <p data-i18n="brand_sub">Workspace Klipper: Resolusi 9:16 TikTok, Auto Crop YouTube, Potong VT, &amp; Hook Siap Upload</p>
+          <p data-i18n="brand_sub">Workspace Terima Jadi: Blur Background Gelap, Auto Detik Potong &amp; Hook, + Caption Otomatis</p>
         </div>
       </div>
 
@@ -719,18 +729,18 @@
           <button type="button" class="lang-btn" data-lang="en">EN</button>
         </div>
         <div class="pill-row">
-          <span class="pill ok-pill">TikTok 9:16 (1080×1920)</span>
+          <span class="pill ok-pill" data-i18n="pill_done_for_you">Mode Terima Jadi</span>
           <span class="pill" data-i18n="pill_save">Auto Save Lokal</span>
           <span class="pill" data-i18n="pill_mode">Mode Klipper</span>
         </div>
       </div>
     </header>
 
-    <!-- TEMPAT UPLOAD VIDEO BAHAN & POTONG VT 9:16 -->
+    <!-- TEMPAT UPLOAD VIDEO BAHAN & PREVIEW BLUR BG -->
     <section class="card">
       <div class="sec-head">
-        <h2 data-i18n="upload_title">Tempat Upload Video Bahan &amp; Potong VT (9:16)</h2>
-        <p data-i18n="upload_sub">Bahan YouTube (16:9) otomatis di-crop ke 9:16 TikTok; potong detik VT lalu buat hook &amp; deskripsi yang nyambung</p>
+        <h2 data-i18n="upload_title">Tempat Upload Video Bahan &amp; Preview VT</h2>
+        <p data-i18n="upload_sub">Video tetap utuh tanpa terpotong pinggir, memakai background blur yang dipergelap tipis + hook &amp; watermark</p>
       </div>
 
       <div class="upload-box">
@@ -744,64 +754,55 @@
       <div id="vt-studio-grid" class="vt-studio-grid" style="display: none;">
         <div class="tiktok-frame-wrap">
           <div class="tiktok-frame-head">
-            <strong id="vt-player-title">TikTok 9:16</strong>
-            <span id="crop-badge" class="pill ok-pill">9:16 Ready</span>
+            <strong id="vt-player-title">VT Preview</strong>
+            <span class="pill ok-pill" data-i18n="bg_blur_badge">Blur BG + Dark</span>
           </div>
 
           <div class="tiktok-916-stage">
+            <video id="tiktok-blur-bg" class="tiktok-blur-bg" muted playsinline loop aria-hidden="true"></video>
+            <div class="tiktok-dim-scrim" aria-hidden="true"></div>
             <span id="video-wm-badge" class="stage-wm-badge pos-top-right" style="display: none;"></span>
             <span id="video-hook-overlay" class="video-hook-overlay">Preview Hook Fresh Brutal Klip</span>
             <video id="vt-video-el" class="tiktok-video-el" controls playsinline></video>
           </div>
         </div>
 
-        <div class="cutter-panel">
-          <div class="box-tag" data-i18n="cutter_title">Potong Klip VT &amp; Atur Crop</div>
-          <p class="cutter-note" data-i18n="cutter_note">
-            Jika bahan berasal dari YouTube (landscape 16:9), sistem otomatis mem-frame ke vertikal 9:16. Geser fokus crop jika subjek berada di kiri/kanan lalu potong detik klipnya.
-          </p>
-
-          <div class="grid-3">
-            <div class="field" style="margin-bottom: 0;">
-              <label for="crop-focus" data-i18n="crop_focus_label">Fokus Crop 9:16 (YouTube 16:9)</label>
-              <select id="crop-focus" class="select">
-                <option value="center center" data-i18n="crop_center">Tengah (Auto)</option>
-                <option value="left center" data-i18n="crop_left">Sisi Kiri</option>
-                <option value="right center" data-i18n="crop_right">Sisi Kanan</option>
-              </select>
-            </div>
-
-            <div class="field" style="margin-bottom: 0;">
-              <label for="cut-start" data-i18n="cut_start_label">Mulai Potong (detik)</label>
-              <input id="cut-start" class="input" type="number" min="0" step="1" value="0" />
-            </div>
-
-            <div class="field" style="margin-bottom: 0;">
-              <label for="cut-end" data-i18n="cut_end_label">Selesai Potong (detik)</label>
-              <input id="cut-end" class="input" type="number" min="1" step="1" value="30" />
-            </div>
+        <div class="auto-summary-panel">
+          <div class="box-tag" data-i18n="auto_engine_title">Mesin Terima Jadi Otomatis</div>
+          <div class="auto-info-box">
+            <div><strong data-i18n="auto_step_1">1. Kirim Video Bahan:</strong> <span data-i18n="auto_step_1_desc">Resolusi asli tetap utuh tanpa crop yang motong subjek, dilapisi background blur &amp; gelap tipis.</span></div>
+            <div style="margin-top: 6px;"><strong data-i18n="auto_step_2">2. Pilih Jumlah VT &amp; Klik Racik:</strong> <span data-i18n="auto_step_2_desc">Bisa pilih 1, 2, 3, 5, 10, 20, 30, 40, atau 50 VT—otomatis tersusun detik potong, detik hook, teks hook, deskripsi, dan tagar.</span></div>
           </div>
 
           <div class="grid-2" style="margin-bottom: 0;">
             <div class="field" style="margin-bottom: 0;">
-              <label for="cut-label" data-i18n="cut_label">Label Potongan VT</label>
-              <input id="cut-label" class="input" type="text" data-i18n-placeholder="cut_label_ph" placeholder="Contoh: Part 1 — Reaksi Paling Lucu" />
+              <label for="vt-durasi-target" data-i18n="target_dur_label">Target Durasi Potongan VT</label>
+              <select id="vt-durasi-target" class="select">
+                <option value="25" data-i18n="dur_25">±25 Detik (Cepat &amp; Padat)</option>
+                <option value="40" selected data-i18n="dur_40">±40 Detik (Standar Klip)</option>
+                <option value="60" data-i18n="dur_60">±60 Detik (Pembahasan Lengkap)</option>
+              </select>
             </div>
+
             <div class="field" style="margin-bottom: 0;">
-              <label data-i18n="cut_quick_label">Ambil Detik Cepat dari Player</label>
-              <div class="btn-row" style="margin-top: 0;">
-                <button id="btn-set-start" class="mini-btn" type="button" data-i18n="btn_set_start">Pakai Detik Ini sbg Awal</button>
-                <button id="btn-set-end" class="mini-btn" type="button" data-i18n="btn_set_end">Pakai Detik Ini sbg Akhir</button>
-              </div>
+              <label for="vt-jumlah-paket" data-i18n="pack_count_label">Butuh Berapa Clip / VT?</label>
+              <select id="vt-jumlah-paket" class="select">
+                <option value="1">1 VT</option>
+                <option value="2">2 VT</option>
+                <option value="3">3 VT</option>
+                <option value="5" selected>5 VT</option>
+                <option value="10">10 VT</option>
+                <option value="20">20 VT</option>
+                <option value="30">30 VT</option>
+                <option value="40">40 VT</option>
+                <option value="50">50 VT</option>
+              </select>
             </div>
           </div>
 
           <div class="btn-row">
-            <button id="btn-preview-cut" class="btn btn-secondary" type="button" data-i18n="btn_preview_cut">Tes Putar Potongan</button>
-            <button id="btn-save-cut" class="btn btn-primary" type="button" data-i18n="btn_save_cut">Simpan Potongan VT</button>
+            <button id="btn-test-hook-now" class="btn btn-secondary" type="button" data-i18n="btn_test_hook">Tes Tampil Hook di Video</button>
           </div>
-
-          <div id="cut-list" class="cut-list"></div>
         </div>
       </div>
     </section>
@@ -926,23 +927,17 @@
       </div>
     </section>
 
-    <!-- TEMPAT RAPIHIN VT & RIWAYAT -->
+    <!-- TEMPAT RAPIHIN VT & RIWAYAT (TERIMA JADI) -->
     <section class="card">
       <div class="sec-head">
-        <h2 data-i18n="vt_title">Tempat Rapihin VT &amp; Riwayat</h2>
-        <p data-i18n="vt_sub">Hook &amp; deskripsi siap upload otomatis mengikuti potongan VT yang dipilih serta isi brief</p>
+        <h2 data-i18n="vt_title">Hasil VT Terima Jadi &amp; Riwayat</h2>
+        <p data-i18n="vt_sub">Cukup isi brief (atau kirim video), pilih jumlah VT (1–50 VT), klik racik—semua tersusun otomatis</p>
       </div>
 
-      <div class="grid-3">
+      <div class="grid-2">
         <div class="field">
-          <label for="vt-judul" data-i18n="vt_judul_label">Judul / Topik Campaign</label>
+          <label for="vt-judul" data-i18n="vt_judul_label">Judul / Topik Campaign (Opsional, Otomatis dari Brief jika Kosong)</label>
           <input id="vt-judul" class="input" type="text" data-i18n-placeholder="vt_judul_ph" placeholder="Contoh: Brutal Klip X Banget" />
-        </div>
-        <div class="field">
-          <label for="vt-potongan-ref" data-i18n="vt_potongan_ref_label">Acuan Potongan VT</label>
-          <select id="vt-potongan-ref" class="select">
-            <option value="" data-i18n="vt_potongan_current">Potongan Aktif Saat Ini</option>
-          </select>
         </div>
         <div class="field">
           <label for="vt-gaya" data-i18n="vt_gaya_label">Gaya Pembahasan</label>
@@ -956,28 +951,17 @@
       </div>
 
       <div class="field">
-        <label for="vt-brief" data-i18n="vt_brief_label">Kotak Brief (Acuan Topik, Aturan, &amp; Batasan)</label>
-        <textarea id="vt-brief" class="textarea" data-i18n-placeholder="vt_brief_ph" placeholder="Tempel brief campaign di sini. Hook & deskripsi VT akan menyesuaikan potongan klip yang sudah dipotong agar siap upload..."></textarea>
-      </div>
-
-      <div class="grid-2" style="margin-top: 10px;">
-        <div class="field">
-          <label for="vt-fokus" data-i18n="vt_fokus_label">Fokus Isi Potongan Klip (Opsional)</label>
-          <input id="vt-fokus" class="input" type="text" data-i18n-placeholder="vt_fokus_ph" placeholder="Contoh: Momen saat ngasih alasan paling ngena" />
-        </div>
-        <div class="field">
-          <label for="vt-rekap" data-i18n="vt_rekap_label">Catatan Upload / Hashtag Tambahan (Opsional)</label>
-          <input id="vt-rekap" class="input" type="text" data-i18n-placeholder="vt_rekap_ph" placeholder="Contoh: Cek watermark aman & siap upload jam rame" />
-        </div>
+        <label for="vt-brief" data-i18n="vt_brief_label">Kotak Brief</label>
+        <textarea id="vt-brief" class="textarea" data-i18n-placeholder="vt_brief_ph" placeholder="Tempel brief campaign di sini. Sistem akan otomatis menentukan detik potong, detik hook, teks hook, deskripsi, dan tagar untuk kamu..."></textarea>
       </div>
 
       <div class="btn-row">
-        <button id="btn-racik" class="btn btn-primary" type="button" data-i18n="btn_racik">Buat Hook &amp; Deskripsi Siap Upload</button>
-        <button id="btn-reset" class="btn btn-secondary" type="button" data-i18n="btn_reset">Bersihkan Form</button>
+        <button id="btn-racik" class="btn btn-primary" type="button" data-i18n="btn_racik">Racik VT Terima Jadi Otomatis</button>
+        <button id="btn-reset" class="btn btn-secondary" type="button" data-i18n="btn_reset">Bersihkan Brief</button>
       </div>
 
       <div class="filter-bar">
-        <input id="filter-cari" class="input" type="text" data-i18n-placeholder="filter_cari_ph" placeholder="Cari judul, hook, deskripsi siap upload, atau tagar..." />
+        <input id="filter-cari" class="input" type="text" data-i18n-placeholder="filter_cari_ph" placeholder="Cari judul, detik, hook, deskripsi, atau tagar..." />
         <select id="filter-gaya" class="select">
           <option value="" data-i18n="filter_all">Semua Gaya</option>
           <option value="Santai & Penasaran" data-i18n="gaya_santai">Santai &amp; Penasaran</option>
@@ -993,42 +977,36 @@
 
   <script>
     (function () {
-      const STORAGE_KEY = "brutal_klip_full_state_v13";
+      const STORAGE_KEY = "brutal_klip_full_state_v15";
       const TRAKTEER_URL = "https://trakteer.id/brutal_klip";
       const videoBlobUrls = new Map();
-      let activeClipEndSec = null;
-      let activeClipStartSec = null;
+      let activeSegment = null;
 
       const I18N = {
         id: {
-          brand_sub: "Workspace Klipper: Resolusi 9:16 TikTok, Auto Crop YouTube, Potong VT, & Hook Siap Upload",
+          brand_sub: "Workspace Terima Jadi: Blur Background Gelap, Auto Detik Potong & Hook, + Caption Otomatis",
+          pill_done_for_you: "Mode Terima Jadi",
           pill_save: "Auto Save Lokal",
           pill_mode: "Mode Klipper",
-          upload_title: "Tempat Upload Video Bahan & Potong VT (9:16)",
-          upload_sub: "Bahan YouTube (16:9) otomatis di-crop ke 9:16 TikTok; potong detik VT lalu buat hook & deskripsi yang nyambung",
+          upload_title: "Tempat Upload Video Bahan & Preview VT",
+          upload_sub: "Video tetap utuh tanpa terpotong pinggir, memakai background blur yang dipergelap tipis + hook & watermark",
           file_pick_label: "Pilih File Video Bahan (MP4 / MOV / WebM — termasuk hasil download YouTube)",
           no_files: "Belum ada video bahan yang di-upload.",
           btn_play_vt: "Putar VT",
           btn_del: "Hapus",
-          reselect_video_note: "Pilih ulang file video dari perangkat untuk memutarnya di player 9:16.",
-          cutter_title: "Potong Klip VT & Atur Crop",
-          cutter_note: "Jika bahan berasal dari YouTube (landscape 16:9), sistem otomatis mem-frame ke vertikal 9:16. Geser fokus crop jika subjek berada di kiri/kanan lalu potong detik klipnya.",
-          crop_focus_label: "Fokus Crop 9:16 (YouTube 16:9)",
-          crop_center: "Tengah (Auto)",
-          crop_left: "Sisi Kiri",
-          crop_right: "Sisi Kanan",
-          cut_start_label: "Mulai Potong (detik)",
-          cut_end_label: "Selesai Potong (detik)",
-          cut_label: "Label Potongan VT",
-          cut_label_ph: "Contoh: Part 1 — Reaksi Paling Lucu",
-          cut_quick_label: "Ambil Detik Cepat dari Player",
-          btn_set_start: "Pakai Detik Ini sbg Awal",
-          btn_set_end: "Pakai Detik Ini sbg Akhir",
-          btn_preview_cut: "Tes Putar Potongan",
-          btn_save_cut: "Simpan Potongan VT",
-          no_cuts: "Belum ada potongan VT tersimpan. Atur detik mulai & selesai lalu klik Simpan Potongan VT.",
-          btn_play_cut: "Putar Potongan",
-          btn_use_cut: "Pakai u/ Hook & Deskripsi",
+          reselect_video_note: "Pilih ulang file video dari perangkat untuk memutarnya di player.",
+          bg_blur_badge: "Blur BG + Dark",
+          auto_engine_title: "Mesin Terima Jadi Otomatis",
+          auto_step_1: "1. Kirim Video Bahan:",
+          auto_step_1_desc: "Resolusi asli tetap utuh tanpa crop yang motong subjek, dilapisi background blur & gelap tipis.",
+          auto_step_2: "2. Pilih Jumlah VT & Klik Racik:",
+          auto_step_2_desc: "Bisa pilih 1, 2, 3, 5, 10, 20, 30, 40, atau 50 VT—otomatis tersusun detik potong, detik hook, teks hook, deskripsi, dan tagar.",
+          target_dur_label: "Target Durasi Potongan VT",
+          dur_25: "±25 Detik (Cepat & Padat)",
+          dur_40: "±40 Detik (Standar Klip)",
+          dur_60: "±60 Detik (Pembahasan Lengkap)",
+          pack_count_label: "Butuh Berapa Clip / VT?",
+          btn_test_hook: "Tes Tampil Hook di Video",
           fund_title: "Pendanaan — Kopi & Sebat",
           fund_sub: "Suport dana sukarela buat kopi & sebat di Brutal Klip",
           fund_banner_title: "Suport Kopi & Sebat via Trakteer",
@@ -1071,64 +1049,53 @@
           bg_black_thin: "Latar: Hitam Tipis",
           wm_info_prefix: "Watermark",
           info_audio: "Audio: Bebas Hak Cipta",
-          vt_title: "Tempat Rapihin VT & Riwayat",
-          vt_sub: "Hook & deskripsi siap upload otomatis mengikuti potongan VT yang dipilih serta isi brief",
-          vt_judul_label: "Judul / Topik Campaign",
+          vt_title: "Hasil VT Terima Jadi & Riwayat",
+          vt_sub: "Cukup isi brief (atau kirim video), pilih jumlah VT (1–50 VT), klik racik—semua tersusun otomatis",
+          vt_judul_label: "Judul / Topik Campaign (Opsional, Otomatis dari Brief jika Kosong)",
           vt_judul_ph: "Contoh: Brutal Klip X Banget",
-          vt_potongan_ref_label: "Acuan Potongan VT",
-          vt_potongan_current: "Potongan Aktif Saat Ini",
           vt_gaya_label: "Gaya Pembahasan",
           gaya_santai: "Santai & Penasaran",
           gaya_point: "To The Point",
           gaya_kreator: "Obrolan Kreator",
           gaya_baru: "Sudut Pandang Baru",
-          vt_brief_label: "Kotak Brief (Acuan Topik, Aturan, & Batasan)",
-          vt_brief_ph: "Tempel brief campaign di sini. Hook & deskripsi VT akan menyesuaikan potongan klip yang sudah dipotong agar siap upload...",
-          vt_fokus_label: "Fokus Isi Potongan Klip (Opsional)",
-          vt_fokus_ph: "Contoh: Momen saat ngasih alasan paling ngena",
-          vt_rekap_label: "Catatan Upload / Hashtag Tambahan (Opsional)",
-          vt_rekap_ph: "Contoh: Cek watermark aman & siap upload jam rame",
-          btn_racik: "Buat Hook & Deskripsi Siap Upload",
-          btn_reset: "Bersihkan Form",
-          filter_cari_ph: "Cari judul, hook, deskripsi siap upload, atau tagar...",
+          vt_brief_label: "Kotak Brief",
+          vt_brief_ph: "Tempel brief campaign di sini. Sistem akan otomatis menentukan detik potong, detik hook, teks hook, deskripsi, dan tagar untuk kamu...",
+          btn_racik: "Racik VT Terima Jadi Otomatis",
+          btn_reset: "Bersihkan Brief",
+          filter_cari_ph: "Cari judul, detik, hook, deskripsi, atau tagar...",
           filter_all: "Semua Gaya",
-          no_vt: "Belum ada VT siap upload tersimpan. Potong VT di atas lalu klik <b>Buat Hook &amp; Deskripsi Siap Upload</b>.",
-          box_hook: "Hook Potongan VT (Siap Pakai)",
-          box_desc: "Deskripsi / Caption Siap Upload",
-          btn_preview: "Muat ke Player VT",
-          btn_copy_vt: "Salin Siap Upload",
-          btn_regen: "Variasi Baru",
-          default_topic: "Klip Ini"
+          no_vt: "Belum ada paket VT tersimpan. Tempel brief lalu klik <b>Racik VT Terima Jadi Otomatis</b>.",
+          box_hook: "Teks Hook",
+          box_desc: "Deskripsi / Caption Otomatis",
+          btn_preview: "Putar Detik VT Ini",
+          btn_copy_vt: "Salin Semua Siap Upload",
+          btn_regen: "Racik Ulang",
+          default_topic: "Konten Ini"
         },
         en: {
-          brand_sub: "Clipper Workspace: TikTok 9:16 Ratio, YouTube Auto Crop, VT Cutter, & Upload-Ready Hook",
+          brand_sub: "Done-For-You Workspace: Dark Blur BG, Auto Cut & Hook Seconds, + Auto Caption",
+          pill_done_for_you: "Done-For-You Mode",
           pill_save: "Local Auto Save",
           pill_mode: "Clipper Mode",
-          upload_title: "Raw Video Upload & VT Cutter (9:16)",
-          upload_sub: "YouTube sources (16:9) auto-crop to TikTok 9:16; cut VT seconds and match hook & caption to the cut",
+          upload_title: "Raw Video Upload & VT Preview",
+          upload_sub: "Keep source framing uncropped with a darkened blurred video background + hook & watermark",
           file_pick_label: "Choose Raw Video Files (MP4 / MOV / WebM — including downloaded YouTube videos)",
           no_files: "No raw videos uploaded yet.",
           btn_play_vt: "Play VT",
           btn_del: "Delete",
-          reselect_video_note: "Select the video file again from your device to play it in the 9:16 player.",
-          cutter_title: "VT Clip Cutter & Crop Controls",
-          cutter_note: "When a clip comes from YouTube (16:9 landscape), it auto-frames to 9:16 vertical. Shift crop focus if the subject is on the left/right, then cut the segment.",
-          crop_focus_label: "9:16 Crop Focus (YouTube 16:9)",
-          crop_center: "Center (Auto)",
-          crop_left: "Left Side",
-          crop_right: "Right Side",
-          cut_start_label: "Cut Start (sec)",
-          cut_end_label: "Cut End (sec)",
-          cut_label: "VT Cut Label",
-          cut_label_ph: "Example: Part 1 — Best Reaction",
-          cut_quick_label: "Grab Seconds from Player",
-          btn_set_start: "Use Current as Start",
-          btn_set_end: "Use Current as End",
-          btn_preview_cut: "Test Play Cut",
-          btn_save_cut: "Save VT Cut",
-          no_cuts: "No saved VT cuts yet. Set start & end seconds then click Save VT Cut.",
-          btn_play_cut: "Play Cut",
-          btn_use_cut: "Use for Hook & Caption",
+          reselect_video_note: "Select the video file again from your device to play it in the player.",
+          bg_blur_badge: "Blur BG + Dark",
+          auto_engine_title: "Automatic Done-For-You Engine",
+          auto_step_1: "1. Upload Raw Video:",
+          auto_step_1_desc: "Keeps full source framing without cropping out subjects, backed by a darkened blur layer.",
+          auto_step_2: "2. Pick VT Count & Generate:",
+          auto_step_2_desc: "Choose 1, 2, 3, 5, 10, 20, 30, 40, or 50 VTs—cut seconds, hook seconds, hook text, caption, and hashtags are built automatically.",
+          target_dur_label: "Target VT Cut Length",
+          dur_25: "±25 Sec (Fast & Punchy)",
+          dur_40: "±40 Sec (Standard Clip)",
+          dur_60: "±60 Sec (Full Take)",
+          pack_count_label: "How Many Clips / VTs?",
+          btn_test_hook: "Test Hook Overlay Now",
           fund_title: "Funding — Coffee & Smoke",
           fund_sub: "Voluntary support for coffee & smoke on Brutal Klip",
           fund_banner_title: "Support Coffee & Smoke via Trakteer",
@@ -1171,34 +1138,28 @@
           bg_black_thin: "Backdrop: Light Black",
           wm_info_prefix: "Watermark",
           info_audio: "Audio: Copyright Free",
-          vt_title: "VT Polisher & History",
-          vt_sub: "Upload-ready hook & caption automatically match the selected VT cut and brief",
-          vt_judul_label: "Campaign Title / Topic",
+          vt_title: "Ready-to-Post VT Output & History",
+          vt_sub: "Paste brief (or upload video), choose VT count (1–50 VTs), click generate—everything is built automatically",
+          vt_judul_label: "Campaign Title / Topic (Optional, Auto from Brief if Blank)",
           vt_judul_ph: "Example: Brutal Klip X Banget",
-          vt_potongan_ref_label: "VT Cut Reference",
-          vt_potongan_current: "Current Active Cut",
           vt_gaya_label: "Angle Style",
           gaya_santai: "Chill & Curious",
           gaya_point: "To The Point",
           gaya_kreator: "Creator Chat",
           gaya_baru: "Fresh Perspective",
-          vt_brief_label: "Brief Box (Topic, Rules, & Limits)",
-          vt_brief_ph: "Paste campaign brief here. Hook & caption adapt to the cut segment so it is ready to upload...",
-          vt_fokus_label: "Cut Moment Focus (Optional)",
-          vt_fokus_ph: "Example: Moment when giving the sharpest reason",
-          vt_rekap_label: "Upload Note / Extra Hashtag (Optional)",
-          vt_rekap_ph: "Example: Watermark safe & ready to post at peak hours",
-          btn_racik: "Generate Upload-Ready Hook & Caption",
-          btn_reset: "Clear Form",
-          filter_cari_ph: "Search title, hook, upload caption, or hashtags...",
+          vt_brief_label: "Brief Box",
+          vt_brief_ph: "Paste campaign brief here. Cut seconds, hook seconds, hook text, description, and hashtags are generated automatically...",
+          btn_racik: "Generate Done-For-You VT",
+          btn_reset: "Clear Brief",
+          filter_cari_ph: "Search title, seconds, hook, description, or hashtags...",
           filter_all: "All Styles",
-          no_vt: "No saved upload-ready VTs yet. Cut a VT above then click <b>Generate Upload-Ready Hook &amp; Caption</b>.",
-          box_hook: "Cut VT Hook (Ready to Use)",
-          box_desc: "Upload-Ready Caption / Description",
-          btn_preview: "Load to VT Player",
-          btn_copy_vt: "Copy Ready Post",
-          btn_regen: "New Variation",
-          default_topic: "This Clip"
+          no_vt: "No VT packs yet. Paste a brief and click <b>Generate Done-For-You VT</b>.",
+          box_hook: "Hook Text",
+          box_desc: "Auto Description / Caption",
+          btn_preview: "Play These VT Seconds",
+          btn_copy_vt: "Copy All Ready to Post",
+          btn_regen: "Regenerate",
+          default_topic: "This Content"
         }
       };
 
@@ -1206,16 +1167,13 @@
       const elFileList = document.getElementById("file-list");
       const elVtStudioGrid = document.getElementById("vt-studio-grid");
       const elVtPlayerTitle = document.getElementById("vt-player-title");
-      const elCropBadge = document.getElementById("crop-badge");
       const elVtVideoEl = document.getElementById("vt-video-el");
+      const elBlurBgVideo = document.getElementById("tiktok-blur-bg");
       const elVideoHookOverlay = document.getElementById("video-hook-overlay");
       const elVideoWmBadge = document.getElementById("video-wm-badge");
 
-      const elCropFocus = document.getElementById("crop-focus");
-      const elCutStart = document.getElementById("cut-start");
-      const elCutEnd = document.getElementById("cut-end");
-      const elCutLabel = document.getElementById("cut-label");
-      const elCutList = document.getElementById("cut-list");
+      const elDurasiTarget = document.getElementById("vt-durasi-target");
+      const elJumlahPaket = document.getElementById("vt-jumlah-paket");
 
       const btnBukaTrakteer = document.getElementById("btn-buka-trakteer");
       const btnSalinDana = document.getElementById("btn-salin-dana");
@@ -1237,11 +1195,8 @@
       const elWmMode = document.getElementById("info-wm-mode");
 
       const elJudul = document.getElementById("vt-judul");
-      const elPotonganRef = document.getElementById("vt-potongan-ref");
       const elGaya = document.getElementById("vt-gaya");
       const elBrief = document.getElementById("vt-brief");
-      const elFokus = document.getElementById("vt-fokus");
-      const elRekap = document.getElementById("vt-rekap");
       const elCari = document.getElementById("filter-cari");
       const elFilterGaya = document.getElementById("filter-gaya");
       const elList = document.getElementById("riwayat-vt-container");
@@ -1255,11 +1210,9 @@
             wmPosition: "pos-top-right",
             wmUsername: "",
             wmImageName: "",
-            wmImageData: "",
-            cropFocus: "center center"
+            wmImageData: ""
           },
           files: [],
-          cuts: [],
           comments: [],
           items: []
         };
@@ -1275,7 +1228,6 @@
             lang: parsed.lang === "en" ? "en" : "id",
             config: { ...def.config, ...(parsed.config || {}) },
             files: Array.isArray(parsed.files) ? parsed.files : [],
-            cuts: Array.isArray(parsed.cuts) ? parsed.cuts : [],
             comments: Array.isArray(parsed.comments) ? parsed.comments : [],
             items: Array.isArray(parsed.items) ? parsed.items : []
           };
@@ -1321,31 +1273,41 @@
           .replace(/"/g, "&quot;");
       }
 
-      function applyCropFrame() {
-        const st = loadState();
-        const focus = st.config.cropFocus || "center center";
-        elVtVideoEl.style.objectPosition = focus;
-        const isLandscape = elVtVideoEl.videoWidth > elVtVideoEl.videoHeight;
-        elVtVideoEl.classList.toggle("auto-crop-16-9", isLandscape);
-        elCropBadge.textContent = isLandscape ? "Auto Crop 16:9 → 9:16" : "TikTok 9:16";
+      function syncBlurBackground() {
+        if (elVtVideoEl.src && elBlurBgVideo.src !== elVtVideoEl.src) {
+          elBlurBgVideo.src = elVtVideoEl.src;
+        }
       }
 
-      elVtVideoEl.addEventListener("loadedmetadata", () => {
-        applyCropFrame();
-        const dur = Math.floor(elVtVideoEl.duration || 0);
-        if (dur > 0 && Number(elCutEnd.value || 0) <= 0) {
-          elCutEnd.value = Math.min(30, dur);
-        }
+      elVtVideoEl.addEventListener("play", () => {
+        syncBlurBackground();
+        elBlurBgVideo.currentTime = elVtVideoEl.currentTime;
+        elBlurBgVideo.play().catch(() => {});
+      });
+
+      elVtVideoEl.addEventListener("pause", () => {
+        elBlurBgVideo.pause();
+      });
+
+      elVtVideoEl.addEventListener("seeked", () => {
+        elBlurBgVideo.currentTime = elVtVideoEl.currentTime;
       });
 
       elVtVideoEl.addEventListener("timeupdate", () => {
-        if (typeof activeClipEndSec === "number" && elVtVideoEl.currentTime >= activeClipEndSec) {
-          elVtVideoEl.currentTime = typeof activeClipStartSec === "number" ? activeClipStartSec : 0;
-          elVtVideoEl.play().catch(() => {});
+        const cur = elVtVideoEl.currentTime || 0;
+        if (activeSegment) {
+          const inHook = cur >= activeSegment.hookStart && cur <= activeSegment.hookEnd;
+          elVideoHookOverlay.style.opacity = inHook ? "1" : "0.35";
+          if (cur >= activeSegment.cutEnd) {
+            elVtVideoEl.currentTime = activeSegment.cutStart;
+            elVtVideoEl.play().catch(() => {});
+          }
+        } else {
+          elVideoHookOverlay.style.opacity = "1";
         }
       });
 
-      function playVideoById(fileId, fileName, startSec = null, endSec = null) {
+      function playVideoSegment(fileId, fileName, seg = null, hookText = "") {
         const url = videoBlobUrls.get(fileId);
         if (!url) {
           alert(t("reselect_video_note"));
@@ -1353,61 +1315,27 @@
           return;
         }
         elVtStudioGrid.style.display = "grid";
-        elVtPlayerTitle.textContent = `${fileName || "VT"} • 9:16`;
+        elVtPlayerTitle.textContent = fileName || "VT Preview";
         if (elVtVideoEl.src !== url) {
           elVtVideoEl.src = url;
+          elBlurBgVideo.src = url;
         }
-        activeClipStartSec = typeof startSec === "number" ? startSec : null;
-        activeClipEndSec = typeof endSec === "number" ? endSec : null;
-        if (typeof startSec === "number") {
-          elVtVideoEl.currentTime = Math.max(0, startSec);
+        activeSegment = seg;
+        if (hookText) {
+          elVideoHookOverlay.textContent = hookText;
         }
-        applyCropFrame();
+        if (seg && typeof seg.cutStart === "number") {
+          elVtVideoEl.currentTime = Math.max(0, seg.cutStart);
+          elBlurBgVideo.currentTime = Math.max(0, seg.cutStart);
+        }
         elVtVideoEl.play().catch(() => {});
+        elBlurBgVideo.play().catch(() => {});
       }
 
-      function renderCutSelect() {
-        const st = loadState();
-        const prev = elPotonganRef.value;
-        const options = [`<option value="">${esc(t("vt_potongan_current"))}</option>`];
-        st.cuts.forEach((c) => {
-          options.push(
-            `<option value="${esc(c.id)}">${esc(c.label)} (${formatSec(c.startSec)}–${formatSec(c.endSec)})</option>`
-          );
-        });
-        elPotonganRef.innerHTML = options.join("");
-        if (prev && Array.from(elPotonganRef.options).some((o) => o.value === prev)) {
-          elPotonganRef.value = prev;
-        }
-      }
-
-      function renderCuts() {
-        const st = loadState();
-        renderCutSelect();
-        if (!st.cuts.length) {
-          elCutList.innerHTML = `<div style="font-size: 12px; color: var(--muted);">${esc(t("no_cuts"))}</div>`;
-          return;
-        }
-        elCutList.innerHTML = st.cuts
-          .map((c) => {
-            const dur = Math.max(1, c.endSec - c.startSec);
-            return `
-            <div class="cut-item">
-              <div>
-                <strong>${esc(c.label)}</strong>
-                <span style="color: var(--ok); margin-left: 6px;">[${formatSec(c.startSec)} - ${formatSec(c.endSec)} • ${dur}d]</span>
-                <div style="color: var(--muted); font-size: 11px;">${esc(c.sourceName || "")}</div>
-              </div>
-              <div class="mini-actions">
-                <button type="button" class="mini-btn" data-play-cut="${esc(c.id)}">${esc(t("btn_play_cut"))}</button>
-                <button type="button" class="mini-btn" data-use-cut="${esc(c.id)}">${esc(t("btn_use_cut"))}</button>
-                <button type="button" class="mini-btn" data-del-cut="${esc(c.id)}">${esc(t("btn_del"))}</button>
-              </div>
-            </div>
-          `;
-          })
-          .join("");
-      }
+      document.getElementById("btn-test-hook-now").addEventListener("click", () => {
+        elVideoHookOverlay.style.opacity = "1";
+        elVideoHookOverlay.textContent = elHookPreview.textContent;
+      });
 
       function applyLanguageUI() {
         try {
@@ -1430,7 +1358,6 @@
 
           applyHookStyle();
           renderFiles();
-          renderCuts();
           renderComments();
           renderList();
         } catch (err) {
@@ -1500,7 +1427,10 @@
         saveState(st);
         renderFiles();
         if (latestId) {
-          playVideoById(latestId, latestName);
+          playVideoSegment(latestId, latestName);
+          if (elBrief.value.trim() || elJudul.value.trim()) {
+            document.getElementById("btn-racik").click();
+          }
         }
         elFileInput.value = "";
       });
@@ -1508,7 +1438,7 @@
       elFileList.addEventListener("click", (e) => {
         const playBtn = e.target.closest("button[data-play-file]");
         if (playBtn) {
-          playVideoById(playBtn.getAttribute("data-play-file"), playBtn.getAttribute("data-name"));
+          playVideoSegment(playBtn.getAttribute("data-play-file"), playBtn.getAttribute("data-name"));
           return;
         }
 
@@ -1524,82 +1454,6 @@
         st.files = st.files.filter((x) => x.id !== id);
         saveState(st);
         renderFiles();
-      });
-
-      // --- POTONG VT ---
-      document.getElementById("btn-set-start").addEventListener("click", () => {
-        elCutStart.value = Math.max(0, Math.floor(elVtVideoEl.currentTime || 0));
-      });
-
-      document.getElementById("btn-set-end").addEventListener("click", () => {
-        const cur = Math.max(1, Math.floor(elVtVideoEl.currentTime || 0));
-        elCutEnd.value = cur;
-      });
-
-      document.getElementById("btn-preview-cut").addEventListener("click", () => {
-        const st = loadState();
-        const latestFile = st.files[0];
-        if (!latestFile) return;
-        const s = Math.max(0, Number(elCutStart.value || 0));
-        const eSec = Math.max(s + 1, Number(elCutEnd.value || s + 15));
-        playVideoById(latestFile.id, latestFile.name, s, eSec);
-      });
-
-      document.getElementById("btn-save-cut").addEventListener("click", () => {
-        const st = loadState();
-        const latestFile = st.files[0];
-        const s = Math.max(0, Number(elCutStart.value || 0));
-        const eSec = Math.max(s + 1, Number(elCutEnd.value || s + 15));
-        const label = (elCutLabel.value || "").trim() || `Potongan ${st.cuts.length + 1}`;
-
-        const cutObj = {
-          id: "cut_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
-          label,
-          startSec: s,
-          endSec: eSec,
-          sourceId: latestFile ? latestFile.id : "",
-          sourceName: latestFile ? latestFile.name : "Klip VT",
-          waktu: nowLabel()
-        };
-
-        st.cuts.unshift(cutObj);
-        saveState(st);
-        elCutLabel.value = "";
-        renderCuts();
-        elPotonganRef.value = cutObj.id;
-      });
-
-      elCutList.addEventListener("click", (e) => {
-        const playBtn = e.target.closest("button[data-play-cut]");
-        const useBtn = e.target.closest("button[data-use-cut]");
-        const delBtn = e.target.closest("button[data-del-cut]");
-        const st = loadState();
-
-        if (playBtn) {
-          const cut = st.cuts.find((x) => x.id === playBtn.getAttribute("data-play-cut"));
-          if (cut && cut.sourceId) {
-            playVideoById(cut.sourceId, `${cut.label} (${cut.sourceName})`, cut.startSec, cut.endSec);
-          }
-          return;
-        }
-
-        if (useBtn) {
-          const cutId = useBtn.getAttribute("data-use-cut");
-          elPotonganRef.value = cutId;
-          if (!elFokus.value.trim()) {
-            const cut = st.cuts.find((x) => x.id === cutId);
-            if (cut) elFokus.value = cut.label;
-          }
-          document.getElementById("btn-racik").click();
-          return;
-        }
-
-        if (delBtn) {
-          const id = delBtn.getAttribute("data-del-cut");
-          st.cuts = st.cuts.filter((x) => x.id !== id);
-          saveState(st);
-          renderCuts();
-        }
       });
 
       // --- PENDANAAN KOPI & SEBAT ---
@@ -1752,27 +1606,7 @@
           : `${t("wm_info_prefix")}: ${posLabel(pos)}`;
       }
 
-      // --- HOOK & DESKRIPSI MENGIKUTI POTONGAN VT SIAP UPLOAD ---
-      function resolveActiveCutInfo(state) {
-        const refId = elPotonganRef.value;
-        if (refId) {
-          const found = state.cuts.find((c) => c.id === refId);
-          if (found) {
-            return {
-              label: found.label,
-              rangeText: `${formatSec(found.startSec)}–${formatSec(found.endSec)} (${Math.max(1, found.endSec - found.startSec)}s)`
-            };
-          }
-        }
-        const s = Math.max(0, Number(elCutStart.value || 0));
-        const eSec = Math.max(s + 1, Number(elCutEnd.value || s + 15));
-        const customLabel = (elCutLabel.value || "").trim();
-        return {
-          label: customLabel,
-          rangeText: `${formatSec(s)}–${formatSec(eSec)} (${eSec - s}s)`
-        };
-      }
-
+      // --- MESIN TERIMA JADI OTOMATIS ---
       function extractTopic(judul, briefText) {
         const cleanJudul = (judul || "").trim();
         if (cleanJudul) return cleanJudul;
@@ -1786,71 +1620,87 @@
         return normalized.split(" ").slice(0, 6).join(" ") || t("default_topic");
       }
 
-      function buildUploadReadyVt(judul, gaya, briefText, fokusText, rekapText, cutInfo, variantSeed = 0) {
-        const topic = extractTopic(judul, briefText);
-        const cutTagline = cutInfo.label ? `${cutInfo.label}` : `${cutInfo.rangeText}`;
-        const momentFocus = (fokusText || "").trim() || cutTagline;
-        const extraNote = (rekapText || "").trim();
-        const isEn = loadState().lang === "en";
+      function summarizeBriefHighlight(briefText, isEn) {
+        const clean = (briefText || "").replace(/\s+/g, " ").trim();
+        if (!clean) {
+          return isEn
+            ? "the strongest highlight moment from the raw clip"
+            : "momen paling menarik dari potongan klip bahan";
+        }
+        const words = clean.split(" ").slice(0, 9).join(" ");
+        return words;
+      }
 
-        const hooksByStyle = isEn
+      function computeAutoTimings(packIndex, targetDur) {
+        const dur = Math.max(15, Number(targetDur) || 40);
+        const videoDur = Number.isFinite(elVtVideoEl.duration) && elVtVideoEl.duration > dur ? Math.floor(elVtVideoEl.duration) : 1800;
+        const step = Math.max(15, dur - 5);
+        const maxStart = Math.max(0, videoDur - dur);
+        const cutStart = Math.min(maxStart, packIndex * step);
+        const cutEnd = Math.min(videoDur, cutStart + dur);
+        const hookStart = cutStart;
+        const hookEnd = Math.min(cutEnd, cutStart + 3);
+        return { cutStart, cutEnd, hookStart, hookEnd };
+      }
+
+      function buildDoneForYouPack(judul, gaya, briefText, packIndex, targetDur) {
+        const isEn = loadState().lang === "en";
+        const topic = extractTopic(judul, briefText);
+        const highlight = summarizeBriefHighlight(briefText, isEn);
+        const timing = computeAutoTimings(packIndex, targetDur);
+
+        const hooks = isEn
           ? {
               "Santai & Penasaran": [
-                `${topic} (${cutInfo.rangeText}) — watch what happens right here`,
-                `Wait till you see ${momentFocus} in this ${topic} clip`,
-                `Caught this part of ${topic} on cut ${cutInfo.rangeText}—worth a look`
+                `Wait—catch what happens around ${highlight}`,
+                `This part of ${topic} hits way harder than expected`,
+                `Most people scroll past this moment on ${topic}`
               ],
               "To The Point": [
-                `${topic} [${cutInfo.rangeText}]: ${momentFocus}`,
-                `Clipped ${topic} (${cutInfo.rangeText}) — straight to the highlight`,
-                `${momentFocus} — key moment from ${topic}`
+                `${topic}: ${highlight}`,
+                `Key takeaway on ${topic} in under a minute`,
+                `Straight to the highlight: ${highlight}`
               ],
               "Obrolan Kreator": [
-                `Pulled this ${topic} cut (${cutInfo.rangeText}) because ${momentFocus.toLowerCase()}`,
-                `One of the cleanest moments in ${topic} right here (${cutInfo.rangeText})`,
-                `Clipped ${momentFocus} from ${topic} for a quick TikTok watch`
+                `Pulled this clip because ${highlight}`,
+                `One of the best moments on ${topic} right here`,
+                `Worth watching from the very first second on ${topic}`
               ],
               "Sudut Pandang Baru": [
-                `Different angle on ${topic} (${cutInfo.rangeText}) — ${momentFocus}`,
-                `This ${topic} cut hits different once you catch ${momentFocus.toLowerCase()}`,
-                `Fresh cut from ${topic} (${cutInfo.rangeText}) focused on ${momentFocus}`
+                `Another angle on ${topic}: ${highlight}`,
+                `Look closely at ${highlight} in this clip`,
+                `Fresh take on ${topic} ready for short clips`
               ]
             }
           : {
               "Santai & Penasaran": [
-                `${topic} (${cutInfo.rangeText}) — pas banget bagian ini`,
-                `Nggak nyangka momen ${momentFocus} di klip ${topic} bisa se-pas ini`,
-                `Potongan ${topic} di ${cutInfo.rangeText} ini sayang kalau kelewat`
+                `Coba perhatikan bagian ini: ${highlight}`,
+                `Momen di ${topic} ini ternyata lebih menarik dari kelihatannya`,
+                `Bagian ${topic} ini sayang banget kalau kelewat`
               ],
               "To The Point": [
-                `${topic} [${cutInfo.rangeText}]: ${momentFocus}`,
-                `Potongan VT ${topic} (${cutInfo.rangeText}) — langsung ke intinya`,
-                `Momen ${momentFocus} dari ${topic} siap masuk TikTok`
+                `${topic}: ${highlight}`,
+                `Inti klip ${topic} yang langsung kena dari awal`,
+                `Sorotan utama ${topic} — singkat dan jelas`
               ],
               "Obrolan Kreator": [
-                `Aku ambil potongan ${topic} (${cutInfo.rangeText}) karena ${momentFocus.toLowerCase()}`,
-                `Salah satu bagian paling pas dari ${topic} di detik ${cutInfo.rangeText}`,
-                `Potongan VT ${momentFocus} buat ${topic}, alurnya enak ditonton`
+                `Aku pilih potongan ini karena ${highlight}`,
+                `Salah satu bagian paling pas di ${topic}`,
+                `Alur klip ${topic} ini enak banget buat disimak`
               ],
               "Sudut Pandang Baru": [
-                `Sisi lain ${topic} (${cutInfo.rangeText}) — fokus di ${momentFocus}`,
-                `Klip ${topic} ini berasa beda pas masuk bagian ${momentFocus.toLowerCase()}`,
-                `Potongan baru ${topic} (${cutInfo.rangeText}) dengan sorotan ${momentFocus}`
+                `Sisi lain ${topic}: ${highlight}`,
+                `Cek detail di ${highlight} pada klip ini`,
+                `Angle baru buat ${topic} dengan latar blur gelap`
               ]
             };
 
-        const pool = hooksByStyle[gaya] || hooksByStyle["Santai & Penasaran"];
-        const hook = pool[Math.abs(variantSeed) % pool.length];
+        const pool = hooks[gaya] || hooks["Santai & Penasaran"];
+        const hook = pool[Math.abs(packIndex) % pool.length];
 
-        const captionBody = isEn
-          ? [
-              `Cut ${cutInfo.rangeText} from ${topic} — highlighting ${momentFocus}.`,
-              extraNote ? `${extraNote}.` : `Formatted for vertical TikTok (9:16) and ready to post.`
-            ].join("\n")
-          : [
-              `Potongan VT ${topic} (${cutInfo.rangeText}) menyorot ${momentFocus}.`,
-              extraNote ? `${extraNote}.` : `Sudah disesuaikan untuk format vertikal TikTok (9:16) dan siap upload.`
-            ].join("\n");
+        const desc = isEn
+          ? `${topic} — ${highlight}.\nCut ${formatSec(timing.cutStart)}–${formatSec(timing.cutEnd)} (Hook ${formatSec(timing.hookStart)}–${formatSec(timing.hookEnd)}).`
+          : `${topic} — ${highlight}.\nPotongan ${formatSec(timing.cutStart)}–${formatSec(timing.cutEnd)} (Hook ${formatSec(timing.hookStart)}–${formatSec(timing.hookEnd)}).`;
 
         const slug = topic
           .replace(/[^a-zA-Z0-9\s]/g, " ")
@@ -1861,14 +1711,19 @@
           .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
           .join("");
 
-        const tags = `#BrutalKlip #TikTokVT${slug ? " #" + slug : ""}`;
+        const tags = `#BrutalKlip #KlipVT${slug ? " #" + slug : ""}`;
+
+        const timingSummary = isEn
+          ? `Cut ${formatSec(timing.cutStart)}–${formatSec(timing.cutEnd)} • Hook ${formatSec(timing.hookStart)}–${formatSec(timing.hookEnd)}`
+          : `Potong ${formatSec(timing.cutStart)}–${formatSec(timing.cutEnd)} • Hook ${formatSec(timing.hookStart)}–${formatSec(timing.hookEnd)}`;
 
         return {
-          hook,
-          desc: captionBody,
-          tags,
           topic,
-          cutMeta: `${cutInfo.label ? cutInfo.label + " • " : ""}${cutInfo.rangeText} • 9:16`
+          hook,
+          desc,
+          tags,
+          timing,
+          timingSummary
         };
       }
 
@@ -1880,7 +1735,7 @@
 
           const filtered = state.items.filter((item) => {
             const okGaya = !gayaFilter || item.gaya === gayaFilter;
-            const blob = `${item.judul} ${item.hook} ${item.desc} ${item.tags} ${item.rekap || ""} ${item.cutMeta || ""}`.toLowerCase();
+            const blob = `${item.judul} ${item.hook} ${item.desc} ${item.tags} ${item.timingSummary || ""}`.toLowerCase();
             const okQ = !q || blob.includes(q);
             return okGaya && okQ;
           });
@@ -1899,6 +1754,8 @@
                 <span>${esc(item.gaya)} • ${esc(item.waktu)}</span>
               </div>
 
+              <div class="vt-time-strip">${esc(item.timingSummary || "")}</div>
+
               <div class="vt-hook-box">
                 <div class="box-tag">${esc(t("box_hook"))}</div>
                 <p class="vt-hook-val">${esc(item.hook)}</p>
@@ -1910,12 +1767,8 @@
               </div>
 
               ${
-                item.cutMeta || item.watermark || item.rekap
-                  ? `<div class="vt-meta-note">${item.cutMeta ? `VT: ${esc(item.cutMeta)}` : ""}${
-                      item.cutMeta && item.watermark ? " • " : ""
-                    }${item.watermark ? `WM: ${esc(item.watermark)}` : ""}${
-                      (item.cutMeta || item.watermark) && item.rekap ? " • " : ""
-                    }${item.rekap ? `${esc(t("tag_note"))}: ${esc(item.rekap)}` : ""}</div>`
+                item.watermark
+                  ? `<div class="vt-meta-note">WM: ${esc(item.watermark)}</div>`
                   : ""
               }
 
@@ -1943,7 +1796,6 @@
       elColor.value = initState.config.color;
       elWmUsername.value = initState.config.wmUsername || "";
       elWmPosition.value = initState.config.wmPosition || "pos-top-right";
-      elCropFocus.value = initState.config.cropFocus || "center center";
 
       applyLanguageUI();
 
@@ -1954,11 +1806,9 @@
           font: elFont.value,
           color: elColor.value,
           wmUsername: elWmUsername.value,
-          wmPosition: elWmPosition.value,
-          cropFocus: elCropFocus.value
+          wmPosition: elWmPosition.value
         };
         saveState(st);
-        applyCropFrame();
         applyHookStyle();
       }
 
@@ -1966,7 +1816,6 @@
       elColor.addEventListener("change", handleConfigChange);
       elWmUsername.addEventListener("input", handleConfigChange);
       elWmPosition.addEventListener("change", handleConfigChange);
-      elCropFocus.addEventListener("change", handleConfigChange);
 
       elWmFileInput.addEventListener("change", () => {
         const file = elWmFileInput.files && elWmFileInput.files[0];
@@ -1997,51 +1846,46 @@
         const st = loadState();
         const briefVal = elBrief.value.trim();
         const judulVal = elJudul.value.trim();
-        const cutInfo = resolveActiveCutInfo(st);
-        const fokusVal = elFokus.value.trim();
-        const rekapVal = elRekap.value.trim();
         const gayaVal = elGaya.value;
-
-        const built = buildUploadReadyVt(
-          judulVal,
-          gayaVal,
-          briefVal,
-          fokusVal,
-          rekapVal,
-          cutInfo,
-          st.items.length
-        );
+        const targetDur = Number(elDurasiTarget.value || 40);
+        const count = Math.max(1, Math.min(50, Number(elJumlahPaket.value || 5)));
         const wmSummary = formatWatermarkSummary(st.config);
+        const latestFile = st.files[0] || null;
+        const batch = [];
 
-        const newItem = {
-          id: "bk_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
-          judul: judulVal || built.topic,
-          gaya: gayaVal,
-          brief: briefVal,
-          fokus: fokusVal,
-          rekap: rekapVal,
-          cutId: elPotonganRef.value,
-          cutMeta: built.cutMeta,
-          watermark: wmSummary ? `${wmSummary} (${posLabel(st.config.wmPosition)})` : posLabel(st.config.wmPosition),
-          hook: built.hook,
-          desc: built.desc,
-          tags: built.tags,
-          variantCount: 0,
-          waktu: nowLabel()
-        };
+        for (let i = 0; i < count; i++) {
+          const seed = st.items.length + i;
+          const built = buildDoneForYouPack(judulVal, gayaVal, briefVal, seed, targetDur);
 
-        st.items.unshift(newItem);
+          batch.push({
+            id: "bk_" + Date.now() + "_" + i + "_" + Math.random().toString(36).slice(2, 5),
+            judul: judulVal || built.topic,
+            gaya: gayaVal,
+            brief: briefVal,
+            sourceId: latestFile ? latestFile.id : "",
+            sourceName: latestFile ? latestFile.name : "",
+            timing: built.timing,
+            timingSummary: built.timingSummary,
+            watermark: wmSummary ? `${wmSummary} (${posLabel(st.config.wmPosition)})` : posLabel(st.config.wmPosition),
+            hook: built.hook,
+            desc: built.desc,
+            tags: built.tags,
+            variantCount: i,
+            waktu: nowLabel()
+          });
+        }
+
+        st.items = [...batch.reverse(), ...st.items];
         saveState(st);
-        applyHookStyle(newItem.hook);
+        if (st.items[0]) {
+          applyHookStyle(st.items[0].hook);
+        }
         renderList();
       });
 
       document.getElementById("btn-reset").addEventListener("click", () => {
-        elJudul.value = "";
         elBrief.value = "";
-        elFokus.value = "";
-        elRekap.value = "";
-        elPotonganRef.value = "";
+        elJudul.value = "";
       });
 
       elCari.addEventListener("input", renderList);
@@ -2068,21 +1912,22 @@
 
         if (act === "preview") {
           applyHookStyle(current.hook);
-          const matchedCut = current.cutId ? st.cuts.find((c) => c.id === current.cutId) : null;
-          if (matchedCut && matchedCut.sourceId && videoBlobUrls.has(matchedCut.sourceId)) {
-            playVideoById(matchedCut.sourceId, matchedCut.label, matchedCut.startSec, matchedCut.endSec);
-          } else if (st.files.length && videoBlobUrls.has(st.files[0].id)) {
-            playVideoById(st.files[0].id, st.files[0].name);
+          const targetFileId = current.sourceId || (st.files[0] && st.files[0].id);
+          const targetFileName = current.sourceName || (st.files[0] && st.files[0].name);
+          if (targetFileId) {
+            playVideoSegment(targetFileId, targetFileName, current.timing, current.hook);
+            elVtStudioGrid.scrollIntoView({ behavior: "smooth", block: "center" });
+          } else {
+            elHookPreview.scrollIntoView({ behavior: "smooth", block: "center" });
           }
-          elVtStudioGrid.scrollIntoView({ behavior: "smooth", block: "center" });
           return;
         }
 
         if (act === "copy") {
           const isEn = loadState().lang === "en";
           const payload = isEn
-            ? `HOOK:\n${current.hook}\n\nCAPTION:\n${current.desc}\n\n${current.tags}`
-            : `HOOK:\n${current.hook}\n\nDESKRIPSI:\n${current.desc}\n\n${current.tags}`;
+            ? `${current.timingSummary}\n\nHOOK:\n${current.hook}\n\nDESCRIPTION:\n${current.desc}\n\n${current.tags}`
+            : `${current.timingSummary}\n\nHOOK:\n${current.hook}\n\nDESKRIPSI:\n${current.desc}\n\n${current.tags}`;
           if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(payload).catch(() => {});
           }
@@ -2097,22 +1942,21 @@
 
         if (act === "regen") {
           const nextVariant = (current.variantCount || 0) + 1;
-          const cutInfo = resolveActiveCutInfo(st);
-          const rebuilt = buildUploadReadyVt(
+          const targetDur = Number(elDurasiTarget.value || 40);
+          const rebuilt = buildDoneForYouPack(
             current.judul,
             current.gaya,
             current.brief,
-            current.fokus,
-            current.rekap,
-            cutInfo,
-            nextVariant
+            nextVariant,
+            targetDur
           );
           st.items[idx] = {
             ...current,
             hook: rebuilt.hook,
             desc: rebuilt.desc,
             tags: rebuilt.tags,
-            cutMeta: rebuilt.cutMeta,
+            timing: rebuilt.timing,
+            timingSummary: rebuilt.timingSummary,
             variantCount: nextVariant,
             waktu: nowLabel()
           };
