@@ -1,127 +1,272 @@
-<!-- MULAI MODUL RAPIHIN VT & RIWAYAT (SIAP TEMPEL) -->
-<div id="brutal-vt-module" class="bk-vt-wrap">
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#120f16" />
+  <title>Brutal Klip — Workspace VT &amp; Hook</title>
+  <link rel="manifest" href="manifest.json" />
   <style>
-    .bk-vt-wrap {
-      --bg-card: #18141c;
-      --bg-panel: #110e14;
-      --bg-input: #1f1a24;
+    :root {
+      --bg-page: #0c0a0f;
+      --bg-card: #16121b;
+      --bg-panel: #100d14;
+      --bg-input: #1e1925;
       --border: rgba(255, 255, 255, 0.1);
       --accent: #f43f5e;
-      --accent-soft: rgba(244, 63, 94, 0.16);
-      --text: #f5f3f7;
-      --muted: #a8a1b3;
+      --accent-soft: rgba(244, 63, 94, 0.15);
+      --text: #f4f2f7;
+      --muted: #a69fb3;
       --ok: #34d399;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      color: var(--text);
-      max-width: 920px;
-      margin: 16px auto;
     }
-    .bk-vt-card {
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 18px 14px 48px;
+      background: radial-gradient(circle at top, #1d1526 0%, var(--bg-page) 62%);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.5;
+    }
+
+    .app-shell {
+      max-width: 980px;
+      margin: 0 auto;
+      display: grid;
+      gap: 18px;
+    }
+
+    .topbar {
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 18px;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
-    }
-    .bk-vt-header {
+      border-radius: 18px;
+      padding: 16px 18px;
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 14px;
-      border-left: 4px solid var(--accent);
-      padding-left: 12px;
+      gap: 12px;
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.4);
     }
-    .bk-vt-title {
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #f43f5e, #fb7185);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 16px;
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(244, 63, 94, 0.35);
+    }
+
+    .brand h1 {
       margin: 0;
-      font-size: 18px;
-      font-weight: 700;
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
     }
-    .bk-vt-sub {
+
+    .brand p {
       margin: 2px 0 0;
       font-size: 12px;
       color: var(--muted);
     }
-    .bk-grid-2 {
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pill {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.32);
+    }
+
+    .sec-head {
+      border-left: 4px solid var(--accent);
+      padding-left: 12px;
+      margin-bottom: 14px;
+    }
+
+    .sec-head h2 {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .sec-head p {
+      margin: 2px 0 0;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .grid-2 {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
       gap: 12px;
       margin-bottom: 12px;
     }
-    .bk-field label {
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .field label {
       display: block;
       font-size: 12px;
       color: var(--muted);
       margin-bottom: 6px;
     }
-    .bk-input, .bk-select, .bk-textarea {
+
+    .input, .select, .textarea {
       width: 100%;
-      box-sizing: border-box;
       background: var(--bg-input);
       border: 1px solid var(--border);
-      border-radius: 10px;
+      border-radius: 11px;
       color: var(--text);
       padding: 10px 12px;
       font-size: 13px;
       outline: none;
     }
-    .bk-input:focus, .bk-select:focus, .bk-textarea:focus {
+
+    .input:focus, .select:focus, .textarea:focus {
       border-color: var(--accent);
     }
-    .bk-textarea {
-      min-height: 110px;
+
+    .textarea {
+      min-height: 115px;
       resize: vertical;
-      line-height: 1.5;
+      line-height: 1.55;
     }
-    .bk-actions {
+
+    .hook-preview-stage {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 16px;
+      min-height: 92px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+
+    .hook-styled-text {
+      display: inline-block;
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 20px;
+      font-weight: 800;
+      line-height: 1.3;
+      max-width: 100%;
+      word-break: break-word;
+    }
+
+    .btn-row {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
       margin-top: 12px;
     }
-    .bk-btn {
+
+    .btn {
       border: none;
-      border-radius: 10px;
-      padding: 10px 14px;
+      border-radius: 11px;
+      padding: 10px 15px;
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
       transition: transform 0.12s ease, opacity 0.15s ease;
     }
-    .bk-btn:active {
+
+    .btn:active {
       transform: scale(0.98);
     }
-    .bk-btn-primary {
+
+    .btn-primary {
       background: var(--accent);
       color: #fff;
     }
-    .bk-btn-ghost {
+
+    .btn-secondary {
       background: var(--bg-input);
       color: var(--text);
       border: 1px solid var(--border);
     }
-    .bk-filter-bar {
+
+    .meta-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .meta-chip {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 6px 10px;
+    }
+
+    .filter-bar {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
       margin: 18px 0 14px;
     }
-    .bk-filter-bar .bk-input {
+
+    .filter-bar .input {
       flex: 1 1 240px;
     }
-    .bk-filter-bar .bk-select {
-      flex: 0 1 200px;
+
+    .filter-bar .select {
+      flex: 0 1 210px;
     }
-    .bk-history-item {
+
+    .vt-card {
       background: var(--bg-panel);
       border: 1px solid var(--border);
       border-left: 4px solid var(--accent);
-      border-radius: 14px;
-      padding: 14px;
+      border-radius: 15px;
+      padding: 15px;
       margin-bottom: 12px;
     }
-    .bk-item-top {
+
+    .vt-top {
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
@@ -130,224 +275,359 @@
       color: var(--muted);
       margin-bottom: 10px;
     }
-    .bk-hook-box {
+
+    .vt-hook-box {
       background: var(--accent-soft);
       border: 1px solid rgba(244, 63, 94, 0.35);
-      border-radius: 10px;
-      padding: 10px 12px;
+      border-radius: 11px;
+      padding: 11px 13px;
       margin-bottom: 10px;
     }
-    .bk-box-label {
+
+    .box-tag {
       font-size: 11px;
-      text-transform: uppercase;
+      font-weight: 700;
       letter-spacing: 0.05em;
+      text-transform: uppercase;
       color: var(--muted);
-      margin-bottom: 4px;
-      font-weight: 700;
+      margin-bottom: 5px;
     }
-    .bk-hook-text {
-      font-size: 14px;
-      font-weight: 700;
-      line-height: 1.45;
-      color: #fff;
+
+    .vt-hook-val {
       margin: 0;
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
     }
-    .bk-desc-box {
+
+    .vt-desc-box {
       background: var(--bg-input);
-      border-radius: 10px;
-      padding: 10px 12px;
+      border-radius: 11px;
+      padding: 11px 13px;
       margin-bottom: 10px;
     }
-    .bk-desc-text {
+
+    .vt-desc-val {
       margin: 0;
       font-size: 13px;
-      line-height: 1.6;
       white-space: pre-line;
       color: var(--text);
     }
-    .bk-item-footer {
+
+    .vt-meta-note {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .vt-foot {
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
       gap: 8px;
-      margin-top: 8px;
     }
-    .bk-tags {
+
+    .vt-tags {
       font-size: 12px;
-      color: var(--accent);
+      color: #fb7185;
+      font-weight: 600;
     }
-    .bk-mini-btns {
+
+    .mini-actions {
       display: flex;
+      flex-wrap: wrap;
       gap: 6px;
     }
-    .bk-mini-btn {
+
+    .mini-btn {
       background: var(--bg-card);
       color: var(--text);
       border: 1px solid var(--border);
       border-radius: 8px;
       padding: 6px 10px;
       font-size: 11px;
+      font-weight: 600;
       cursor: pointer;
     }
-    .bk-mini-btn.copied {
+
+    .mini-btn.copied {
       border-color: var(--ok);
       color: var(--ok);
     }
-    .bk-empty {
+
+    .empty-state {
       text-align: center;
-      padding: 24px;
-      color: var(--muted);
-      font-size: 13px;
+      padding: 26px 16px;
       border: 1px dashed var(--border);
       border-radius: 12px;
+      color: var(--muted);
+      font-size: 13px;
     }
   </style>
-
-  <div class="bk-vt-card">
-    <div class="bk-vt-header">
-      <div>
-        <h2 class="bk-vt-title">Tempat Rapihin VT &amp; Riwayat</h2>
-        <p class="bk-vt-sub">Baca brief dulu, lalu racik hook &amp; deskripsi VT dengan pembahasan baru yang tetap nyambung</p>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- HEADER -->
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-badge">BK</div>
+        <div>
+          <h1>Brutal Klip</h1>
+          <p>Workspace Klipper: Pahami Brief, Racik Hook &amp; Deskripsi VT Fresh, Atur Gaya Hook</p>
+        </div>
       </div>
-    </div>
-
-    <div class="bk-grid-2">
-      <div class="bk-field">
-        <label for="bk-judul">Judul / Topik Campaign</label>
-        <input id="bk-judul" class="bk-input" type="text" placeholder="Contoh: KOL.ID X KAK PERMATA X KO LEO" />
+      <div class="pill-row">
+        <span class="pill">PWA Ready</span>
+        <span class="pill">Auto Save Lokal</span>
+        <span class="pill">Mode Klipper</span>
       </div>
-      <div class="bk-field">
-        <label for="bk-tema">Gaya Pembahasan Fresh</label>
-        <select id="bk-tema" class="bk-select">
+    </header>
+
+    <!-- PENGATURAN GAYA HOOK & DETAIL KLIP -->
+    <section class="card">
+      <div class="sec-head">
+        <h2>Preset Font &amp; Warna Teks Hook</h2>
+        <p>Teks hitam pekat otomatis mendapat latar putih tipis; warna lain otomatis memakai latar hitam tipis</p>
+      </div>
+
+      <div class="grid-3">
+        <div class="field">
+          <label for="cfg-font">Preset Font Hook</label>
+          <select id="cfg-font" class="select">
+            <option value='system-ui, -apple-system, sans-serif'>Modern Sans</option>
+            <option value='Impact, "Arial Black", sans-serif'>Bold Impact</option>
+            <option value='"Trebuchet MS", sans-serif'>Clean Trebuchet</option>
+            <option value='Georgia, serif'>Editorial Serif</option>
+            <option value='"Courier New", monospace'>Mono Script</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="cfg-color">Warna Teks Hook</label>
+          <select id="cfg-color" class="select">
+            <option value="#FFFFFF">Putih Bersih</option>
+            <option value="#FACC15">Kuning Hook</option>
+            <option value="#F43F5E">Merah Crimson</option>
+            <option value="#34D399">Hijau Mint</option>
+            <option value="#38BDF8">Biru Sky</option>
+            <option value="#09090B">Hitam Pekat</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="cfg-watermark">Catatan Watermark / Jadwal</label>
+          <input id="cfg-watermark" class="input" type="text" placeholder="Contoh: Pojok Kanan Atas • Jadwal Aktif" />
+        </div>
+      </div>
+
+      <div class="hook-preview-stage">
+        <span id="hook-live-preview" class="hook-styled-text">Preview Hook Fresh Brutal Klip</span>
+      </div>
+
+      <div class="meta-strip">
+        <span class="meta-chip" id="info-bg-mode">Latar: Hitam Tipis</span>
+        <span class="meta-chip" id="info-wm-mode">Watermark: Default</span>
+        <span class="meta-chip">Audio: Bebas Hak Cipta</span>
+      </div>
+    </section>
+
+    <!-- TEMPAT RAPIHIN VT & RIWAYAT -->
+    <section class="card">
+      <div class="sec-head">
+        <h2>Tempat Rapihin VT &amp; Riwayat</h2>
+        <p>Pahami isi kotak brief terlebih dahulu, lalu hasilkan hook &amp; deskripsi VT dengan pembahasan baru yang tetap relevan</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="field">
+          <label for="vt-judul">Judul / Topik Campaign</label>
+          <input id="vt-judul" class="input" type="text" placeholder="Contoh: KOL.ID X KAK PERMATA X KO LEO" />
+        </div>
+        <div class="field">
+          <label for="vt-gaya">Gaya Pembahasan Fresh</label>
+          <select id="vt-gaya" class="select">
+            <option value="Santai & Penasaran">Santai &amp; Penasaran</option>
+            <option value="To The Point">To The Point</option>
+            <option value="Obrolan Kreator">Obrolan Kreator</option>
+            <option value="Sudut Pandang Baru">Sudut Pandang Baru</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="vt-brief">Kotak Brief (Dipahami Dulu Sebagai Acuan Topik, Aturan, &amp; Batasan)</label>
+        <textarea id="vt-brief" class="textarea" placeholder="Tempel brief campaign di sini. Sistem akan memahami topiknya lalu menyusun hook & deskripsi VT dengan pembahasan baru..."></textarea>
+      </div>
+
+      <div class="grid-2" style="margin-top: 10px;">
+        <div class="field">
+          <label for="vt-fokus">Fokus Pembahasan Tambahan (Opsional)</label>
+          <input id="vt-fokus" class="input" type="text" placeholder="Contoh: Bahas poin aman sesuai brief & ajakan cek klip" />
+        </div>
+        <div class="field">
+          <label for="vt-rekap">Catatan Rekap / Komentar (Opsional)</label>
+          <input id="vt-rekap" class="input" type="text" placeholder="Contoh: Cek ulang durasi & penyebutan brand" />
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button id="btn-racik" class="btn btn-primary" type="button">Racik Hook &amp; Deskripsi VT Fresh</button>
+        <button id="btn-reset" class="btn btn-secondary" type="button">Bersihkan Form</button>
+      </div>
+
+      <div class="filter-bar">
+        <input id="filter-cari" class="input" type="text" placeholder="Cari judul, hook fresh, deskripsi VT, atau tagar..." />
+        <select id="filter-gaya" class="select">
+          <option value="">Semua Gaya</option>
           <option value="Santai & Penasaran">Santai &amp; Penasaran</option>
-          <option value="To The Point">To The Point (Langsung Inti)</option>
+          <option value="To The Point">To The Point</option>
           <option value="Obrolan Kreator">Obrolan Kreator</option>
           <option value="Sudut Pandang Baru">Sudut Pandang Baru</option>
         </select>
       </div>
-    </div>
 
-    <div class="bk-field">
-      <label for="bk-brief">Kotak Brief (Pahami Aturan, Topik, &amp; Catatan Penting di Sini)</label>
-      <textarea id="bk-brief" class="bk-textarea" placeholder="Tempel isi brief di sini. Sistem akan memahami topiknya dan menyusun hook serta deskripsi VT baru yang lebih fresh..."></textarea>
-    </div>
-
-    <div class="bk-field" style="margin-top: 10px;">
-      <label for="bk-catatan-extra">Fokus / Catatan Tambahan VT (Opsional)</label>
-      <input id="bk-catatan-extra" class="bk-input" type="text" placeholder="Contoh: Tekankan poin aman sesuai brief & ajakan cek detail di klip" />
-    </div>
-
-    <div class="bk-actions">
-      <button id="bk-btn-generate" class="bk-btn bk-btn-primary" type="button">
-        Racik Hook &amp; Deskripsi VT Fresh
-      </button>
-      <button id="bk-btn-clear-form" class="bk-btn bk-btn-ghost" type="button">
-        Bersihkan Input
-      </button>
-    </div>
-
-    <div class="bk-filter-bar">
-      <input id="bk-search" class="bk-input" type="text" placeholder="Cari judul, hook, deskripsi VT, atau tagar..." />
-      <select id="bk-filter-tema" class="bk-select">
-        <option value="">Semua Gaya</option>
-        <option value="Santai & Penasaran">Santai &amp; Penasaran</option>
-        <option value="To The Point">To The Point</option>
-        <option value="Obrolan Kreator">Obrolan Kreator</option>
-        <option value="Sudut Pandang Baru">Sudut Pandang Baru</option>
-      </select>
-    </div>
-
-    <div id="bk-history-list"></div>
+      <div id="riwayat-vt-container"></div>
+    </section>
   </div>
 
   <script>
     (function () {
-      const STORAGE_KEY = "brutal_klip_vt_fresh_v1";
+      const STORAGE_KEY = "brutal_klip_full_state_v1";
 
-      const elJudul = document.getElementById("bk-judul");
-      const elTema = document.getElementById("bk-tema");
-      const elBrief = document.getElementById("bk-brief");
-      const elExtra = document.getElementById("bk-catatan-extra");
-      const elSearch = document.getElementById("bk-search");
-      const elFilterTema = document.getElementById("bk-filter-tema");
-      const elList = document.getElementById("bk-history-list");
+      const elFont = document.getElementById("cfg-font");
+      const elColor = document.getElementById("cfg-color");
+      const elWatermark = document.getElementById("cfg-watermark");
+      const elHookPreview = document.getElementById("hook-live-preview");
+      const elBgMode = document.getElementById("info-bg-mode");
+      const elWmMode = document.getElementById("info-wm-mode");
 
-      function loadItems() {
+      const elJudul = document.getElementById("vt-judul");
+      const elGaya = document.getElementById("vt-gaya");
+      const elBrief = document.getElementById("vt-brief");
+      const elFokus = document.getElementById("vt-fokus");
+      const elRekap = document.getElementById("vt-rekap");
+      const elCari = document.getElementById("filter-cari");
+      const elFilterGaya = document.getElementById("filter-gaya");
+      const elList = document.getElementById("riwayat-vt-container");
+
+      function getDefaultState() {
+        return {
+          config: {
+            font: 'system-ui, -apple-system, sans-serif',
+            color: "#FFFFFF",
+            watermark: ""
+          },
+          items: []
+        };
+      }
+
+      function loadState() {
         try {
           const raw = localStorage.getItem(STORAGE_KEY);
-          const parsed = raw ? JSON.parse(raw) : [];
-          return Array.isArray(parsed) ? parsed : [];
-        } catch (e) {
-          return [];
+          if (!raw) return getDefaultState();
+          const parsed = JSON.parse(raw);
+          return {
+            config: { ...getDefaultState().config, ...(parsed.config || {}) },
+            items: Array.isArray(parsed.items) ? parsed.items : []
+          };
+        } catch (err) {
+          return getDefaultState();
         }
       }
 
-      function saveItems(items) {
+      function saveState(state) {
         try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-        } catch (e) {}
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (err) {}
       }
 
-      function extractFocus(judul, briefText) {
+      function applyHookStyle(textOverride) {
+        const state = loadState();
+        const color = state.config.color || "#FFFFFF";
+        const font = state.config.font || 'system-ui, -apple-system, sans-serif';
+        const wm = (state.config.watermark || "").trim();
+
+        const isBlackText = color.toUpperCase() === "#09090B" || color.toLowerCase() === "#000000" || color.toLowerCase() === "black";
+        const bgBackdrop = isBlackText ? "rgba(255, 255, 255, 0.88)" : "rgba(0, 0, 0, 0.65)";
+        const borderBackdrop = isBlackText ? "rgba(255, 255, 255, 0.95)" : "rgba(255, 255, 255, 0.16)";
+
+        elHookPreview.style.fontFamily = font;
+        elHookPreview.style.color = color;
+        elHookPreview.style.backgroundColor = bgBackdrop;
+        elHookPreview.style.border = `1px solid ${borderBackdrop}`;
+
+        if (typeof textOverride === "string" && textOverride.trim()) {
+          elHookPreview.textContent = textOverride.trim();
+        }
+
+        elBgMode.textContent = isBlackText ? "Latar: Putih Tipis (Teks Hitam)" : "Latar: Hitam Tipis";
+        elWmMode.textContent = wm ? `Watermark: ${wm}` : "Watermark: Default";
+      }
+
+      function extractTopic(judul, briefText) {
         const cleanJudul = (judul || "").trim();
         if (cleanJudul) return cleanJudul;
 
-        const cleanBrief = (briefText || "").replace(/\s+/g, " ").trim();
-        if (!cleanBrief) return "Topik VT";
+        const normalized = (briefText || "").replace(/\s+/g, " ").trim();
+        if (!normalized) return "Pembahasan VT";
 
-        // Ambil frasa awal singkat sebelum kata pemisah panjang
-        const cut = cleanBrief.split(/Deskripsi|Category|Platforms|note:|1\)|Hook/i)[0].trim();
-        if (cut.length >= 4 && cut.length <= 55) return cut;
+        const head = normalized.split(/Deskripsi|Category|Platforms|note:|1\)|Hook/i)[0].trim();
+        if (head.length >= 4 && head.length <= 52) return head;
 
-        const words = cleanBrief.split(" ").slice(0, 5).join(" ");
-        return words || "Topik VT";
+        return normalized.split(" ").slice(0, 5).join(" ") || "Pembahasan VT";
       }
 
-      function buildFreshVT(judul, tema, briefText, extraText) {
-        const fokus = extractFocus(judul, briefText);
-        const extra = (extraText || "").trim();
-        const lowerBrief = (briefText || "").toLowerCase();
+      function buildFreshContent(judul, gaya, briefText, fokusText, rekapText, variantSeed = 0) {
+        const topic = extractTopic(judul, briefText);
+        const extraFocus = (fokusText || "").trim();
+        const extraNote = (rekapText || "").trim();
+        const lower = (briefText || "").toLowerCase();
 
-        // Deteksi petunjuk ringan dari brief tanpa menyalin blok panjang
-        const mentionsPlatform = lowerBrief.includes("tiktok") || lowerBrief.includes("instagram");
-        const mentionsWajah = lowerBrief.includes("wajah") || lowerBrief.includes("narasumber") || lowerBrief.includes("persona");
+        const hasShortClipRule = lower.includes("detik") || lower.includes("clip") || lower.includes("klip");
+        const hasVisualRule = lower.includes("wajah") || lower.includes("narasumber") || lower.includes("persona");
 
-        let hook = "";
-        let desc = "";
+        const hookVariants = {
+          "Santai & Penasaran": [
+            `Coba lihat dari sisi ini: ${topic} ternyata bisa dibahas se-ringan ini.`,
+            `Jarang dibahas begini, padahal poin utama ${topic} lumayan bikin penasaran.`,
+            `Kalau dibaca ulang brief-nya, sudut pandang baru ${topic} justru paling pas buat klip.`
+          ],
+          "To The Point": [
+            `Inti pembahasan ${topic} yang wajib nempel sejak awal klip.`,
+            `Langsung ke pokoknya: ini cara ringkas bahas ${topic} tanpa muter-muter.`,
+            `Ringkasan cepat soal ${topic} biar alur videonya tetap padat dan jelas.`
+          ],
+          "Obrolan Kreator": [
+            `Jujur, meracik ulang ${topic} dengan alur baru jauh lebih enak ditonton.`,
+            `Dari kacamata klipper, ini cara paling natural buat angkat ${topic}.`,
+            `Ngobrolin lagi ${topic} pakai sudut pandang segar biar nggak terasa kaku.`
+          ],
+          "Sudut Pandang Baru": [
+            `Bukan cuma soal luarnya, ini pembahasan baru dari ${topic} yang layak disimak.`,
+            `Mengangkat sisi lain ${topic} dengan pendekatan baru yang tetap aman di brief.`,
+            `Satu cara pandang baru soal ${topic} supaya klipnya terasa beda.`
+          ]
+        };
 
-        if (tema === "To The Point") {
-          hook = `Inti pembahasan ${fokus} yang sering kelewat di klip singkat.`;
-          desc = [
-            `Pembahasan langsung ke pokoknya soal ${fokus} tanpa muter-muter.`,
-            mentionsWajah ? `Disusun mengikuti aturan tampil & alur visual yang pas di brief.` : `Dirangkum agar pesan utamanya gampang ditangkap sejak detik awal.`,
-            extra ? `Catatan: ${extra}.` : `Simak poin lengkapnya di cuplikan VT ini.`
-          ].join("\n");
-        } else if (tema === "Obrolan Kreator") {
-          hook = `Jujur, cara bahas ${fokus} kayak gini jauh lebih enak ditonton.`;
-          desc = [
-            `Ngobrolin ulang sudut pandang ${fokus} dari kacamata kreator klip.`,
-            mentionsPlatform ? `Dibikin ringan supaya pas buat ritme tontonan feed & video pendek.` : `Fokus ke alur cerita yang mengalir dan nggak terasa seperti jualan kaku.`,
-            extra ? `Poin penting: ${extra}.` : `Cek detail pembahasannya di video.`
-          ].join("\n");
-        } else if (tema === "Sudut Pandang Baru") {
-          hook = `Bukan cuma soal luarnya, ini sisi lain dari ${fokus} yang menarik dibahas.`;
-          desc = [
-            `Mengangkat pendekatan baru untuk ${fokus} berdasarkan poin utama di brief.`,
-            `Disesuaikan biar tetap aman sesuai batasan brief tapi punya rasa pembahasan yang segar.`,
-            extra ? `Fokus tambahan: ${extra}.` : `Tonton sampai akhir buat lihat ringkasannya.`
-          ].join("\n");
-        } else {
-          // Santai & Penasaran
-          hook = `Coba lihat dari sisi ini: ${fokus} ternyata bisa dibahas se-ringan ini.`;
-          desc = [
-            `Versi pembahasan baru tentang ${fokus} yang tetap mengacu ke isi brief.`,
-            `Disusun ringkas dan santai supaya enak diikuti dari awal sampai penutup klip.`,
-            extra ? `Catatan klip: ${extra}.` : `Lanjut di VT ini buat detailnya.`
-          ].join("\n");
-        }
+        const pool = hookVariants[gaya] || hookVariants["Santai & Penasaran"];
+        const hook = pool[Math.abs(variantSeed) % pool.length];
 
-        const slugTag = fokus
+        const line1 = `Pembahasan baru mengenai ${topic} yang diracik dari poin utama brief.`;
+        const line2 = hasVisualRule
+          ? `Disusun mengikuti aturan visual & karakter yang aman agar tetap selaras dengan brief.`
+          : hasShortClipRule
+          ? `Dirangkum supaya pas untuk ritme klip singkat dan mudah ditangkap penonton.`
+          : `Fokus pada alur cerita yang mengalir, segar, dan tidak menyalin mentah isi brief.`;
+        const line3 = extraFocus
+          ? `Fokus utama: ${extraFocus}.`
+          : extraNote
+          ? `Catatan cek: ${extraNote}.`
+          : `Simak detail pembahasannya di dalam klip VT.`;
+
+        const desc = [line1, line2, line3].join("\n");
+
+        const slug = topic
           .replace(/[^a-zA-Z0-9\s]/g, " ")
           .trim()
           .split(/\s+/)
@@ -356,17 +636,17 @@
           .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
           .join("");
 
-        const tags = `#BrutalKlip #FreshVT${slugTag ? " #" + slugTag : ""}`;
+        const tags = `#BrutalKlip #FreshVT${slug ? " #" + slug : ""}`;
 
-        return { hook, desc, tags, fokus };
+        return { hook, desc, tags, topic };
       }
 
-      function formatTime(date = new Date()) {
-        const pad = (n) => String(n).padStart(2, "0");
-        return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${date.getFullYear()}, ${pad(date.getHours())}.${pad(date.getMinutes())}.${pad(date.getSeconds())}`;
+      function nowLabel(date = new Date()) {
+        const p = (n) => String(n).padStart(2, "0");
+        return `${p(date.getDate())}/${p(date.getMonth() + 1)}/${date.getFullYear()}, ${p(date.getHours())}.${p(date.getMinutes())}.${p(date.getSeconds())}`;
       }
 
-      function escapeHtml(str) {
+      function esc(str) {
         return String(str || "")
           .replace(/&/g, "&amp;")
           .replace(/</g, "&lt;")
@@ -374,48 +654,55 @@
           .replace(/"/g, "&quot;");
       }
 
-      function render() {
-        const items = loadItems();
-        const q = (elSearch.value || "").toLowerCase().trim();
-        const filterTema = elFilterTema.value;
+      function renderList() {
+        const state = loadState();
+        const q = (elCari.value || "").toLowerCase().trim();
+        const gayaFilter = elFilterGaya.value;
 
-        const filtered = items.filter((item) => {
-          const matchTema = !filterTema || item.tema === filterTema;
-          const hay = `${item.judul} ${item.hook} ${item.desc} ${item.tags}`.toLowerCase();
-          const matchQ = !q || hay.includes(q);
-          return matchTema && matchQ;
+        const filtered = state.items.filter((item) => {
+          const okGaya = !gayaFilter || item.gaya === gayaFilter;
+          const blob = `${item.judul} ${item.hook} ${item.desc} ${item.tags} ${item.rekap || ""}`.toLowerCase();
+          const okQ = !q || blob.includes(q);
+          return okGaya && okQ;
         });
 
         if (!filtered.length) {
-          elList.innerHTML = `<div class="bk-empty">Belum ada hasil VT yang cocok. Tempel brief lalu klik <b>Racik Hook &amp; Deskripsi VT Fresh</b>.</div>`;
+          elList.innerHTML = `<div class="empty-state">Belum ada VT tersimpan yang cocok. Tempel isi brief lalu klik <b>Racik Hook &amp; Deskripsi VT Fresh</b>.</div>`;
           return;
         }
 
         elList.innerHTML = filtered
           .map(
-            (item) => `
-          <article class="bk-history-item" data-id="${escapeHtml(item.id)}">
-            <div class="bk-item-top">
-              <strong>${escapeHtml(item.judul)}</strong>
-              <span>${escapeHtml(item.tema)} • ${escapeHtml(item.waktu)}</span>
+            (item, idx) => `
+          <article class="vt-card" data-id="${esc(item.id)}">
+            <div class="vt-top">
+              <strong>VT #${filtered.length - idx} • ${esc(item.judul)}</strong>
+              <span>${esc(item.gaya)} • ${esc(item.waktu)}</span>
             </div>
 
-            <div class="bk-hook-box">
-              <div class="bk-box-label">Hook Fresh</div>
-              <p class="bk-hook-text">${escapeHtml(item.hook)}</p>
+            <div class="vt-hook-box">
+              <div class="box-tag">Hook Fresh</div>
+              <p class="vt-hook-val">${esc(item.hook)}</p>
             </div>
 
-            <div class="bk-desc-box">
-              <div class="bk-box-label">Deskripsi VT Fresh</div>
-              <p class="bk-desc-text">${escapeHtml(item.desc)}</p>
+            <div class="vt-desc-box">
+              <div class="box-tag">Deskripsi VT Fresh</div>
+              <p class="vt-desc-val">${esc(item.desc)}</p>
             </div>
 
-            <div class="bk-item-footer">
-              <span class="bk-tags">${escapeHtml(item.tags)}</span>
-              <div class="bk-mini-btns">
-                <button type="button" class="bk-mini-btn" data-action="copy" data-id="${escapeHtml(item.id)}">Salin VT</button>
-                <button type="button" class="bk-mini-btn" data-action="regen" data-id="${escapeHtml(item.id)}">Variasi Baru</button>
-                <button type="button" class="bk-mini-btn" data-action="delete" data-id="${escapeHtml(item.id)}">Hapus</button>
+            ${
+              item.rekap || item.watermark
+                ? `<div class="vt-meta-note">${item.watermark ? `WM: ${esc(item.watermark)}` : ""}${item.watermark && item.rekap ? " • " : ""}${item.rekap ? `Catatan: ${esc(item.rekap)}` : ""}</div>`
+                : ""
+            }
+
+            <div class="vt-foot">
+              <span class="vt-tags">${esc(item.tags)}</span>
+              <div class="mini-actions">
+                <button type="button" class="mini-btn" data-act="preview" data-id="${esc(item.id)}">Tes ke Preview Hook</button>
+                <button type="button" class="mini-btn" data-act="copy" data-id="${esc(item.id)}">Salin VT</button>
+                <button type="button" class="mini-btn" data-act="regen" data-id="${esc(item.id)}">Pembahasan Baru</button>
+                <button type="button" class="mini-btn" data-act="delete" data-id="${esc(item.id)}">Hapus</button>
               </div>
             </div>
           </article>
@@ -424,66 +711,103 @@
           .join("");
       }
 
-      document.getElementById("bk-btn-generate").addEventListener("click", () => {
-        const briefText = elBrief.value.trim();
-        const judulInput = elJudul.value.trim();
-        if (!briefText && !judulInput) {
+      // Inisialisasi konfigurasi tersimpan
+      const initState = loadState();
+      elFont.value = initState.config.font;
+      elColor.value = initState.config.color;
+      elWatermark.value = initState.config.watermark;
+      applyHookStyle();
+      renderList();
+
+      function handleConfigChange() {
+        const st = loadState();
+        st.config = {
+          font: elFont.value,
+          color: elColor.value,
+          watermark: elWatermark.value
+        };
+        saveState(st);
+        applyHookStyle();
+      }
+
+      elFont.addEventListener("change", handleConfigChange);
+      elColor.addEventListener("change", handleConfigChange);
+      elWatermark.addEventListener("input", handleConfigChange);
+
+      document.getElementById("btn-racik").addEventListener("click", () => {
+        const briefVal = elBrief.value.trim();
+        const judulVal = elJudul.value.trim();
+        if (!briefVal && !judulVal) {
           elBrief.focus();
           return;
         }
 
-        const tema = elTema.value;
-        const extra = elExtra.value.trim();
-        const generated = buildFreshVT(judulInput, tema, briefText, extra);
+        const st = loadState();
+        const gayaVal = elGaya.value;
+        const fokusVal = elFokus.value.trim();
+        const rekapVal = elRekap.value.trim();
+        const built = buildFreshContent(judulVal, gayaVal, briefVal, fokusVal, rekapVal, st.items.length);
 
-        const items = loadItems();
-        items.unshift({
-          id: "vt_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
-          judul: judulInput || generated.fokus,
-          tema,
-          brief: briefText,
-          extra,
-          hook: generated.hook,
-          desc: generated.desc,
-          tags: generated.tags,
-          waktu: formatTime()
-        });
+        const newItem = {
+          id: "bk_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
+          judul: judulVal || built.topic,
+          gaya: gayaVal,
+          brief: briefVal,
+          fokus: fokusVal,
+          rekap: rekapVal,
+          watermark: (elWatermark.value || "").trim(),
+          hook: built.hook,
+          desc: built.desc,
+          tags: built.tags,
+          variantCount: 0,
+          waktu: nowLabel()
+        };
 
-        saveItems(items);
-        render();
+        st.items.unshift(newItem);
+        saveState(st);
+        applyHookStyle(newItem.hook);
+        renderList();
       });
 
-      document.getElementById("bk-btn-clear-form").addEventListener("click", () => {
+      document.getElementById("btn-reset").addEventListener("click", () => {
         elJudul.value = "";
         elBrief.value = "";
-        elExtra.value = "";
+        elFokus.value = "";
+        elRekap.value = "";
       });
 
-      elSearch.addEventListener("input", render);
-      elFilterTema.addEventListener("change", render);
+      elCari.addEventListener("input", renderList);
+      elFilterGaya.addEventListener("change", renderList);
 
       elList.addEventListener("click", (e) => {
-        const btn = e.target.closest("button[data-action]");
+        const btn = e.target.closest("button[data-act]");
         if (!btn) return;
 
-        const action = btn.getAttribute("data-action");
+        const act = btn.getAttribute("data-act");
         const id = btn.getAttribute("data-id");
-        const items = loadItems();
-        const idx = items.findIndex((x) => x.id === id);
+        const st = loadState();
+        const idx = st.items.findIndex((x) => x.id === id);
         if (idx === -1) return;
 
-        if (action === "delete") {
-          items.splice(idx, 1);
-          saveItems(items);
-          render();
+        const current = st.items[idx];
+
+        if (act === "delete") {
+          st.items.splice(idx, 1);
+          saveState(st);
+          renderList();
           return;
         }
 
-        if (action === "copy") {
-          const target = items[idx];
-          const textToCopy = `HOOK:\n${target.hook}\n\nDESKRIPSI VT:\n${target.desc}\n\n${target.tags}`;
+        if (act === "preview") {
+          applyHookStyle(current.hook);
+          elHookPreview.scrollIntoView({ behavior: "smooth", block: "center" });
+          return;
+        }
+
+        if (act === "copy") {
+          const payload = `HOOK:\n${current.hook}\n\nDESKRIPSI VT:\n${current.desc}\n\n${current.tags}`;
           if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(textToCopy).catch(() => {});
+            navigator.clipboard.writeText(payload).catch(() => {});
           }
           btn.textContent = "Tersalin";
           btn.classList.add("copied");
@@ -494,28 +818,30 @@
           return;
         }
 
-        if (action === "regen") {
-          const cur = items[idx];
-          const next = buildFreshVT(cur.judul, cur.tema, cur.brief, cur.extra);
-          // Jika hook persis sama dengan sebelumnya, tambahkan variasi pembuka ringan
-          const altHook =
-            next.hook === cur.hook
-              ? `Coba cek bagian ini: ${next.hook.charAt(0).toLowerCase() + next.hook.slice(1)}`
-              : next.hook;
-          items[idx] = {
-            ...cur,
-            hook: altHook,
-            desc: next.desc,
-            tags: next.tags,
-            waktu: formatTime()
+        if (act === "regen") {
+          const nextVariant = (current.variantCount || 0) + 1;
+          const rebuilt = buildFreshContent(
+            current.judul,
+            current.gaya,
+            current.brief,
+            current.fokus,
+            current.rekap,
+            nextVariant
+          );
+          st.items[idx] = {
+            ...current,
+            hook: rebuilt.hook,
+            desc: rebuilt.desc,
+            tags: rebuilt.tags,
+            variantCount: nextVariant,
+            waktu: nowLabel()
           };
-          saveItems(items);
-          render();
+          saveState(st);
+          applyHookStyle(st.items[idx].hook);
+          renderList();
         }
       });
-
-      render();
     })();
   </script>
-</div>
-<!-- AKHIR MODUL RAPIHIN VT & RIWAYAT -->
+</body>
+</html>
