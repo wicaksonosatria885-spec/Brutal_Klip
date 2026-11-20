@@ -235,6 +235,38 @@
       font-size: 12px;
     }
 
+    .wm-box {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    .wm-preview-strip {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 12px;
+    }
+
+    .wm-img-thumb {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      object-fit: contain;
+      background: #0c0a0f;
+      border: 1px solid var(--border);
+      display: none;
+    }
+
     .support-banner {
       background: linear-gradient(135deg, rgba(244, 63, 94, 0.16), rgba(30, 25, 37, 0.95));
       border: 1px solid rgba(244, 63, 94, 0.32);
@@ -280,11 +312,12 @@
     }
 
     .hook-preview-stage {
+      position: relative;
       background: var(--bg-panel);
       border: 1px solid var(--border);
       border-radius: 14px;
-      padding: 20px 16px;
-      min-height: 92px;
+      padding: 38px 18px;
+      min-height: 122px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -310,6 +343,44 @@
       letter-spacing: 0.06em;
       line-height: 1.45;
       word-spacing: 0.14em;
+    }
+
+    .stage-wm-badge {
+      position: absolute;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(12, 10, 15, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #f4f2f7;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 7px;
+      pointer-events: none;
+    }
+
+    .stage-wm-badge.pos-top-right {
+      top: 10px;
+      right: 12px;
+    }
+
+    .stage-wm-badge.pos-top-left {
+      top: 10px;
+      left: 12px;
+    }
+
+    .stage-wm-badge.pos-bottom-center {
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .stage-wm-badge img {
+      width: 16px;
+      height: 16px;
+      object-fit: contain;
+      border-radius: 3px;
     }
 
     .btn-row {
@@ -512,7 +583,7 @@
         </div>
         <div>
           <h1>Brutal Klip</h1>
-          <p data-i18n="brand_sub">Workspace Klipper: Upload File, Pendanaan Kopi &amp; Sebat, Komen, Gaya Hook, &amp; VT Fresh</p>
+          <p data-i18n="brand_sub">Workspace Klipper: Upload Video Bahan, Watermark, Kopi &amp; Sebat, Komen, Gaya Hook, &amp; VT Fresh</p>
         </div>
       </div>
 
@@ -529,25 +600,16 @@
       </div>
     </header>
 
-    <!-- TEMPAT UPLOAD FILE -->
+    <!-- TEMPAT UPLOAD VIDEO BAHAN -->
     <section class="card">
       <div class="sec-head">
-        <h2 data-i18n="upload_title">Tempat Upload File</h2>
-        <p data-i18n="upload_sub">Catat atau pilih file klip, aset, maupun watermark yang dipakai untuk campaign</p>
+        <h2 data-i18n="upload_title">Tempat Upload Video Bahan</h2>
+        <p data-i18n="upload_sub">Upload video bahan klip dari perangkat kamu untuk mempermudah pengecekan file</p>
       </div>
       <div class="upload-box">
-        <div class="grid-2" style="margin-bottom: 0;">
-          <div class="field" style="margin-bottom: 0;">
-            <label for="file-input" data-i18n="file_pick_label">Pilih File dari Perangkat</label>
-            <input id="file-input" class="input" type="file" multiple />
-          </div>
-          <div class="field" style="margin-bottom: 0;">
-            <label for="file-label" data-i18n="file_manual_label">Atau Tulis Nama / Link File Manual</label>
-            <div style="display: flex; gap: 8px;">
-              <input id="file-label" class="input" type="text" data-i18n-placeholder="file_manual_ph" placeholder="Contoh: watermark_pojok_kanan.png atau klip_01.mp4" />
-              <button id="btn-add-file" class="btn btn-secondary" type="button" data-i18n="btn_save">Simpan</button>
-            </div>
-          </div>
+        <div class="field" style="margin-bottom: 0;">
+          <label for="file-input" data-i18n="file_pick_label">Pilih File Video Bahan</label>
+          <input id="file-input" class="input" type="file" accept="video/*" multiple />
         </div>
         <div id="file-list" class="file-list"></div>
       </div>
@@ -598,14 +660,14 @@
       <div id="komen-list"></div>
     </section>
 
-    <!-- PRESET FONT & WARNA TEKS HOOK -->
+    <!-- PRESET FONT, WARNA TEKS HOOK & WATERMARK -->
     <section class="card">
       <div class="sec-head">
-        <h2 data-i18n="hook_style_title">Preset Font &amp; Warna Teks Hook</h2>
+        <h2 data-i18n="hook_style_title">Preset Font, Warna Teks Hook &amp; Watermark</h2>
         <p data-i18n="hook_style_sub">Teks hitam pekat otomatis mendapat latar putih tipis; warna lain otomatis memakai latar hitam tipis</p>
       </div>
 
-      <div class="grid-3">
+      <div class="grid-2">
         <div class="field">
           <label for="cfg-font" data-i18n="cfg_font_label">Preset Font Hook</label>
           <select id="cfg-font" class="select">
@@ -628,20 +690,47 @@
             <option value="#09090B" data-i18n="col_black">Hitam Pekat</option>
           </select>
         </div>
+      </div>
 
-        <div class="field">
-          <label for="cfg-watermark" data-i18n="cfg_wm_label">Catatan Watermark / Jadwal</label>
-          <input id="cfg-watermark" class="input" type="text" data-i18n-placeholder="cfg_wm_ph" placeholder="Contoh: Pojok Kanan Atas • Jadwal Aktif" />
+      <div class="wm-box">
+        <div class="grid-3" style="margin-bottom: 0;">
+          <div class="field" style="margin-bottom: 0;">
+            <label for="wm-file-input" data-i18n="wm_file_label">Upload Watermark (JPG / PNG)</label>
+            <input id="wm-file-input" class="input" type="file" accept=".jpg,.jpeg,.png,image/jpeg,image/png" />
+          </div>
+
+          <div class="field" style="margin-bottom: 0;">
+            <label for="wm-username" data-i18n="wm_user_label">Username TikTok / IG (Opsional)</label>
+            <input id="wm-username" class="input" type="text" data-i18n-placeholder="wm_user_ph" placeholder="Contoh: @brutal_klip atau @username_ig" />
+          </div>
+
+          <div class="field" style="margin-bottom: 0;">
+            <label for="wm-position" data-i18n="wm_pos_label">Pilihan Posisi Watermark</label>
+            <select id="wm-position" class="select">
+              <option value="pos-top-right" data-i18n="pos_tr">Pojok Kanan Atas</option>
+              <option value="pos-top-left" data-i18n="pos_tl">Pojok Kiri Atas</option>
+              <option value="pos-bottom-center" data-i18n="pos_bc">Bawah Tengah</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="wm-preview-strip">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <img id="wm-thumb" class="wm-img-thumb" alt="Preview Watermark" />
+            <span id="wm-status-text" style="color: var(--muted);">Watermark: Belum dipilih</span>
+          </div>
+          <button id="btn-clear-wm" class="mini-btn" type="button" data-i18n="btn_reset_wm">Hapus Watermark</button>
         </div>
       </div>
 
       <div class="hook-preview-stage">
+        <span id="stage-wm-badge" class="stage-wm-badge pos-top-right" style="display: none;"></span>
         <span id="hook-live-preview" class="hook-styled-text" data-i18n="hook_preview_default">Preview Hook Fresh Brutal Klip</span>
       </div>
 
       <div class="meta-strip">
         <span class="meta-chip" id="info-bg-mode">Latar: Hitam Tipis</span>
-        <span class="meta-chip" id="info-wm-mode">Watermark: Default</span>
+        <span class="meta-chip" id="info-wm-mode">Watermark: Pojok Kanan Atas</span>
         <span class="meta-chip" data-i18n="info_audio">Audio: Bebas Hak Cipta</span>
       </div>
     </section>
@@ -707,24 +796,20 @@
 
   <script>
     (function () {
-      const STORAGE_KEY = "brutal_klip_full_state_v9";
+      const STORAGE_KEY = "brutal_klip_full_state_v10";
       const TRAKTEER_URL = "https://trakteer.id/brutal_klip";
 
       const I18N = {
         id: {
-          brand_sub: "Workspace Klipper: Upload File, Pendanaan Kopi & Sebat, Komen, Gaya Hook, & VT Fresh",
+          brand_sub: "Workspace Klipper: Upload Video Bahan, Watermark, Kopi & Sebat, Komen, Gaya Hook, & VT Fresh",
           pill_pwa: "PWA Ready",
           pill_save: "Auto Save Lokal",
           pill_mode: "Mode Klipper",
-          upload_title: "Tempat Upload File",
-          upload_sub: "Catat atau pilih file klip, aset, maupun watermark yang dipakai untuk campaign",
-          file_pick_label: "Pilih File dari Perangkat",
-          file_manual_label: "Atau Tulis Nama / Link File Manual",
-          file_manual_ph: "Contoh: watermark_pojok_kanan.png atau klip_01.mp4",
-          btn_save: "Simpan",
-          no_files: "Belum ada file atau catatan aset yang disimpan.",
+          upload_title: "Tempat Upload Video Bahan",
+          upload_sub: "Upload video bahan klip dari perangkat kamu untuk mempermudah pengecekan file",
+          file_pick_label: "Pilih File Video Bahan",
+          no_files: "Belum ada video bahan yang di-upload.",
           btn_del: "Hapus",
-          manual_tag: "Manual",
           fund_title: "Pendanaan — Kopi & Sebat",
           fund_sub: "Suport dana sukarela buat kopi & sebat di Brutal Klip",
           fund_banner_title: "Suport Kopi & Sebat via Trakteer",
@@ -742,7 +827,7 @@
           tag_idea: "Ide Komen",
           btn_add: "Tambah",
           no_comments: "Belum ada komen atau catatan tersimpan.",
-          hook_style_title: "Preset Font & Warna Teks Hook",
+          hook_style_title: "Preset Font, Warna Teks Hook & Watermark",
           hook_style_sub: "Teks hitam pekat otomatis mendapat latar putih tipis; warna lain otomatis memakai latar hitam tipis",
           cfg_font_label: "Preset Font Hook",
           cfg_color_label: "Warna Teks Hook",
@@ -752,13 +837,20 @@
           col_mint: "Hijau Mint",
           col_sky: "Biru Sky",
           col_black: "Hitam Pekat",
-          cfg_wm_label: "Catatan Watermark / Jadwal",
-          cfg_wm_ph: "Contoh: Pojok Kanan Atas • Jadwal Aktif",
+          wm_file_label: "Upload Watermark (JPG / PNG)",
+          wm_user_label: "Username TikTok / IG (Opsional)",
+          wm_user_ph: "Contoh: @brutal_klip atau @username_ig",
+          wm_pos_label: "Pilihan Posisi Watermark",
+          pos_tr: "Pojok Kanan Atas",
+          pos_tl: "Pojok Kiri Atas",
+          pos_bc: "Bawah Tengah",
+          btn_reset_wm: "Hapus Watermark",
+          wm_none: "Watermark: Belum diatur",
+          wm_active_prefix: "Watermark aktif",
           hook_preview_default: "Preview Hook Fresh Brutal Klip",
           bg_white_thin: "Latar: Putih Tipis (Teks Hitam)",
           bg_black_thin: "Latar: Hitam Tipis",
-          wm_default: "Watermark: Default",
-          wm_prefix: "Watermark",
+          wm_info_prefix: "Watermark",
           info_audio: "Audio: Bebas Hak Cipta",
           vt_title: "Tempat Rapihin VT & Riwayat",
           vt_sub: "Pahami isi kotak brief terlebih dahulu, lalu hasilkan hook & deskripsi VT dengan pembahasan baru yang tetap relevan",
@@ -788,19 +880,15 @@
           default_topic: "Pembahasan VT"
         },
         en: {
-          brand_sub: "Clipper Workspace: File Upload, Coffee & Smoke Support, Comments, Hook Styles, & Fresh VT",
+          brand_sub: "Clipper Workspace: Upload Raw Video, Watermark, Coffee & Smoke, Comments, Hook Styles, & Fresh VT",
           pill_pwa: "PWA Ready",
           pill_save: "Local Auto Save",
           pill_mode: "Clipper Mode",
-          upload_title: "File Upload Area",
-          upload_sub: "Log or pick clip files, assets, or watermarks used for your campaign",
-          file_pick_label: "Choose Files from Device",
-          file_manual_label: "Or Enter File Name / Link Manually",
-          file_manual_ph: "Example: top_right_watermark.png or clip_01.mp4",
-          btn_save: "Save",
-          no_files: "No saved files or asset notes yet.",
+          upload_title: "Raw Video Upload Area",
+          upload_sub: "Upload raw video clips from your device for easy file reference",
+          file_pick_label: "Choose Raw Video Files",
+          no_files: "No raw videos uploaded yet.",
           btn_del: "Delete",
-          manual_tag: "Manual",
           fund_title: "Funding — Coffee & Smoke",
           fund_sub: "Voluntary support for coffee & smoke on Brutal Klip",
           fund_banner_title: "Support Coffee & Smoke via Trakteer",
@@ -818,7 +906,7 @@
           tag_idea: "Comment Idea",
           btn_add: "Add",
           no_comments: "No saved comments or notes yet.",
-          hook_style_title: "Hook Font & Text Color Presets",
+          hook_style_title: "Hook Font, Text Color & Watermark Presets",
           hook_style_sub: "Deep black text automatically gets a light white backdrop; other colors get a light black backdrop",
           cfg_font_label: "Hook Font Preset",
           cfg_color_label: "Hook Text Color",
@@ -828,13 +916,20 @@
           col_mint: "Mint Green",
           col_sky: "Sky Blue",
           col_black: "Deep Black",
-          cfg_wm_label: "Watermark / Schedule Note",
-          cfg_wm_ph: "Example: Top Right • Active Schedule",
+          wm_file_label: "Upload Watermark (JPG / PNG)",
+          wm_user_label: "TikTok / IG Username (Optional)",
+          wm_user_ph: "Example: @brutal_klip or @ig_username",
+          wm_pos_label: "Watermark Position",
+          pos_tr: "Top Right",
+          pos_tl: "Top Left",
+          pos_bc: "Bottom Center",
+          btn_reset_wm: "Clear Watermark",
+          wm_none: "Watermark: Not set",
+          wm_active_prefix: "Active watermark",
           hook_preview_default: "Brutal Klip Fresh Hook Preview",
           bg_white_thin: "Backdrop: Light White (Black Text)",
           bg_black_thin: "Backdrop: Light Black",
-          wm_default: "Watermark: Default",
-          wm_prefix: "Watermark",
+          wm_info_prefix: "Watermark",
           info_audio: "Audio: Copyright Free",
           vt_title: "VT Polisher & History",
           vt_sub: "Read the brief box first as topic & rule reference, then craft a fresh hook & VT description",
@@ -866,7 +961,6 @@
       };
 
       const elFileInput = document.getElementById("file-input");
-      const elFileLabel = document.getElementById("file-label");
       const elFileList = document.getElementById("file-list");
 
       const btnBukaTrakteer = document.getElementById("btn-buka-trakteer");
@@ -878,7 +972,12 @@
 
       const elFont = document.getElementById("cfg-font");
       const elColor = document.getElementById("cfg-color");
-      const elWatermark = document.getElementById("cfg-watermark");
+      const elWmFileInput = document.getElementById("wm-file-input");
+      const elWmUsername = document.getElementById("wm-username");
+      const elWmPosition = document.getElementById("wm-position");
+      const elWmThumb = document.getElementById("wm-thumb");
+      const elWmStatusText = document.getElementById("wm-status-text");
+      const elStageWmBadge = document.getElementById("stage-wm-badge");
       const elHookPreview = document.getElementById("hook-live-preview");
       const elBgMode = document.getElementById("info-bg-mode");
       const elWmMode = document.getElementById("info-wm-mode");
@@ -898,7 +997,10 @@
           config: {
             font: 'system-ui, -apple-system, sans-serif',
             color: "#FFFFFF",
-            watermark: ""
+            wmPosition: "pos-top-right",
+            wmUsername: "",
+            wmImageName: "",
+            wmImageData: ""
           },
           files: [],
           comments: [],
@@ -933,6 +1035,12 @@
       function t(key) {
         const lang = loadState().lang;
         return (I18N[lang] && I18N[lang][key]) || I18N.id[key] || key;
+      }
+
+      function posLabel(posKey) {
+        if (posKey === "pos-top-left") return t("pos_tl");
+        if (posKey === "pos-bottom-center") return t("pos_bc");
+        return t("pos_tr");
       }
 
       function nowLabel(date = new Date()) {
@@ -982,7 +1090,7 @@
         });
       });
 
-      // --- UPLOAD FILE ---
+      // --- UPLOAD VIDEO BAHAN ---
       function renderFiles() {
         const st = loadState();
         if (!st.files.length) {
@@ -1027,16 +1135,6 @@
         });
         addFileEntries(picked);
         elFileInput.value = "";
-      });
-
-      document.getElementById("btn-add-file").addEventListener("click", () => {
-        const val = (elFileLabel.value || "").trim();
-        if (!val) {
-          elFileLabel.focus();
-          return;
-        }
-        addFileEntries([{ name: val, sizeLabel: t("manual_tag") }]);
-        elFileLabel.value = "";
       });
 
       elFileList.addEventListener("click", (e) => {
@@ -1112,12 +1210,22 @@
         renderComments();
       });
 
-      // --- GAYA HOOK ---
+      // --- GAYA HOOK & WATERMARK ---
+      function formatWatermarkSummary(cfg) {
+        const parts = [];
+        if (cfg.wmImageName) parts.push(cfg.wmImageName);
+        if (cfg.wmUsername && cfg.wmUsername.trim()) parts.push(cfg.wmUsername.trim());
+        return parts.join(" • ");
+      }
+
       function applyHookStyle(textOverride) {
         const state = loadState();
-        const color = state.config.color || "#FFFFFF";
-        const font = state.config.font || 'system-ui, -apple-system, sans-serif';
-        const wm = (state.config.watermark || "").trim();
+        const cfg = state.config;
+        const color = cfg.color || "#FFFFFF";
+        const font = cfg.font || 'system-ui, -apple-system, sans-serif';
+        const pos = cfg.wmPosition || "pos-top-right";
+        const wmText = formatWatermarkSummary(cfg);
+        const hasImg = Boolean(cfg.wmImageData);
 
         const isImpactFont = font.toLowerCase().includes("impact");
         elHookPreview.classList.toggle("is-impact", isImpactFont);
@@ -1138,8 +1246,35 @@
           elHookPreview.textContent = textOverride.trim();
         }
 
+        if (hasImg) {
+          elWmThumb.src = cfg.wmImageData;
+          elWmThumb.style.display = "block";
+        } else {
+          elWmThumb.removeAttribute("src");
+          elWmThumb.style.display = "none";
+        }
+
+        if (wmText || hasImg) {
+          elWmStatusText.textContent = `${t("wm_active_prefix")}: ${wmText || cfg.wmImageName} (${posLabel(pos)})`;
+        } else {
+          elWmStatusText.textContent = `${t("wm_none")} • ${posLabel(pos)}`;
+        }
+
+        elStageWmBadge.className = `stage-wm-badge ${pos}`;
+        if (hasImg || (cfg.wmUsername && cfg.wmUsername.trim())) {
+          elStageWmBadge.style.display = "inline-flex";
+          const imgHtml = hasImg ? `<img src="${esc(cfg.wmImageData)}" alt="WM" />` : "";
+          const txtHtml = cfg.wmUsername && cfg.wmUsername.trim() ? `<span>${esc(cfg.wmUsername.trim())}</span>` : "";
+          elStageWmBadge.innerHTML = `${imgHtml}${txtHtml}`;
+        } else {
+          elStageWmBadge.style.display = "none";
+          elStageWmBadge.innerHTML = "";
+        }
+
         elBgMode.textContent = isBlackText ? t("bg_white_thin") : t("bg_black_thin");
-        elWmMode.textContent = wm ? `${t("wm_prefix")}: ${wm}` : t("wm_default");
+        elWmMode.textContent = wmText
+          ? `${t("wm_info_prefix")}: ${wmText} (${posLabel(pos)})`
+          : `${t("wm_info_prefix")}: ${posLabel(pos)}`;
       }
 
       // --- PAHAMI BRIEF & RACIK PEMBAHASAN FRESH ---
@@ -1318,16 +1453,19 @@
       const initState = loadState();
       elFont.value = initState.config.font;
       elColor.value = initState.config.color;
-      elWatermark.value = initState.config.watermark;
+      elWmUsername.value = initState.config.wmUsername || "";
+      elWmPosition.value = initState.config.wmPosition || "pos-top-right";
 
       applyLanguageUI();
 
       function handleConfigChange() {
         const st = loadState();
         st.config = {
+          ...st.config,
           font: elFont.value,
           color: elColor.value,
-          watermark: elWatermark.value
+          wmUsername: elWmUsername.value,
+          wmPosition: elWmPosition.value
         };
         saveState(st);
         applyHookStyle();
@@ -1335,7 +1473,33 @@
 
       elFont.addEventListener("change", handleConfigChange);
       elColor.addEventListener("change", handleConfigChange);
-      elWatermark.addEventListener("input", handleConfigChange);
+      elWmUsername.addEventListener("input", handleConfigChange);
+      elWmPosition.addEventListener("change", handleConfigChange);
+
+      elWmFileInput.addEventListener("change", () => {
+        const file = elWmFileInput.files && elWmFileInput.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          const st = loadState();
+          st.config.wmImageName = file.name;
+          st.config.wmImageData = typeof reader.result === "string" ? reader.result : "";
+          saveState(st);
+          applyHookStyle();
+        };
+        reader.readAsDataURL(file);
+        elWmFileInput.value = "";
+      });
+
+      document.getElementById("btn-clear-wm").addEventListener("click", () => {
+        const st = loadState();
+        st.config.wmImageName = "";
+        st.config.wmImageData = "";
+        st.config.wmUsername = "";
+        elWmUsername.value = "";
+        saveState(st);
+        applyHookStyle();
+      });
 
       document.getElementById("btn-racik").addEventListener("click", () => {
         const briefVal = elBrief.value.trim();
@@ -1350,6 +1514,7 @@
         const fokusVal = elFokus.value.trim();
         const rekapVal = elRekap.value.trim();
         const built = buildFreshContent(judulVal, gayaVal, briefVal, fokusVal, rekapVal, st.items.length);
+        const wmSummary = formatWatermarkSummary(st.config);
 
         const newItem = {
           id: "bk_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
@@ -1358,7 +1523,7 @@
           brief: briefVal,
           fokus: fokusVal,
           rekap: rekapVal,
-          watermark: (elWatermark.value || "").trim(),
+          watermark: wmSummary ? `${wmSummary} (${posLabel(st.config.wmPosition)})` : posLabel(st.config.wmPosition),
           hook: built.hook,
           desc: built.desc,
           tags: built.tags,
