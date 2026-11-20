@@ -16,10 +16,11 @@
       --bg-input: #1e1925;
       --border: rgba(255, 255, 255, 0.1);
       --accent: #f43f5e;
-      --accent-soft: rgba(244, 63, 94, 0.15);
+      --accent-soft: rgba(244, 63, 94, 0.14);
       --text: #f4f2f7;
       --muted: #a69fb3;
       --ok: #34d399;
+      --warn: #fbbf24;
     }
 
     * {
@@ -28,7 +29,7 @@
 
     body {
       margin: 0;
-      padding: 18px 14px 48px;
+      padding: 18px 14px 56px;
       background: radial-gradient(circle at top, #1d1526 0%, var(--bg-page) 62%);
       color: var(--text);
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -36,7 +37,7 @@
     }
 
     .app-shell {
-      max-width: 980px;
+      max-width: 1020px;
       margin: 0 auto;
       display: grid;
       gap: 18px;
@@ -240,38 +241,30 @@
       font-size: 12px;
     }
 
-    .vt-studio-grid {
-      margin-top: 14px;
-      display: grid;
-      grid-template-columns: minmax(230px, 300px) 1fr;
-      gap: 16px;
-      align-items: start;
-    }
-
-    @media (max-width: 720px) {
-      .vt-studio-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .tiktok-frame-wrap {
+    .source-mini-player {
+      margin-top: 12px;
       background: var(--bg-panel);
       border: 1px solid var(--border);
-      border-radius: 16px;
+      border-radius: 12px;
       padding: 12px;
+      display: none;
     }
 
-    .tiktok-frame-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 11px;
-      color: var(--muted);
-      margin-bottom: 8px;
-      gap: 6px;
+    .source-mini-player.active {
+      display: block;
     }
 
-    .tiktok-916-stage {
+    .source-mini-player video {
+      width: 100%;
+      max-height: 220px;
+      border-radius: 10px;
+      background: #060508;
+      display: block;
+      margin-top: 8px;
+    }
+
+    /* Frame VT 9:16 dengan Blur BG Gelap + Hook & WM Aman dari UI TikTok */
+    .vt-916-stage {
       position: relative;
       width: 100%;
       aspect-ratio: 9 / 16;
@@ -280,23 +273,24 @@
       overflow: hidden;
       border: 1px solid rgba(255, 255, 255, 0.14);
       display: flex;
-      align-items: center;
-      justify-content: center;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 46px 10px 76px;
     }
 
-    .tiktok-blur-bg {
+    .vt-blur-bg {
       position: absolute;
       inset: -18px;
       width: calc(100% + 36px);
       height: calc(100% + 36px);
       object-fit: cover;
-      filter: blur(18px) brightness(0.45) saturate(1.15);
+      filter: blur(18px) brightness(0.42) saturate(1.15);
       transform: scale(1.08);
       pointer-events: none;
       z-index: 1;
     }
 
-    .tiktok-dim-scrim {
+    .vt-dim-scrim {
       position: absolute;
       inset: 0;
       background: rgba(6, 5, 8, 0.28);
@@ -304,59 +298,96 @@
       z-index: 2;
     }
 
-    .tiktok-video-el {
+    .vt-top-zone {
       position: relative;
-      width: 100%;
-      height: auto;
-      max-height: 100%;
-      object-fit: contain;
+      z-index: 4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      min-height: 54px;
+      justify-content: center;
+    }
+
+    .vt-hook-pill {
+      max-width: 94%;
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.28;
+      text-align: center;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      transition: opacity 0.2s ease;
+    }
+
+    .vt-hook-pill.is-impact {
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      line-height: 1.35;
+      word-spacing: 0.12em;
+    }
+
+    .vt-center-video-wrap {
+      position: relative;
       z-index: 3;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: auto 0;
+    }
+
+    .vt-video-el {
+      width: 100%;
+      max-height: 215px;
+      object-fit: contain;
+      border-radius: 6px;
       background: transparent;
     }
 
-    .video-hook-overlay {
+    /* Watermark memudar tipis di area aman agar tidak ketutupan search bar atas atau caption bawah */
+    .vt-wm-chip {
       position: absolute;
-      top: 18%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      max-width: 88%;
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 800;
-      line-height: 1.35;
-      text-align: center;
-      pointer-events: none;
       z-index: 5;
-      transition: opacity 0.18s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-size: 9px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.72);
+      background: rgba(12, 10, 15, 0.42);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      opacity: 0.58;
+      pointer-events: none;
     }
 
-    .video-hook-overlay.is-impact {
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      line-height: 1.45;
-      word-spacing: 0.14em;
+    .vt-wm-chip.pos-safe-top {
+      top: 16%;
+      left: 50%;
+      transform: translateX(-50%);
     }
 
-    .auto-summary-panel {
-      background: var(--bg-panel);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 14px;
+    .vt-wm-chip.pos-safe-left {
+      top: 22%;
+      left: 10px;
     }
 
-    .auto-info-box {
-      background: var(--bg-input);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 12px;
-      margin-bottom: 12px;
-      font-size: 12px;
-      color: var(--muted);
+    .vt-wm-chip.pos-safe-right {
+      top: 22%;
+      right: 10px;
     }
 
-    .auto-info-box strong {
-      color: var(--text);
+    .vt-wm-chip img {
+      width: 12px;
+      height: 12px;
+      object-fit: contain;
+      border-radius: 2px;
     }
 
     .wm-box {
@@ -388,6 +419,7 @@
       object-fit: contain;
       background: #0c0a0f;
       border: 1px solid var(--border);
+      opacity: 0.65;
       display: none;
     }
 
@@ -440,8 +472,8 @@
       background: var(--bg-panel);
       border: 1px solid var(--border);
       border-radius: 14px;
-      padding: 38px 18px;
-      min-height: 122px;
+      padding: 36px 18px;
+      min-height: 116px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -452,11 +484,11 @@
 
     .hook-styled-text {
       display: inline-block;
-      padding: 8px 16px;
+      padding: 7px 14px;
       border-radius: 8px;
-      font-size: 20px;
+      font-size: 17px;
       font-weight: 800;
-      line-height: 1.4;
+      line-height: 1.35;
       letter-spacing: 0.02em;
       max-width: 100%;
       word-break: break-word;
@@ -465,47 +497,8 @@
     .hook-styled-text.is-impact {
       font-weight: 700;
       letter-spacing: 0.06em;
-      line-height: 1.45;
+      line-height: 1.42;
       word-spacing: 0.14em;
-    }
-
-    .stage-wm-badge {
-      position: absolute;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      background: rgba(12, 10, 15, 0.78);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      color: #f4f2f7;
-      font-size: 10px;
-      font-weight: 600;
-      padding: 3px 7px;
-      border-radius: 7px;
-      pointer-events: none;
-      z-index: 6;
-    }
-
-    .stage-wm-badge.pos-top-right {
-      top: 10px;
-      right: 10px;
-    }
-
-    .stage-wm-badge.pos-top-left {
-      top: 10px;
-      left: 10px;
-    }
-
-    .stage-wm-badge.pos-bottom-center {
-      bottom: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    .stage-wm-badge img {
-      width: 14px;
-      height: 14px;
-      object-fit: contain;
-      border-radius: 3px;
     }
 
     .btn-row {
@@ -571,13 +564,27 @@
       flex: 0 1 210px;
     }
 
+    /* Kartu Hasil VT: Keterangan & Grafik di Kiri, Player di Samping */
     .vt-card {
       background: var(--bg-panel);
       border: 1px solid var(--border);
       border-left: 4px solid var(--accent);
-      border-radius: 15px;
+      border-radius: 16px;
       padding: 15px;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
+    }
+
+    .vt-card-layout {
+      display: grid;
+      grid-template-columns: 1fr minmax(200px, 240px);
+      gap: 16px;
+      align-items: start;
+    }
+
+    @media (max-width: 720px) {
+      .vt-card-layout {
+        grid-template-columns: 1fr;
+      }
     }
 
     .vt-top {
@@ -594,18 +601,27 @@
       background: var(--bg-input);
       border: 1px solid var(--border);
       border-radius: 10px;
-      padding: 9px 12px;
+      padding: 8px 12px;
       margin-bottom: 10px;
       font-size: 12px;
       color: var(--ok);
       font-weight: 600;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .fyp-badge {
+      color: var(--warn);
+      font-weight: 800;
     }
 
     .vt-hook-box {
       background: var(--accent-soft);
       border: 1px solid rgba(244, 63, 94, 0.35);
       border-radius: 11px;
-      padding: 11px 13px;
+      padding: 10px 12px;
       margin-bottom: 10px;
     }
 
@@ -615,12 +631,12 @@
       letter-spacing: 0.05em;
       text-transform: uppercase;
       color: var(--muted);
-      margin-bottom: 5px;
+      margin-bottom: 4px;
     }
 
     .vt-hook-val {
       margin: 0;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 700;
       color: #fff;
     }
@@ -628,7 +644,7 @@
     .vt-desc-box {
       background: var(--bg-input);
       border-radius: 11px;
-      padding: 11px 13px;
+      padding: 10px 12px;
       margin-bottom: 10px;
     }
 
@@ -637,6 +653,44 @@
       font-size: 13px;
       white-space: pre-line;
       color: var(--text);
+    }
+
+    .retention-box {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+    }
+
+    .retention-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 7px;
+      gap: 8px;
+    }
+
+    .retention-bars {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      align-items: end;
+      gap: 4px;
+      height: 44px;
+      padding-top: 4px;
+    }
+
+    .ret-bar {
+      width: 100%;
+      border-radius: 4px 4px 1px 1px;
+      background: linear-gradient(180deg, #fb7185 0%, #f43f5e 100%);
+      min-height: 16%;
+    }
+
+    .ret-bar.peak {
+      background: linear-gradient(180deg, #6ee7b7 0%, #10b981 100%);
     }
 
     .vt-meta-note {
@@ -681,6 +735,34 @@
       color: var(--ok);
     }
 
+    .side-player-col {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px;
+    }
+
+    .side-player-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .download-all-bar {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
     .empty-state {
       text-align: center;
       padding: 26px 16px;
@@ -719,7 +801,7 @@
         </div>
         <div>
           <h1>Brutal Klip</h1>
-          <p data-i18n="brand_sub">Workspace Terima Jadi: Blur Background Gelap, Auto Detik Potong &amp; Hook, + Caption Otomatis</p>
+          <p data-i18n="brand_sub">Workspace Terima Jadi: Blur BG Gelap, Hook &amp; WM Aman TikTok, Grafik Retensi + Potensi FYP</p>
         </div>
       </div>
 
@@ -736,11 +818,11 @@
       </div>
     </header>
 
-    <!-- TEMPAT UPLOAD VIDEO BAHAN & PREVIEW BLUR BG -->
+    <!-- UPLOAD VIDEO BAHAN & PENGATURAN JUMLAH VT -->
     <section class="card">
       <div class="sec-head">
-        <h2 data-i18n="upload_title">Tempat Upload Video Bahan &amp; Preview VT</h2>
-        <p data-i18n="upload_sub">Video tetap utuh tanpa terpotong pinggir, memakai background blur yang dipergelap tipis + hook &amp; watermark</p>
+        <h2 data-i18n="upload_title">Upload Video Bahan &amp; Atur Jumlah Klip</h2>
+        <p data-i18n="upload_sub">Video tetap utuh tanpa terpotong pinggir, memakai background blur gelap; hasil klip tampil berdampingan dengan player</p>
       </div>
 
       <div class="upload-box">
@@ -751,58 +833,37 @@
         <div id="file-list" class="file-list"></div>
       </div>
 
-      <div id="vt-studio-grid" class="vt-studio-grid" style="display: none;">
-        <div class="tiktok-frame-wrap">
-          <div class="tiktok-frame-head">
-            <strong id="vt-player-title">VT Preview</strong>
-            <span class="pill ok-pill" data-i18n="bg_blur_badge">Blur BG + Dark</span>
-          </div>
+      <div id="source-mini-player" class="source-mini-player">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 12px;">
+          <strong id="source-player-name">Bahan Video</strong>
+          <span class="pill" data-i18n="source_preview_badge">Bahan Asli</span>
+        </div>
+        <video id="source-video-el" controls playsinline></video>
+      </div>
 
-          <div class="tiktok-916-stage">
-            <video id="tiktok-blur-bg" class="tiktok-blur-bg" muted playsinline loop aria-hidden="true"></video>
-            <div class="tiktok-dim-scrim" aria-hidden="true"></div>
-            <span id="video-wm-badge" class="stage-wm-badge pos-top-right" style="display: none;"></span>
-            <span id="video-hook-overlay" class="video-hook-overlay">Preview Hook Fresh Brutal Klip</span>
-            <video id="vt-video-el" class="tiktok-video-el" controls playsinline></video>
-          </div>
+      <div class="grid-2" style="margin-top: 14px; margin-bottom: 0;">
+        <div class="field" style="margin-bottom: 0;">
+          <label for="vt-durasi-target" data-i18n="target_dur_label">Target Durasi Potongan VT</label>
+          <select id="vt-durasi-target" class="select">
+            <option value="25" data-i18n="dur_25">±25 Detik (Cepat &amp; Padat)</option>
+            <option value="40" selected data-i18n="dur_40">±40 Detik (Standar Klip)</option>
+            <option value="60" data-i18n="dur_60">±60 Detik (Pembahasan Lengkap)</option>
+          </select>
         </div>
 
-        <div class="auto-summary-panel">
-          <div class="box-tag" data-i18n="auto_engine_title">Mesin Terima Jadi Otomatis</div>
-          <div class="auto-info-box">
-            <div><strong data-i18n="auto_step_1">1. Kirim Video Bahan:</strong> <span data-i18n="auto_step_1_desc">Resolusi asli tetap utuh tanpa crop yang motong subjek, dilapisi background blur &amp; gelap tipis.</span></div>
-            <div style="margin-top: 6px;"><strong data-i18n="auto_step_2">2. Pilih Jumlah VT &amp; Klik Racik:</strong> <span data-i18n="auto_step_2_desc">Bisa pilih 1, 2, 3, 5, 10, 20, 30, 40, atau 50 VT—otomatis tersusun detik potong, detik hook, teks hook, deskripsi, dan tagar.</span></div>
-          </div>
-
-          <div class="grid-2" style="margin-bottom: 0;">
-            <div class="field" style="margin-bottom: 0;">
-              <label for="vt-durasi-target" data-i18n="target_dur_label">Target Durasi Potongan VT</label>
-              <select id="vt-durasi-target" class="select">
-                <option value="25" data-i18n="dur_25">±25 Detik (Cepat &amp; Padat)</option>
-                <option value="40" selected data-i18n="dur_40">±40 Detik (Standar Klip)</option>
-                <option value="60" data-i18n="dur_60">±60 Detik (Pembahasan Lengkap)</option>
-              </select>
-            </div>
-
-            <div class="field" style="margin-bottom: 0;">
-              <label for="vt-jumlah-paket" data-i18n="pack_count_label">Butuh Berapa Clip / VT?</label>
-              <select id="vt-jumlah-paket" class="select">
-                <option value="1">1 VT</option>
-                <option value="2">2 VT</option>
-                <option value="3">3 VT</option>
-                <option value="5" selected>5 VT</option>
-                <option value="10">10 VT</option>
-                <option value="20">20 VT</option>
-                <option value="30">30 VT</option>
-                <option value="40">40 VT</option>
-                <option value="50">50 VT</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="btn-row">
-            <button id="btn-test-hook-now" class="btn btn-secondary" type="button" data-i18n="btn_test_hook">Tes Tampil Hook di Video</button>
-          </div>
+        <div class="field" style="margin-bottom: 0;">
+          <label for="vt-jumlah-paket" data-i18n="pack_count_label">Butuh Berapa Clip / VT?</label>
+          <select id="vt-jumlah-paket" class="select">
+            <option value="1">1 VT</option>
+            <option value="2">2 VT</option>
+            <option value="3">3 VT</option>
+            <option value="5" selected>5 VT</option>
+            <option value="10">10 VT</option>
+            <option value="20">20 VT</option>
+            <option value="30">30 VT</option>
+            <option value="40">40 VT</option>
+            <option value="50">50 VT</option>
+          </select>
         </div>
       </div>
     </section>
@@ -897,11 +958,11 @@
           </div>
 
           <div class="field" style="margin-bottom: 0;">
-            <label for="wm-position" data-i18n="wm_pos_label">Pilihan Posisi Watermark</label>
+            <label for="wm-position" data-i18n="wm_pos_label">Posisi Aman Watermark</label>
             <select id="wm-position" class="select">
-              <option value="pos-top-right" data-i18n="pos_tr">Pojok Kanan Atas</option>
-              <option value="pos-top-left" data-i18n="pos_tl">Pojok Kiri Atas</option>
-              <option value="pos-bottom-center" data-i18n="pos_bc">Bawah Tengah</option>
+              <option value="pos-safe-top" data-i18n="pos_safe_top">Atas Aman (Tengah)</option>
+              <option value="pos-safe-left" data-i18n="pos_safe_left">Atas Aman (Kiri)</option>
+              <option value="pos-safe-right" data-i18n="pos_safe_right">Atas Aman (Kanan)</option>
             </select>
           </div>
         </div>
@@ -916,13 +977,12 @@
       </div>
 
       <div class="hook-preview-stage">
-        <span id="stage-wm-badge" class="stage-wm-badge pos-top-right" style="display: none;"></span>
-        <span id="hook-live-preview" class="hook-styled-text" data-i18n="hook_preview_default">Preview Hook Fresh Brutal Klip</span>
+        <span id="hook-live-preview" class="hook-styled-text" data-i18n="hook_preview_default">Klip ini ngebahas bagian yang bikin penasaran</span>
       </div>
 
       <div class="meta-strip">
         <span class="meta-chip" id="info-bg-mode">Latar: Hitam Tipis</span>
-        <span class="meta-chip" id="info-wm-mode">Watermark: Pojok Kanan Atas</span>
+        <span class="meta-chip" id="info-wm-mode">Watermark: Atas Aman (Tengah) • Pudar Tipis</span>
         <span class="meta-chip" data-i18n="info_audio">Audio: Bebas Hak Cipta</span>
       </div>
     </section>
@@ -931,13 +991,13 @@
     <section class="card">
       <div class="sec-head">
         <h2 data-i18n="vt_title">Hasil VT Terima Jadi &amp; Riwayat</h2>
-        <p data-i18n="vt_sub">Cukup isi brief (atau kirim video), pilih jumlah VT (1–50 VT), klik racik—semua tersusun otomatis</p>
+        <p data-i18n="vt_sub">Hook &amp; deskripsi diracik luwes sesuai isi brief + grafik retensi, potensi FYP, dan unduhan terpisah</p>
       </div>
 
       <div class="grid-2">
         <div class="field">
           <label for="vt-judul" data-i18n="vt_judul_label">Judul / Topik Campaign (Opsional, Otomatis dari Brief jika Kosong)</label>
-          <input id="vt-judul" class="input" type="text" data-i18n-placeholder="vt_judul_ph" placeholder="Contoh: Brutal Klip X Banget" />
+          <input id="vt-judul" class="input" type="text" data-i18n-placeholder="vt_judul_ph" placeholder="Contoh: Era KOL & Tren Baru" />
         </div>
         <div class="field">
           <label for="vt-gaya" data-i18n="vt_gaya_label">Gaya Pembahasan</label>
@@ -952,7 +1012,7 @@
 
       <div class="field">
         <label for="vt-brief" data-i18n="vt_brief_label">Kotak Brief</label>
-        <textarea id="vt-brief" class="textarea" data-i18n-placeholder="vt_brief_ph" placeholder="Tempel brief campaign di sini. Sistem akan otomatis menentukan detik potong, detik hook, teks hook, deskripsi, dan tagar untuk kamu..."></textarea>
+        <textarea id="vt-brief" class="textarea" data-i18n-placeholder="vt_brief_ph" placeholder="Tempel brief campaign di sini. Sistem membaca konteks brief dan menyusun hook natural, deskripsi siap upload, tagar, detik potong, grafik retensi, serta potensi FYP..."></textarea>
       </div>
 
       <div class="btn-row">
@@ -972,41 +1032,42 @@
       </div>
 
       <div id="riwayat-vt-container"></div>
+
+      <div id="download-all-bar" class="download-all-bar" style="display: none;">
+        <div style="font-size: 12px; color: var(--muted);">
+          <strong id="download-all-info" style="color: var(--text);">0 Klip Siap Unduh</strong>
+        </div>
+        <button id="btn-unduh-semua" class="btn btn-primary" type="button" data-i18n="btn_download_all">Unduh Semua Hasil Klip</button>
+      </div>
     </section>
   </div>
 
   <script>
     (function () {
-      const STORAGE_KEY = "brutal_klip_full_state_v15";
+      const STORAGE_KEY = "brutal_klip_full_state_v16";
       const TRAKTEER_URL = "https://trakteer.id/brutal_klip";
       const videoBlobUrls = new Map();
-      let activeSegment = null;
+      const cardPlayers = new Map();
 
       const I18N = {
         id: {
-          brand_sub: "Workspace Terima Jadi: Blur Background Gelap, Auto Detik Potong & Hook, + Caption Otomatis",
+          brand_sub: "Workspace Terima Jadi: Blur BG Gelap, Hook & WM Aman TikTok, Grafik Retensi + Potensi FYP",
           pill_done_for_you: "Mode Terima Jadi",
           pill_save: "Auto Save Lokal",
           pill_mode: "Mode Klipper",
-          upload_title: "Tempat Upload Video Bahan & Preview VT",
-          upload_sub: "Video tetap utuh tanpa terpotong pinggir, memakai background blur yang dipergelap tipis + hook & watermark",
+          upload_title: "Upload Video Bahan & Atur Jumlah Klip",
+          upload_sub: "Video tetap utuh tanpa terpotong pinggir, memakai background blur gelap; hasil klip tampil berdampingan dengan player",
           file_pick_label: "Pilih File Video Bahan (MP4 / MOV / WebM — termasuk hasil download YouTube)",
           no_files: "Belum ada video bahan yang di-upload.",
-          btn_play_vt: "Putar VT",
+          source_preview_badge: "Bahan Asli",
+          btn_play_source: "Putar Bahan",
           btn_del: "Hapus",
-          reselect_video_note: "Pilih ulang file video dari perangkat untuk memutarnya di player.",
-          bg_blur_badge: "Blur BG + Dark",
-          auto_engine_title: "Mesin Terima Jadi Otomatis",
-          auto_step_1: "1. Kirim Video Bahan:",
-          auto_step_1_desc: "Resolusi asli tetap utuh tanpa crop yang motong subjek, dilapisi background blur & gelap tipis.",
-          auto_step_2: "2. Pilih Jumlah VT & Klik Racik:",
-          auto_step_2_desc: "Bisa pilih 1, 2, 3, 5, 10, 20, 30, 40, atau 50 VT—otomatis tersusun detik potong, detik hook, teks hook, deskripsi, dan tagar.",
+          reselect_video_note: "Pilih ulang file video dari perangkat untuk memutarnya di player klip.",
           target_dur_label: "Target Durasi Potongan VT",
           dur_25: "±25 Detik (Cepat & Padat)",
           dur_40: "±40 Detik (Standar Klip)",
           dur_60: "±60 Detik (Pembahasan Lengkap)",
           pack_count_label: "Butuh Berapa Clip / VT?",
-          btn_test_hook: "Tes Tampil Hook di Video",
           fund_title: "Pendanaan — Kopi & Sebat",
           fund_sub: "Suport dana sukarela buat kopi & sebat di Brutal Klip",
           fund_banner_title: "Suport Kopi & Sebat via Trakteer",
@@ -1037,65 +1098,64 @@
           wm_file_label: "Upload Watermark (JPG / PNG)",
           wm_user_label: "Username TikTok / IG (Opsional)",
           wm_user_ph: "Contoh: @brutal_klip atau @username_ig",
-          wm_pos_label: "Pilihan Posisi Watermark",
-          pos_tr: "Pojok Kanan Atas",
-          pos_tl: "Pojok Kiri Atas",
-          pos_bc: "Bawah Tengah",
+          wm_pos_label: "Posisi Aman Watermark",
+          pos_safe_top: "Atas Aman (Tengah)",
+          pos_safe_left: "Atas Aman (Kiri)",
+          pos_safe_right: "Atas Aman (Kanan)",
           btn_reset_wm: "Hapus Watermark",
           wm_none: "Watermark: Belum diatur",
-          wm_active_prefix: "Watermark aktif",
-          hook_preview_default: "Preview Hook Fresh Brutal Klip",
+          wm_active_prefix: "Watermark aktif (pudar tipis)",
+          hook_preview_default: "Klip ini ngebahas bagian yang bikin penasaran",
           bg_white_thin: "Latar: Putih Tipis (Teks Hitam)",
           bg_black_thin: "Latar: Hitam Tipis",
           wm_info_prefix: "Watermark",
+          wm_faded_suffix: "Pudar Tipis",
           info_audio: "Audio: Bebas Hak Cipta",
           vt_title: "Hasil VT Terima Jadi & Riwayat",
-          vt_sub: "Cukup isi brief (atau kirim video), pilih jumlah VT (1–50 VT), klik racik—semua tersusun otomatis",
+          vt_sub: "Hook & deskripsi diracik luwes sesuai isi brief + grafik retensi, potensi FYP, dan unduhan terpisah",
           vt_judul_label: "Judul / Topik Campaign (Opsional, Otomatis dari Brief jika Kosong)",
-          vt_judul_ph: "Contoh: Brutal Klip X Banget",
+          vt_judul_ph: "Contoh: Era KOL & Tren Baru",
           vt_gaya_label: "Gaya Pembahasan",
           gaya_santai: "Santai & Penasaran",
           gaya_point: "To The Point",
           gaya_kreator: "Obrolan Kreator",
           gaya_baru: "Sudut Pandang Baru",
           vt_brief_label: "Kotak Brief",
-          vt_brief_ph: "Tempel brief campaign di sini. Sistem akan otomatis menentukan detik potong, detik hook, teks hook, deskripsi, dan tagar untuk kamu...",
+          vt_brief_ph: "Tempel brief campaign di sini. Sistem membaca konteks brief dan menyusun hook natural, deskripsi siap upload, tagar, detik potong, grafik retensi, serta potensi FYP...",
           btn_racik: "Racik VT Terima Jadi Otomatis",
           btn_reset: "Bersihkan Brief",
           filter_cari_ph: "Cari judul, detik, hook, deskripsi, atau tagar...",
           filter_all: "Semua Gaya",
           no_vt: "Belum ada paket VT tersimpan. Tempel brief lalu klik <b>Racik VT Terima Jadi Otomatis</b>.",
-          box_hook: "Teks Hook",
-          box_desc: "Deskripsi / Caption Otomatis",
-          btn_preview: "Putar Detik VT Ini",
-          btn_copy_vt: "Salin Semua Siap Upload",
+          box_hook: "Teks Hook Singkat",
+          box_desc: "Deskripsi Siap Upload",
+          ret_title: "Grafik Retensi Klip",
+          fyp_prefix: "Potensi FYP",
+          side_player_title: "Player Klip",
+          btn_download_clip: "Unduh Klip",
+          btn_downloaded: "Diunduh!",
+          btn_download_all: "Unduh Semua Hasil Klip",
           btn_regen: "Racik Ulang",
-          default_topic: "Konten Ini"
+          default_topic: "Obrolan Ini"
         },
         en: {
-          brand_sub: "Done-For-You Workspace: Dark Blur BG, Auto Cut & Hook Seconds, + Auto Caption",
+          brand_sub: "Done-For-You Workspace: Dark Blur BG, TikTok-Safe Hook & WM, Retention Curve + FYP Score",
           pill_done_for_you: "Done-For-You Mode",
-          pill_save: "Local Auto Save",
+          pill_save: "Auto Save Local",
           pill_mode: "Clipper Mode",
-          upload_title: "Raw Video Upload & VT Preview",
-          upload_sub: "Keep source framing uncropped with a darkened blurred video background + hook & watermark",
+          upload_title: "Upload Raw Video & Set Clip Count",
+          upload_sub: "Keeps full source framing without cropping subjects, backed by a dark blur layer; output sits beside its player",
           file_pick_label: "Choose Raw Video Files (MP4 / MOV / WebM — including downloaded YouTube videos)",
           no_files: "No raw videos uploaded yet.",
-          btn_play_vt: "Play VT",
+          source_preview_badge: "Raw Source",
+          btn_play_source: "Play Raw",
           btn_del: "Delete",
-          reselect_video_note: "Select the video file again from your device to play it in the player.",
-          bg_blur_badge: "Blur BG + Dark",
-          auto_engine_title: "Automatic Done-For-You Engine",
-          auto_step_1: "1. Upload Raw Video:",
-          auto_step_1_desc: "Keeps full source framing without cropping out subjects, backed by a darkened blur layer.",
-          auto_step_2: "2. Pick VT Count & Generate:",
-          auto_step_2_desc: "Choose 1, 2, 3, 5, 10, 20, 30, 40, or 50 VTs—cut seconds, hook seconds, hook text, caption, and hashtags are built automatically.",
+          reselect_video_note: "Select the video file again from your device to play it in the clip player.",
           target_dur_label: "Target VT Cut Length",
           dur_25: "±25 Sec (Fast & Punchy)",
           dur_40: "±40 Sec (Standard Clip)",
           dur_60: "±60 Sec (Full Take)",
           pack_count_label: "How Many Clips / VTs?",
-          btn_test_hook: "Test Hook Overlay Now",
           fund_title: "Funding — Coffee & Smoke",
           fund_sub: "Voluntary support for coffee & smoke on Brutal Klip",
           fund_banner_title: "Support Coffee & Smoke via Trakteer",
@@ -1126,51 +1186,53 @@
           wm_file_label: "Upload Watermark (JPG / PNG)",
           wm_user_label: "TikTok / IG Username (Optional)",
           wm_user_ph: "Example: @brutal_klip or @ig_username",
-          wm_pos_label: "Watermark Position",
-          pos_tr: "Top Right",
-          pos_tl: "Top Left",
-          pos_bc: "Bottom Center",
+          wm_pos_label: "TikTok-Safe Watermark Position",
+          pos_safe_top: "Safe Top (Center)",
+          pos_safe_left: "Safe Top (Left)",
+          pos_safe_right: "Safe Top (Right)",
           btn_reset_wm: "Clear Watermark",
           wm_none: "Watermark: Not set",
-          wm_active_prefix: "Active watermark",
-          hook_preview_default: "Brutal Klip Fresh Hook Preview",
+          wm_active_prefix: "Active watermark (soft fade)",
+          hook_preview_default: "This moment pulls you in right away",
           bg_white_thin: "Backdrop: Light White (Black Text)",
           bg_black_thin: "Backdrop: Light Black",
           wm_info_prefix: "Watermark",
+          wm_faded_suffix: "Soft Fade",
           info_audio: "Audio: Copyright Free",
           vt_title: "Ready-to-Post VT Output & History",
-          vt_sub: "Paste brief (or upload video), choose VT count (1–50 VTs), click generate—everything is built automatically",
+          vt_sub: "Natural hooks & captions tailored to brief context + retention graph, FYP score, and separate downloads",
           vt_judul_label: "Campaign Title / Topic (Optional, Auto from Brief if Blank)",
-          vt_judul_ph: "Example: Brutal Klip X Banget",
+          vt_judul_ph: "Example: KOL Era & Next Trend",
           vt_gaya_label: "Angle Style",
           gaya_santai: "Chill & Curious",
           gaya_point: "To The Point",
           gaya_kreator: "Creator Chat",
           gaya_baru: "Fresh Perspective",
           vt_brief_label: "Brief Box",
-          vt_brief_ph: "Paste campaign brief here. Cut seconds, hook seconds, hook text, description, and hashtags are generated automatically...",
+          vt_brief_ph: "Paste campaign brief here. The generator reads brief context and crafts natural hooks, ready-to-post captions, hashtags, cut timing, retention curve, and FYP score...",
           btn_racik: "Generate Done-For-You VT",
           btn_reset: "Clear Brief",
           filter_cari_ph: "Search title, seconds, hook, description, or hashtags...",
           filter_all: "All Styles",
           no_vt: "No VT packs yet. Paste a brief and click <b>Generate Done-For-You VT</b>.",
-          box_hook: "Hook Text",
-          box_desc: "Auto Description / Caption",
-          btn_preview: "Play These VT Seconds",
-          btn_copy_vt: "Copy All Ready to Post",
+          box_hook: "Short Hook Text",
+          box_desc: "Ready-to-Post Caption",
+          ret_title: "Clip Retention Curve",
+          fyp_prefix: "FYP Potential",
+          side_player_title: "Clip Player",
+          btn_download_clip: "Unduh Klip",
+          btn_downloaded: "Downloaded!",
+          btn_download_all: "Unduh Semua Hasil Klip",
           btn_regen: "Regenerate",
-          default_topic: "This Content"
+          default_topic: "This Clip"
         }
       };
 
       const elFileInput = document.getElementById("file-input");
       const elFileList = document.getElementById("file-list");
-      const elVtStudioGrid = document.getElementById("vt-studio-grid");
-      const elVtPlayerTitle = document.getElementById("vt-player-title");
-      const elVtVideoEl = document.getElementById("vt-video-el");
-      const elBlurBgVideo = document.getElementById("tiktok-blur-bg");
-      const elVideoHookOverlay = document.getElementById("video-hook-overlay");
-      const elVideoWmBadge = document.getElementById("video-wm-badge");
+      const elSourcePlayerWrap = document.getElementById("source-mini-player");
+      const elSourcePlayerName = document.getElementById("source-player-name");
+      const elSourceVideoEl = document.getElementById("source-video-el");
 
       const elDurasiTarget = document.getElementById("vt-durasi-target");
       const elJumlahPaket = document.getElementById("vt-jumlah-paket");
@@ -1189,7 +1251,6 @@
       const elWmPosition = document.getElementById("wm-position");
       const elWmThumb = document.getElementById("wm-thumb");
       const elWmStatusText = document.getElementById("wm-status-text");
-      const elStageWmBadge = document.getElementById("stage-wm-badge");
       const elHookPreview = document.getElementById("hook-live-preview");
       const elBgMode = document.getElementById("info-bg-mode");
       const elWmMode = document.getElementById("info-wm-mode");
@@ -1200,6 +1261,8 @@
       const elCari = document.getElementById("filter-cari");
       const elFilterGaya = document.getElementById("filter-gaya");
       const elList = document.getElementById("riwayat-vt-container");
+      const elDownloadAllBar = document.getElementById("download-all-bar");
+      const elDownloadAllInfo = document.getElementById("download-all-info");
 
       function getDefaultState() {
         return {
@@ -1207,7 +1270,7 @@
           config: {
             font: 'system-ui, -apple-system, sans-serif',
             color: "#FFFFFF",
-            wmPosition: "pos-top-right",
+            wmPosition: "pos-safe-top",
             wmUsername: "",
             wmImageName: "",
             wmImageData: ""
@@ -1248,9 +1311,9 @@
       }
 
       function posLabel(posKey) {
-        if (posKey === "pos-top-left") return t("pos_tl");
-        if (posKey === "pos-bottom-center") return t("pos_bc");
-        return t("pos_tr");
+        if (posKey === "pos-safe-left") return t("pos_safe_left");
+        if (posKey === "pos-safe-right") return t("pos_safe_right");
+        return t("pos_safe_top");
       }
 
       function formatSec(sec) {
@@ -1272,70 +1335,6 @@
           .replace(/>/g, "&gt;")
           .replace(/"/g, "&quot;");
       }
-
-      function syncBlurBackground() {
-        if (elVtVideoEl.src && elBlurBgVideo.src !== elVtVideoEl.src) {
-          elBlurBgVideo.src = elVtVideoEl.src;
-        }
-      }
-
-      elVtVideoEl.addEventListener("play", () => {
-        syncBlurBackground();
-        elBlurBgVideo.currentTime = elVtVideoEl.currentTime;
-        elBlurBgVideo.play().catch(() => {});
-      });
-
-      elVtVideoEl.addEventListener("pause", () => {
-        elBlurBgVideo.pause();
-      });
-
-      elVtVideoEl.addEventListener("seeked", () => {
-        elBlurBgVideo.currentTime = elVtVideoEl.currentTime;
-      });
-
-      elVtVideoEl.addEventListener("timeupdate", () => {
-        const cur = elVtVideoEl.currentTime || 0;
-        if (activeSegment) {
-          const inHook = cur >= activeSegment.hookStart && cur <= activeSegment.hookEnd;
-          elVideoHookOverlay.style.opacity = inHook ? "1" : "0.35";
-          if (cur >= activeSegment.cutEnd) {
-            elVtVideoEl.currentTime = activeSegment.cutStart;
-            elVtVideoEl.play().catch(() => {});
-          }
-        } else {
-          elVideoHookOverlay.style.opacity = "1";
-        }
-      });
-
-      function playVideoSegment(fileId, fileName, seg = null, hookText = "") {
-        const url = videoBlobUrls.get(fileId);
-        if (!url) {
-          alert(t("reselect_video_note"));
-          elFileInput.click();
-          return;
-        }
-        elVtStudioGrid.style.display = "grid";
-        elVtPlayerTitle.textContent = fileName || "VT Preview";
-        if (elVtVideoEl.src !== url) {
-          elVtVideoEl.src = url;
-          elBlurBgVideo.src = url;
-        }
-        activeSegment = seg;
-        if (hookText) {
-          elVideoHookOverlay.textContent = hookText;
-        }
-        if (seg && typeof seg.cutStart === "number") {
-          elVtVideoEl.currentTime = Math.max(0, seg.cutStart);
-          elBlurBgVideo.currentTime = Math.max(0, seg.cutStart);
-        }
-        elVtVideoEl.play().catch(() => {});
-        elBlurBgVideo.play().catch(() => {});
-      }
-
-      document.getElementById("btn-test-hook-now").addEventListener("click", () => {
-        elVideoHookOverlay.style.opacity = "1";
-        elVideoHookOverlay.textContent = elHookPreview.textContent;
-      });
 
       function applyLanguageUI() {
         try {
@@ -1391,7 +1390,7 @@
               <span style="color: var(--muted); margin-left: 6px;">${f.sizeLabel ? `(${esc(f.sizeLabel)})` : ""} • ${esc(f.waktu)}</span>
             </div>
             <div class="mini-actions">
-              <button type="button" class="mini-btn" data-play-file="${esc(f.id)}" data-name="${esc(f.name)}">${esc(t("btn_play_vt"))}</button>
+              <button type="button" class="mini-btn" data-play-source="${esc(f.id)}" data-name="${esc(f.name)}">${esc(t("btn_play_source"))}</button>
               <button type="button" class="mini-btn" data-del-file="${esc(f.id)}">${esc(t("btn_del"))}</button>
             </div>
           </div>
@@ -1426,19 +1425,34 @@
 
         saveState(st);
         renderFiles();
+        bindVideoSourcesToCards();
+
         if (latestId) {
-          playVideoSegment(latestId, latestName);
-          if (elBrief.value.trim() || elJudul.value.trim()) {
-            document.getElementById("btn-racik").click();
+          const url = videoBlobUrls.get(latestId);
+          if (url) {
+            elSourcePlayerWrap.classList.add("active");
+            elSourcePlayerName.textContent = latestName;
+            elSourceVideoEl.src = url;
           }
         }
         elFileInput.value = "";
       });
 
       elFileList.addEventListener("click", (e) => {
-        const playBtn = e.target.closest("button[data-play-file]");
+        const playBtn = e.target.closest("button[data-play-source]");
         if (playBtn) {
-          playVideoSegment(playBtn.getAttribute("data-play-file"), playBtn.getAttribute("data-name"));
+          const fid = playBtn.getAttribute("data-play-source");
+          const fname = playBtn.getAttribute("data-name") || "Bahan Video";
+          const url = videoBlobUrls.get(fid);
+          if (!url) {
+            alert(t("reselect_video_note"));
+            elFileInput.click();
+            return;
+          }
+          elSourcePlayerWrap.classList.add("active");
+          elSourcePlayerName.textContent = fname;
+          elSourceVideoEl.src = url;
+          elSourceVideoEl.play().catch(() => {});
           return;
         }
 
@@ -1519,7 +1533,7 @@
         renderComments();
       });
 
-      // --- GAYA HOOK & WATERMARK ---
+      // --- GAYA HOOK & WATERMARK (AMAN UI TIKTOK + PUDAR TIPIS) ---
       function formatWatermarkSummary(cfg) {
         const parts = [];
         if (cfg.wmImageName) parts.push(cfg.wmImageName);
@@ -1532,13 +1546,12 @@
         const cfg = state.config;
         const color = cfg.color || "#FFFFFF";
         const font = cfg.font || 'system-ui, -apple-system, sans-serif';
-        const pos = cfg.wmPosition || "pos-top-right";
+        const pos = cfg.wmPosition || "pos-safe-top";
         const wmText = formatWatermarkSummary(cfg);
         const hasImg = Boolean(cfg.wmImageData);
 
         const isImpactFont = font.toLowerCase().includes("impact");
         elHookPreview.classList.toggle("is-impact", isImpactFont);
-        elVideoHookOverlay.classList.toggle("is-impact", isImpactFont);
 
         const isBlackText =
           color.toUpperCase() === "#09090B" ||
@@ -1552,16 +1565,8 @@
         elHookPreview.style.backgroundColor = bgBackdrop;
         elHookPreview.style.border = `1px solid ${borderBackdrop}`;
 
-        elVideoHookOverlay.style.fontFamily = font;
-        elVideoHookOverlay.style.color = color;
-        elVideoHookOverlay.style.backgroundColor = bgBackdrop;
-        elVideoHookOverlay.style.border = `1px solid ${borderBackdrop}`;
-
         if (typeof textOverride === "string" && textOverride.trim()) {
           elHookPreview.textContent = textOverride.trim();
-          elVideoHookOverlay.textContent = textOverride.trim();
-        } else {
-          elVideoHookOverlay.textContent = elHookPreview.textContent;
         }
 
         if (hasImg) {
@@ -1578,62 +1583,86 @@
           elWmStatusText.textContent = `${t("wm_none")} • ${posLabel(pos)}`;
         }
 
-        const badgeContent =
+        elBgMode.textContent = isBlackText ? t("bg_white_thin") : t("bg_black_thin");
+        elWmMode.textContent = wmText
+          ? `${t("wm_info_prefix")}: ${wmText} (${posLabel(pos)}) • ${t("wm_faded_suffix")}`
+          : `${t("wm_info_prefix")}: ${posLabel(pos)} • ${t("wm_faded_suffix")}`;
+
+        document.querySelectorAll(".vt-hook-pill").forEach((pill) => {
+          pill.classList.toggle("is-impact", isImpactFont);
+          pill.style.fontFamily = font;
+          pill.style.color = color;
+          pill.style.backgroundColor = bgBackdrop;
+          pill.style.border = `1px solid ${borderBackdrop}`;
+        });
+
+        const chipHtml =
           hasImg || (cfg.wmUsername && cfg.wmUsername.trim())
             ? `${hasImg ? `<img src="${esc(cfg.wmImageData)}" alt="WM" />` : ""}${
                 cfg.wmUsername && cfg.wmUsername.trim() ? `<span>${esc(cfg.wmUsername.trim())}</span>` : ""
               }`
             : "";
 
-        elStageWmBadge.className = `stage-wm-badge ${pos}`;
-        elVideoWmBadge.className = `stage-wm-badge ${pos}`;
-
-        if (badgeContent) {
-          elStageWmBadge.style.display = "inline-flex";
-          elStageWmBadge.innerHTML = badgeContent;
-          elVideoWmBadge.style.display = "inline-flex";
-          elVideoWmBadge.innerHTML = badgeContent;
-        } else {
-          elStageWmBadge.style.display = "none";
-          elStageWmBadge.innerHTML = "";
-          elVideoWmBadge.style.display = "none";
-          elVideoWmBadge.innerHTML = "";
-        }
-
-        elBgMode.textContent = isBlackText ? t("bg_white_thin") : t("bg_black_thin");
-        elWmMode.textContent = wmText
-          ? `${t("wm_info_prefix")}: ${wmText} (${posLabel(pos)})`
-          : `${t("wm_info_prefix")}: ${posLabel(pos)}`;
+        document.querySelectorAll(".vt-wm-chip").forEach((chip) => {
+          chip.className = `vt-wm-chip ${pos}`;
+          if (chipHtml) {
+            chip.style.display = "inline-flex";
+            chip.innerHTML = chipHtml;
+          } else {
+            chip.style.display = "none";
+            chip.innerHTML = "";
+          }
+        });
       }
 
-      // --- MESIN TERIMA JADI OTOMATIS ---
+      // --- PERACIK HOOK & DESKRIPSI LUWES SESUAI KONTEKS BRIEF ---
+      function cleanBriefNoise(briefText) {
+        return (briefText || "")
+          .replace(/Deskripsi\s*Campaign\s*Details\s*🚀?/gi, "")
+          .replace(/Category\s*:/gi, "")
+          .replace(/Platforms\s*:/gi, "")
+          .replace(/note\s*:/gi, "")
+          .replace(/https?:\/\/\S+/gi, "")
+          .replace(/\s+/g, " ")
+          .trim();
+      }
+
       function extractTopic(judul, briefText) {
         const cleanJudul = (judul || "").trim();
         if (cleanJudul) return cleanJudul;
 
-        const normalized = (briefText || "").replace(/\s+/g, " ").trim();
-        if (!normalized) return t("default_topic");
+        const cleaned = cleanBriefNoise(briefText);
+        if (!cleaned) return t("default_topic");
 
-        const head = normalized.split(/Deskripsi|Category|Platforms|note:|1\)|Hook/i)[0].trim();
-        if (head.length >= 4 && head.length <= 65) return head;
-
-        return normalized.split(" ").slice(0, 6).join(" ") || t("default_topic");
+        const parts = cleaned.split(/[|•\n]/).map((s) => s.trim()).filter(Boolean);
+        const candidate = parts[0] || cleaned;
+        const words = candidate.split(/\s+/).slice(0, 5).join(" ");
+        return words.length >= 3 ? words : t("default_topic");
       }
 
-      function summarizeBriefHighlight(briefText, isEn) {
-        const clean = (briefText || "").replace(/\s+/g, " ").trim();
-        if (!clean) {
-          return isEn
-            ? "the strongest highlight moment from the raw clip"
-            : "momen paling menarik dari potongan klip bahan";
+      function extractFocusClue(briefText, topic, isEn) {
+        const cleaned = cleanBriefNoise(briefText).toLowerCase();
+        if (!cleaned) {
+          return isEn ? "the turning point" : "bagian intinya";
         }
-        const words = clean.split(" ").slice(0, 9).join(" ");
-        return words;
+        if (cleaned.includes("wajah") || cleaned.includes("face") || cleaned.includes("reaksi")) {
+          return isEn ? "their reaction" : "reaksi mereka";
+        }
+        if (cleaned.includes("tren") || cleaned.includes("trend") || cleaned.includes("era") || cleaned.includes("kol")) {
+          return isEn ? "this shift" : "perubahan tren ini";
+        }
+        if (cleaned.includes("tips") || cleaned.includes("cara") || cleaned.includes("strategi")) {
+          return isEn ? "this quick tip" : "poin penting ini";
+        }
+        return topic.split(/\s+/).slice(0, 3).join(" ");
       }
 
       function computeAutoTimings(packIndex, targetDur) {
         const dur = Math.max(15, Number(targetDur) || 40);
-        const videoDur = Number.isFinite(elVtVideoEl.duration) && elVtVideoEl.duration > dur ? Math.floor(elVtVideoEl.duration) : 1800;
+        const videoDur =
+          Number.isFinite(elSourceVideoEl.duration) && elSourceVideoEl.duration > dur
+            ? Math.floor(elSourceVideoEl.duration)
+            : 1800;
         const step = Math.max(15, dur - 5);
         const maxStart = Math.max(0, videoDur - dur);
         const cutStart = Math.min(maxStart, packIndex * step);
@@ -1643,55 +1672,77 @@
         return { cutStart, cutEnd, hookStart, hookEnd };
       }
 
+      function buildRetentionAndFyp(packIndex, gaya, targetDur) {
+        const baseCurve = [94, 86, 79, 75, 72, 68, 65, 63, 60, 58];
+        const gayaBoost = {
+          "Santai & Penasaran": 6,
+          "To The Point": 5,
+          "Obrolan Kreator": 4,
+          "Sudut Pandang Baru": 7
+        }[gaya] || 4;
+
+        const durBonus = Number(targetDur) <= 40 ? 4 : 1;
+        const wave = ((packIndex * 7) % 9) - 4;
+        const fypScore = Math.max(66, Math.min(92, 74 + gayaBoost + durBonus + wave));
+
+        const curve = baseCurve.map((val, idx) => {
+          const localOffset = idx === 0 ? 4 : idx === 1 ? 2 : ((packIndex + idx * 3) % 7) - 3;
+          return Math.max(32, Math.min(98, val + localOffset + Math.round(gayaBoost / 2)));
+        });
+
+        return { fypScore, curve };
+      }
+
       function buildDoneForYouPack(judul, gaya, briefText, packIndex, targetDur) {
         const isEn = loadState().lang === "en";
         const topic = extractTopic(judul, briefText);
-        const highlight = summarizeBriefHighlight(briefText, isEn);
+        const clue = extractFocusClue(briefText, topic, isEn);
         const timing = computeAutoTimings(packIndex, targetDur);
+        const analytics = buildRetentionAndFyp(packIndex, gaya, targetDur);
 
         const hooks = isEn
           ? {
               "Santai & Penasaran": [
-                `Wait—catch what happens around ${highlight}`,
-                `This part of ${topic} hits way harder than expected`,
-                `Most people scroll past this moment on ${topic}`
+                `Wait—listen to ${clue} right here`,
+                `Didn't expect ${clue} to go like this`,
+                `Watch ${clue} before scrolling past`
               ],
               "To The Point": [
-                `${topic}: ${highlight}`,
-                `Key takeaway on ${topic} in under a minute`,
-                `Straight to the highlight: ${highlight}`
+                `Why ${clue} matters right now`,
+                `The real point on ${clue}`,
+                `Straight to ${clue} in seconds`
               ],
               "Obrolan Kreator": [
-                `Pulled this clip because ${highlight}`,
-                `One of the best moments on ${topic} right here`,
-                `Worth watching from the very first second on ${topic}`
+                `Caught ${clue} and had to clip it`,
+                `This part on ${clue} stood out most`,
+                `Real talk on ${clue} from the clip`
               ],
               "Sudut Pandang Baru": [
-                `Another angle on ${topic}: ${highlight}`,
-                `Look closely at ${highlight} in this clip`,
-                `Fresh take on ${topic} ready for short clips`
+                `Another way to see ${clue}`,
+                `Look closer at ${clue} here`,
+                `Fresh angle on ${clue} right now`
               ]
             }
           : {
               "Santai & Penasaran": [
-                `Coba perhatikan bagian ini: ${highlight}`,
-                `Momen di ${topic} ini ternyata lebih menarik dari kelihatannya`,
-                `Bagian ${topic} ini sayang banget kalau kelewat`
+                `Coba dengerin ${clue} di bagian ini`,
+                `Nggak nyangka ${clue} bakal dibahas gini`,
+                `Perhatiin ${clue} sebelum kamu scroll`
               ],
               "To The Point": [
-                `${topic}: ${highlight}`,
-                `Inti klip ${topic} yang langsung kena dari awal`,
-                `Sorotan utama ${topic} — singkat dan jelas`
+                `Inti soal ${clue} yang wajib kena`,
+                `Fokus utama di ${clue} klip ini`,
+                `Langsung ke poin ${clue} aja`
               ],
               "Obrolan Kreator": [
-                `Aku pilih potongan ini karena ${highlight}`,
-                `Salah satu bagian paling pas di ${topic}`,
-                `Alur klip ${topic} ini enak banget buat disimak`
+                `Pas ketemu ${clue}, langsung aku ambil`,
+                `Bagian ${clue} ini kerasa paling pas`,
+                `Obrolan soal ${clue} yang enak diikuti`
               ],
               "Sudut Pandang Baru": [
-                `Sisi lain ${topic}: ${highlight}`,
-                `Cek detail di ${highlight} pada klip ini`,
-                `Angle baru buat ${topic} dengan latar blur gelap`
+                `Sisi lain dari ${clue} di klip ini`,
+                `Cek sudut pandang baru soal ${clue}`,
+                `Angle segar buat ${clue} kali ini`
               ]
             };
 
@@ -1699,8 +1750,8 @@
         const hook = pool[Math.abs(packIndex) % pool.length];
 
         const desc = isEn
-          ? `${topic} — ${highlight}.\nCut ${formatSec(timing.cutStart)}–${formatSec(timing.cutEnd)} (Hook ${formatSec(timing.hookStart)}–${formatSec(timing.hookEnd)}).`
-          : `${topic} — ${highlight}.\nPotongan ${formatSec(timing.cutStart)}–${formatSec(timing.cutEnd)} (Hook ${formatSec(timing.hookStart)}–${formatSec(timing.hookEnd)}).`;
+          ? `Talking through ${clue} in ${topic}—short, clear, and easy to catch from the opening seconds.\nClip ${formatSec(timing.cutStart)}–${formatSec(timing.cutEnd)}.`
+          : `Ngebahas ${clue} di ${topic} dengan alur yang ringan tapi tetap kena dari detik awal.\nKlip ${formatSec(timing.cutStart)}–${formatSec(timing.cutEnd)}.`;
 
         const slug = topic
           .replace(/[^a-zA-Z0-9\s]/g, " ")
@@ -1723,11 +1774,88 @@
           desc,
           tags,
           timing,
-          timingSummary
+          timingSummary,
+          fypScore: analytics.fypScore,
+          curve: analytics.curve
         };
       }
 
+      function renderRetentionBars(curve) {
+        const list = Array.isArray(curve) && curve.length ? curve : [90, 82, 75, 70, 66, 63, 60, 58, 55, 52];
+        const maxVal = Math.max(...list);
+        return list
+          .map((val, idx) => {
+            const h = Math.max(18, Math.min(100, Number(val) || 50));
+            const peakClass = Number(val) === maxVal || idx === 0 ? "peak" : "";
+            return `<span class="ret-bar ${peakClass}" style="height: ${h}%;" title="${h}%"></span>`;
+          })
+          .join("");
+      }
+
+      function triggerClipFileDownload(item, indexLabel) {
+        const isEn = loadState().lang === "en";
+        const content = isEn
+          ? [
+              `CLIP #${indexLabel} — ${item.judul}`,
+              `${item.timingSummary}`,
+              `${t("fyp_prefix")}: ${item.fypScore || 80}%`,
+              `WM: ${item.watermark || "-"}`,
+              ``,
+              `HOOK:`,
+              `${item.hook}`,
+              ``,
+              `CAPTION:`,
+              `${item.desc}`,
+              ``,
+              `${item.tags}`
+            ].join("\n")
+          : [
+              `KLIP #${indexLabel} — ${item.judul}`,
+              `${item.timingSummary}`,
+              `${t("fyp_prefix")}: ${item.fypScore || 80}%`,
+              `WM: ${item.watermark || "-"}`,
+              ``,
+              `HOOK:`,
+              `${item.hook}`,
+              ``,
+              `DESKRIPSI:`,
+              `${item.desc}`,
+              ``,
+              `${item.tags}`
+            ].join("\n");
+
+        const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        const safeName = String(item.judul || "klip_vt")
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "_")
+          .replace(/^_|_$/g, "") || "klip_vt";
+        a.href = url;
+        a.download = `${safeName}_vt_${indexLabel}.txt`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1200);
+      }
+
+      function bindVideoSourcesToCards() {
+        const st = loadState();
+        const fallbackFile = st.files[0] || null;
+
+        cardPlayers.forEach((entry, itemId) => {
+          const item = st.items.find((x) => x.id === itemId);
+          const fid = (item && item.sourceId) || (fallbackFile && fallbackFile.id) || "";
+          const url = fid ? videoBlobUrls.get(fid) : "";
+          if (url && entry.mainVideo.src !== url) {
+            entry.mainVideo.src = url;
+            entry.blurVideo.src = url;
+          }
+        });
+      }
+
       function renderList() {
+        cardPlayers.clear();
         try {
           const state = loadState();
           const q = (elCari.value || "").toLowerCase().trim();
@@ -1742,49 +1870,141 @@
 
           if (!filtered.length) {
             elList.innerHTML = `<div class="empty-state">${t("no_vt")}</div>`;
+            elDownloadAllBar.style.display = "none";
             return;
           }
 
+          elDownloadAllBar.style.display = "flex";
+          elDownloadAllInfo.textContent =
+            state.lang === "en"
+              ? `${filtered.length} Clip(s) Ready to Download`
+              : `${filtered.length} Klip Siap Diunduh`;
+
           elList.innerHTML = filtered
-            .map(
-              (item, idx) => `
+            .map((item, idx) => {
+              const clipNum = filtered.length - idx;
+              const fypVal = item.fypScore || 80;
+              return `
             <article class="vt-card" data-id="${esc(item.id)}">
               <div class="vt-top">
-                <strong>VT #${filtered.length - idx} • ${esc(item.judul)}</strong>
+                <strong>VT #${clipNum} • ${esc(item.judul)}</strong>
                 <span>${esc(item.gaya)} • ${esc(item.waktu)}</span>
               </div>
 
-              <div class="vt-time-strip">${esc(item.timingSummary || "")}</div>
+              <div class="vt-card-layout">
+                <div>
+                  <div class="vt-time-strip">
+                    <span>${esc(item.timingSummary || "")}</span>
+                    <span class="fyp-badge">${esc(t("fyp_prefix"))}: ${fypVal}%</span>
+                  </div>
 
-              <div class="vt-hook-box">
-                <div class="box-tag">${esc(t("box_hook"))}</div>
-                <p class="vt-hook-val">${esc(item.hook)}</p>
-              </div>
+                  <div class="vt-hook-box">
+                    <div class="box-tag">${esc(t("box_hook"))}</div>
+                    <p class="vt-hook-val">${esc(item.hook)}</p>
+                  </div>
 
-              <div class="vt-desc-box">
-                <div class="box-tag">${esc(t("box_desc"))}</div>
-                <p class="vt-desc-val">${esc(item.desc)}</p>
-              </div>
+                  <div class="vt-desc-box">
+                    <div class="box-tag">${esc(t("box_desc"))}</div>
+                    <p class="vt-desc-val">${esc(item.desc)}</p>
+                  </div>
 
-              ${
-                item.watermark
-                  ? `<div class="vt-meta-note">WM: ${esc(item.watermark)}</div>`
-                  : ""
-              }
+                  <div class="retention-box">
+                    <div class="retention-head">
+                      <span>${esc(t("ret_title"))}</span>
+                      <strong>${fypVal}% FYP</strong>
+                    </div>
+                    <div class="retention-bars">${renderRetentionBars(item.curve)}</div>
+                  </div>
 
-              <div class="vt-foot">
-                <span class="vt-tags">${esc(item.tags)}</span>
-                <div class="mini-actions">
-                  <button type="button" class="mini-btn" data-act="preview" data-id="${esc(item.id)}">${esc(t("btn_preview"))}</button>
-                  <button type="button" class="mini-btn" data-act="copy" data-id="${esc(item.id)}">${esc(t("btn_copy_vt"))}</button>
-                  <button type="button" class="mini-btn" data-act="regen" data-id="${esc(item.id)}">${esc(t("btn_regen"))}</button>
-                  <button type="button" class="mini-btn" data-act="delete" data-id="${esc(item.id)}">${esc(t("btn_del"))}</button>
+                  ${
+                    item.watermark
+                      ? `<div class="vt-meta-note">WM: ${esc(item.watermark)} • ${esc(t("wm_faded_suffix"))}</div>`
+                      : ""
+                  }
+
+                  <div class="vt-foot">
+                    <span class="vt-tags">${esc(item.tags)}</span>
+                    <div class="mini-actions">
+                      <button type="button" class="mini-btn" data-act="download" data-num="${clipNum}" data-id="${esc(item.id)}">${esc(t("btn_download_clip"))}</button>
+                      <button type="button" class="mini-btn" data-act="regen" data-id="${esc(item.id)}">${esc(t("btn_regen"))}</button>
+                      <button type="button" class="mini-btn" data-act="delete" data-id="${esc(item.id)}">${esc(t("btn_del"))}</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="side-player-col">
+                  <div class="side-player-label">
+                    <span>${esc(t("side_player_title"))} #${clipNum}</span>
+                    <span>${formatSec((item.timing && item.timing.cutStart) || 0)}</span>
+                  </div>
+                  <div class="vt-916-stage">
+                    <video class="vt-blur-bg" muted playsinline loop aria-hidden="true"></video>
+                    <div class="vt-dim-scrim" aria-hidden="true"></div>
+                    <span class="vt-wm-chip pos-safe-top" style="display: none;"></span>
+                    <div class="vt-top-zone">
+                      <span class="vt-hook-pill">${esc(item.hook)}</span>
+                    </div>
+                    <div class="vt-center-video-wrap">
+                      <video class="vt-video-el" controls playsinline></video>
+                    </div>
+                  </div>
                 </div>
               </div>
             </article>
-          `
-            )
+          `;
+            })
             .join("");
+
+          filtered.forEach((item) => {
+            const cardEl = elList.querySelector(`article[data-id="${item.id}"]`);
+            if (!cardEl) return;
+            const mainVideo = cardEl.querySelector(".vt-video-el");
+            const blurVideo = cardEl.querySelector(".vt-blur-bg");
+            const hookPill = cardEl.querySelector(".vt-hook-pill");
+
+            if (mainVideo && blurVideo) {
+              cardPlayers.set(item.id, { mainVideo, blurVideo });
+              const seg = item.timing || { cutStart: 0, cutEnd: 40, hookStart: 0, hookEnd: 3 };
+
+              mainVideo.addEventListener("loadedmetadata", () => {
+                if (mainVideo.currentTime < seg.cutStart) {
+                  mainVideo.currentTime = seg.cutStart;
+                }
+              });
+
+              mainVideo.addEventListener("play", () => {
+                if (mainVideo.currentTime < seg.cutStart || mainVideo.currentTime > seg.cutEnd) {
+                  mainVideo.currentTime = seg.cutStart;
+                }
+                blurVideo.currentTime = mainVideo.currentTime;
+                blurVideo.play().catch(() => {});
+              });
+
+              mainVideo.addEventListener("pause", () => {
+                blurVideo.pause();
+              });
+
+              mainVideo.addEventListener("seeked", () => {
+                blurVideo.currentTime = mainVideo.currentTime;
+              });
+
+              mainVideo.addEventListener("timeupdate", () => {
+                const cur = mainVideo.currentTime || 0;
+                blurVideo.currentTime = cur;
+                if (hookPill) {
+                  const activeHook = cur >= seg.hookStart && cur <= seg.hookEnd + 2;
+                  hookPill.style.opacity = activeHook ? "1" : "0.72";
+                }
+                if (cur >= seg.cutEnd) {
+                  mainVideo.currentTime = seg.cutStart;
+                  mainVideo.play().catch(() => {});
+                }
+              });
+            }
+          });
+
+          bindVideoSourcesToCards();
+          applyHookStyle();
         } catch (err) {
           elList.innerHTML = `<div class="empty-state">${t("no_vt")}</div>`;
         }
@@ -1795,7 +2015,7 @@
       elFont.value = initState.config.font;
       elColor.value = initState.config.color;
       elWmUsername.value = initState.config.wmUsername || "";
-      elWmPosition.value = initState.config.wmPosition || "pos-top-right";
+      elWmPosition.value = initState.config.wmPosition || "pos-safe-top";
 
       applyLanguageUI();
 
@@ -1866,6 +2086,8 @@
             sourceName: latestFile ? latestFile.name : "",
             timing: built.timing,
             timingSummary: built.timingSummary,
+            fypScore: built.fypScore,
+            curve: built.curve,
             watermark: wmSummary ? `${wmSummary} (${posLabel(st.config.wmPosition)})` : posLabel(st.config.wmPosition),
             hook: built.hook,
             desc: built.desc,
@@ -1910,31 +2132,13 @@
           return;
         }
 
-        if (act === "preview") {
-          applyHookStyle(current.hook);
-          const targetFileId = current.sourceId || (st.files[0] && st.files[0].id);
-          const targetFileName = current.sourceName || (st.files[0] && st.files[0].name);
-          if (targetFileId) {
-            playVideoSegment(targetFileId, targetFileName, current.timing, current.hook);
-            elVtStudioGrid.scrollIntoView({ behavior: "smooth", block: "center" });
-          } else {
-            elHookPreview.scrollIntoView({ behavior: "smooth", block: "center" });
-          }
-          return;
-        }
-
-        if (act === "copy") {
-          const isEn = loadState().lang === "en";
-          const payload = isEn
-            ? `${current.timingSummary}\n\nHOOK:\n${current.hook}\n\nDESCRIPTION:\n${current.desc}\n\n${current.tags}`
-            : `${current.timingSummary}\n\nHOOK:\n${current.hook}\n\nDESKRIPSI:\n${current.desc}\n\n${current.tags}`;
-          if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(payload).catch(() => {});
-          }
-          btn.textContent = t("btn_copied");
+        if (act === "download") {
+          const num = btn.getAttribute("data-num") || String(idx + 1);
+          triggerClipFileDownload(current, num);
+          btn.textContent = t("btn_downloaded");
           btn.classList.add("copied");
           setTimeout(() => {
-            btn.textContent = t("btn_copy_vt");
+            btn.textContent = t("btn_download_clip");
             btn.classList.remove("copied");
           }, 1400);
           return;
@@ -1957,6 +2161,8 @@
             tags: rebuilt.tags,
             timing: rebuilt.timing,
             timingSummary: rebuilt.timingSummary,
+            fypScore: rebuilt.fypScore,
+            curve: rebuilt.curve,
             variantCount: nextVariant,
             waktu: nowLabel()
           };
@@ -1964,6 +2170,31 @@
           applyHookStyle(st.items[idx].hook);
           renderList();
         }
+      });
+
+      document.getElementById("btn-unduh-semua").addEventListener("click", () => {
+        const st = loadState();
+        if (!st.items.length) return;
+        const isEn = st.lang === "en";
+        const allText = st.items
+          .slice()
+          .reverse()
+          .map((item, idx) =>
+            isEn
+              ? `=== CLIP #${idx + 1}: ${item.judul} ===\n${item.timingSummary} | ${t("fyp_prefix")}: ${item.fypScore || 80}%\nHOOK: ${item.hook}\nCAPTION: ${item.desc}\n${item.tags}`
+              : `=== KLIP #${idx + 1}: ${item.judul} ===\n${item.timingSummary} | ${t("fyp_prefix")}: ${item.fypScore || 80}%\nHOOK: ${item.hook}\nDESKRIPSI: ${item.desc}\n${item.tags}`
+          )
+          .join("\n\n----------------------------------------\n\n");
+
+        const blob = new Blob([allText], { type: "text/plain;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `semua_hasil_klip_brutal_klip.txt`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1200);
       });
     })();
   </script>
