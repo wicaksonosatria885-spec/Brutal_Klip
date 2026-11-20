@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brutal Klip</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="dark-theme">
+  <header class="topbar">
+    <div>
+      <h1 id="appTitle">Brutal Klip</h1>
+      <span id="statusBadge" class="badge">Offline / Online Ready • 100% Gratis</span>
+    </div>
+    <div class="lang-switch">
+      <button id="btnLangId" class="active">ID</button>
+      <button id="btnLangEn">EN</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h2 id="secAccount">Akun & Sinkronisasi</h2>
+      <div class="row">
+        <input id="userEmail" type="email" placeholder="Email / ID Akun (HP & PC)" />
+        <input id="userPass" type="password" placeholder="Kata Sandi / Sync Key" />
+        <button id="btnLogin" class="btn-primary">Masuk / Simpan</button>
+      </div>
+      <p id="accountInfo" class="muted">Belum masuk — data tersimpan lokal di perangkat.</p>
+    </section>
+
+    <section class="card">
+      <h2 id="secBrief">Brief Campaign & Generator VT</h2>
+      <div class="grid-2">
+        <div>
+          <label id="lblProjectName" for="projectName">Nama Proyek / Batch</label>
+          <input id="projectName" type="text" placeholder="Contoh: Campaign Kopi Pagi #1" />
+        </div>
+        <div>
+          <label id="lblVtCount" for="vtCount">Jumlah VT</label>
+          <select id="vtCount">
+            <option value="5">5 VT</option>
+            <option value="10" selected>10 VT</option>
+            <option value="20">20 VT</option>
+            <option value="30">30 VT</option>
+            <option value="40">40 VT</option>
+            <option value="50">50 VT</option>
+          </select>
+        </div>
+        <div>
+          <label id="lblTheme" for="themeSelect">Tema Editing</label>
+          <select id="themeSelect">
+            <option value="komedi">Komedi</option>
+            <option value="horor">Horor</option>
+            <option value="natural">Natural (Organik)</option>
+          </select>
+        </div>
+        <div>
+          <label id="lblVideoFile" for="videoInput">Unggah Video Sumber (Lokal)</label>
+          <input id="videoInput" type="file" accept="video/*" />
+        </div>
+      </div>
+
+      <label id="lblBrief" for="briefText">Isi Brief Campaign & Instruksi</label>
+      <textarea id="briefText" rows="4" placeholder="Tulis brief campaign, poin wajib, larangan, gaya hook, dan jadwal upload..."></textarea>
+
+      <div class="options-row">
+        <label><input type="checkbox" id="optSubtitle" checked /> Auto Subtitle</label>
+        <label><input type="checkbox" id="optEnhance" checked /> Jernihkan Video</label>
+        <label><input type="checkbox" id="optFaceTrack" checked /> Deteksi Wajah / Pelacak Kamera</label>
+        <label><input type="checkbox" id="optWatermark" checked /> Watermark</label>
+        <label><input type="checkbox" id="optReminder" checked /> Pengingat Jadwal</label>
+      </div>
+
+      <button id="btnGenerate" class="btn-primary full-width">Analisis Potensi FYP & Buat Paket VT</button>
+    </section>
+
+    <section class="card">
+      <h2 id="secStats">Statistik Potensi FYP & Retensi</h2>
+      <div id="statsSummary" class="stats-grid"></div>
+      <canvas id="fypChart" height="140"></canvas>
+    </section>
+
+    <section class="card">
+      <div class="row space-between">
+        <h2 id="secEditor">Tempat Rapihin VT & Riwayat</h2>
+        <div class="row">
+          <input id="searchInput" type="text" placeholder="Cari nama, hook, tagar..." />
+          <select id="filterTheme">
+            <option value="all">Semua Tema</option>
+            <option value="komedi">Komedi</option>
+            <option value="horor">Horor</option>
+            <option value="natural">Natural (Organik)</option>
+          </select>
+        </div>
+      </div>
+      <div id="vtList" class="vt-list"></div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
