@@ -284,13 +284,21 @@
 
     .hook-styled-text {
       display: inline-block;
-      padding: 7px 14px;
+      padding: 8px 16px;
       border-radius: 8px;
       font-size: 20px;
       font-weight: 800;
-      line-height: 1.3;
+      line-height: 1.4;
+      letter-spacing: 0.02em;
       max-width: 100%;
       word-break: break-word;
+    }
+
+    .hook-styled-text.is-impact {
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      line-height: 1.45;
+      word-spacing: 0.14em;
     }
 
     .btn-row {
@@ -531,34 +539,40 @@
     <section class="card">
       <div class="sec-head">
         <h2>Pendanaan — Kopi &amp; Sebat</h2>
-        <p>Ruang suport dana sukarela untuk kopi &amp; sebat pengelola Brutal Klip</p>
+        <p>Suport dana sukarela buat kopi &amp; sebat di Brutal Klip</p>
       </div>
 
       <div class="support-banner">
         <div>
-          <p class="support-title">Suport Dana Kopi &amp; Sebat</p>
-          <p class="support-sub">Brutal Klip gratis dipakai—kalau mau ngasih suport buat kopi &amp; sebat, atur info atau catatan suportmu di bawah ini.</p>
+          <p class="support-title">Suport Kopi &amp; Sebat via Trakteer</p>
+          <p class="support-sub">Gratis dipakai. Kalau mau ngasih suport kopi &amp; sebat, bisa langsung lewat Trakteer Brutal Klip.</p>
         </div>
-        <span class="pill">Kopi &amp; Sebat</span>
-      </div>
-
-      <div class="grid-2">
-        <div class="field">
-          <label for="dana-jalur">Jalur Suport (E-Wallet / Bank / Link)</label>
-          <input id="dana-jalur" class="input" type="text" placeholder="Contoh: DANA / GoPay / BCA • 08xxxxxxxxxx" />
-        </div>
-        <div class="field">
-          <label for="dana-pesan">Pesan Suport Kopi &amp; Sebat</label>
-          <input id="dana-pesan" class="input" type="text" placeholder="Contoh: Buat nambah kopi & sebat pas ngeracik klip" />
+        <div class="btn-row" style="margin-top: 0;">
+          <a id="btn-buka-trakteer" class="btn btn-primary" href="https://trakteer.id/brutal_klip" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">Buka Trakteer</a>
+          <button id="btn-salin-dana" class="btn btn-secondary" type="button">Salin Link</button>
         </div>
       </div>
 
       <div class="support-detail-box">
         <div>
-          <div class="box-tag">Info Suport Aktif</div>
-          <div id="dana-tampil" class="support-val">Belum diatur — isi jalur suport kopi &amp; sebat di atas</div>
+          <div class="box-tag">Link Trakteer Aktif</div>
+          <div id="dana-tampil" class="support-val">https://trakteer.id/brutal_klip</div>
         </div>
-        <button id="btn-salin-dana" class="mini-btn" type="button">Salin Info Suport</button>
+        <button id="btn-toggle-dana" class="mini-btn" type="button">Ubah Link</button>
+      </div>
+
+      <div id="dana-edit-panel" style="display: none; margin-top: 12px;">
+        <div class="grid-2" style="margin-bottom: 8px;">
+          <div class="field" style="margin-bottom: 0;">
+            <label for="dana-jalur">URL Trakteer</label>
+            <input id="dana-jalur" class="input" type="text" placeholder="https://trakteer.id/brutal_klip" />
+          </div>
+          <div class="field" style="margin-bottom: 0;">
+            <label for="dana-pesan">Catatan Singkat</label>
+            <input id="dana-pesan" class="input" type="text" placeholder="Contoh: Buat kopi & sebat" />
+          </div>
+        </div>
+        <button id="btn-simpan-dana" class="btn btn-secondary" type="button">Simpan Link</button>
       </div>
     </section>
 
@@ -646,7 +660,7 @@
       <div class="grid-2">
         <div class="field">
           <label for="vt-judul">Judul / Topik Campaign</label>
-          <input id="vt-judul" class="input" type="text" placeholder="Contoh: KOL.ID X KAK PERMATA X KO LEO" />
+          <input id="vt-judul" class="input" type="text" placeholder="Contoh: Brutal Klip X Banget" />
         </div>
         <div class="field">
           <label for="vt-gaya">Gaya Pembahasan Fresh</label>
@@ -697,7 +711,8 @@
 
   <script>
     (function () {
-      const STORAGE_KEY = "brutal_klip_full_state_v5";
+      const STORAGE_KEY = "brutal_klip_full_state_v7";
+      const DEFAULT_TRAKTEER = "https://trakteer.id/brutal_klip";
 
       const elFileInput = document.getElementById("file-input");
       const elFileLabel = document.getElementById("file-label");
@@ -706,7 +721,11 @@
       const elDanaJalur = document.getElementById("dana-jalur");
       const elDanaPesan = document.getElementById("dana-pesan");
       const elDanaTampil = document.getElementById("dana-tampil");
+      const btnBukaTrakteer = document.getElementById("btn-buka-trakteer");
       const btnSalinDana = document.getElementById("btn-salin-dana");
+      const btnToggleDana = document.getElementById("btn-toggle-dana");
+      const btnSimpanDana = document.getElementById("btn-simpan-dana");
+      const danaEditPanel = document.getElementById("dana-edit-panel");
 
       const elKomenInput = document.getElementById("komen-input");
       const elKomenTag = document.getElementById("komen-tag");
@@ -737,7 +756,7 @@
           },
           files: [],
           support: {
-            jalur: "",
+            jalur: DEFAULT_TRAKTEER,
             pesan: ""
           },
           comments: [],
@@ -850,39 +869,52 @@
       });
 
       // --- PENDANAAN KOPI & SEBAT ---
-      function updateSupport() {
-        const jalur = (elDanaJalur.value || "").trim();
-        const pesan = (elDanaPesan.value || "").trim();
+      function normalizeTrakteerUrl(rawUrl) {
+        const clean = (rawUrl || "").trim();
+        if (!clean) return DEFAULT_TRAKTEER;
+        if (/^https?:\/\//i.test(clean)) return clean;
+        return "https://" + clean.replace(/^\/+/, "");
+      }
 
+      function updateSupport() {
+        const st = loadState();
+        const url = normalizeTrakteerUrl(st.support.jalur);
+        const pesan = (st.support.pesan || "").trim();
+
+        btnBukaTrakteer.href = url;
+        elDanaTampil.textContent = pesan ? `${url} • ${pesan}` : url;
+      }
+
+      btnToggleDana.addEventListener("click", () => {
+        const st = loadState();
+        elDanaJalur.value = normalizeTrakteerUrl(st.support.jalur);
+        elDanaPesan.value = st.support.pesan || "";
+        const isHidden = danaEditPanel.style.display === "none";
+        danaEditPanel.style.display = isHidden ? "block" : "none";
+        if (isHidden) elDanaJalur.focus();
+      });
+
+      btnSimpanDana.addEventListener("click", () => {
         const st = loadState();
         st.support = {
-          jalur: elDanaJalur.value,
+          jalur: normalizeTrakteerUrl(elDanaJalur.value),
           pesan: elDanaPesan.value
         };
         saveState(st);
-
-        if (!jalur && !pesan) {
-          elDanaTampil.textContent = "Belum diatur — isi jalur suport kopi & sebat di atas";
-        } else if (jalur && pesan) {
-          elDanaTampil.textContent = `${jalur} — ${pesan}`;
-        } else {
-          elDanaTampil.textContent = jalur || pesan;
-        }
-      }
-
-      elDanaJalur.addEventListener("input", updateSupport);
-      elDanaPesan.addEventListener("input", updateSupport);
+        updateSupport();
+        danaEditPanel.style.display = "none";
+      });
 
       btnSalinDana.addEventListener("click", () => {
-        const teks = elDanaTampil.textContent || "";
+        const st = loadState();
+        const url = normalizeTrakteerUrl(st.support.jalur);
         if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(teks).catch(() => {});
+          navigator.clipboard.writeText(url).catch(() => {});
         }
-        btnSalinDana.textContent = "Tersalin";
-        btnSalinDana.classList.add("copied");
+        const labelAsli = btnSalinDana.textContent;
+        btnSalinDana.textContent = "Tersalin!";
         setTimeout(() => {
-          btnSalinDana.textContent = "Salin Info Suport";
-          btnSalinDana.classList.remove("copied");
+          btnSalinDana.textContent = labelAsli;
         }, 1400);
       });
 
@@ -943,6 +975,9 @@
         const font = state.config.font || 'system-ui, -apple-system, sans-serif';
         const wm = (state.config.watermark || "").trim();
 
+        const isImpactFont = font.toLowerCase().includes("impact");
+        elHookPreview.classList.toggle("is-impact", isImpactFont);
+
         const isBlackText =
           color.toUpperCase() === "#09090B" ||
           color.toLowerCase() === "#000000" ||
@@ -963,7 +998,7 @@
         elWmMode.textContent = wm ? `Watermark: ${wm}` : "Watermark: Default";
       }
 
-      // --- Pahami Brief & Racik Pembahasan Fresh ---
+      // --- PAHAMI BRIEF & RACIK PEMBAHASAN FRESH ---
       function extractTopic(judul, briefText) {
         const cleanJudul = (judul || "").trim();
         if (cleanJudul) return cleanJudul;
@@ -1102,8 +1137,6 @@
       elFont.value = initState.config.font;
       elColor.value = initState.config.color;
       elWatermark.value = initState.config.watermark;
-      elDanaJalur.value = initState.support.jalur;
-      elDanaPesan.value = initState.support.pesan;
 
       applyHookStyle();
       updateSupport();
