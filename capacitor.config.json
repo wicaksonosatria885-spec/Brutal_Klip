@@ -1,0 +1,6 @@
+{
+  "appId": "com.brutalklip.app",
+  "appName": "Brutal Klip",
+  "webDir": "www",
+  "bundledWebRuntime": false
+}
