@@ -1,5 +1,4 @@
 (function () {
-  let deferredInstallPrompt = null;
   let sourceVideoFile = null;
   let sourceVideoUrl = "";
   let appliedTranscriptText = "";
@@ -69,28 +68,6 @@
       btn.classList.add("active");
       applyLanguage(btn.dataset.lang || "id");
     });
-  });
-
-  // --- Install Web App ---
-  const btnInstallWebApp = el("btn-install-web-app");
-
-  window.addEventListener("beforeinstallprompt", (event) => {
-    event.preventDefault();
-    deferredInstallPrompt = event;
-  });
-
-  if (btnInstallWebApp) {
-    btnInstallWebApp.addEventListener("click", async () => {
-      if (deferredInstallPrompt) {
-        deferredInstallPrompt.prompt();
-        await deferredInstallPrompt.userChoice.catch(() => null);
-        deferredInstallPrompt = null;
-      }
-    });
-  }
-
-  window.addEventListener("appinstalled", () => {
-    deferredInstallPrompt = null;
   });
 
   if ("serviceWorker" in navigator) {
