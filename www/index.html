@@ -17,66 +17,50 @@
         src="./WhatsApp%20Image%202026-11-20%20at%2023.32.02.jpeg"
         alt="Logo BRUTAL KLIP"
       />
-      <div>
+      <div class="brand-stack">
         <h1 class="brand-title">BRUTAL KLIP</h1>
-        <p class="brand-sub">App browser &amp; studio potong VT — diunduh ke HP, tetap berjalan di web</p>
+        <div class="lang-switch" role="group" aria-label="Language Switch">
+          <button type="button" class="lang-btn active" data-lang="id">ID</button>
+          <button type="button" class="lang-btn" data-lang="en">EN</button>
+        </div>
       </div>
     </div>
 
     <div class="header-right">
       <div class="app-actions">
-        <a id="btn-download-apk" class="btn-primary" href="./brutal-klip.apk" download="brutal-klip.apk">Download APK</a>
+        <a id="btn-download-apk" class="btn-ghost" href="./apk/brutal-klip.apk" download="brutal-klip.apk">Download APK web</a>
         <button type="button" id="btn-install-web-app" class="btn-ghost">Install Web App</button>
-      </div>
-      <div class="lang-switch" role="group" aria-label="Language Switch">
-        <button type="button" class="lang-btn active" data-lang="id">ID</button>
-        <button type="button" class="lang-btn" data-lang="en">EN</button>
       </div>
     </div>
   </header>
 
   <main class="container">
-    <!-- Panel APK Web / App Browser -->
-    <section class="panel apk-panel">
-      <div class="apk-row">
-        <img
-          class="brand-logo"
-          src="./WhatsApp%20Image%202026-11-20%20at%2023.32.02.jpeg"
-          alt="Logo APK BRUTAL KLIP"
-        />
-        <div class="apk-meta">
-          <strong>APK Web &amp; Browser App</strong>
-          <p id="apk-status-text">Siap diunduh sebagai APK wrapper web atau di-install langsung dari browser HP.</p>
-        </div>
-      </div>
-    </section>
-
     <!-- 1. Sumber Video & Dokumen Hook/Klip -->
     <section class="panel">
       <div class="panel-head">
-        <h2>1. Video Sumber &amp; Dokumen Penanda (Hook N / Klip N)</h2>
-        <p>Jumlah klip 100% mengikuti dokumen/catatan berdasarkan penanda <strong>Hook 1, Hook 2...</strong> dan <strong>Klip 1, Klip 2...</strong></p>
+        <h2 data-i18n="sec1Title">1. Video Sumber &amp; Dokumen Penanda (Hook N / Klip N)</h2>
+        <p data-i18n="sec1Sub">Jumlah klip 100% mengikuti dokumen/catatan berdasarkan penanda <strong>Hook 1, Hook 2...</strong> dan <strong>Klip 1, Klip 2...</strong></p>
       </div>
 
       <div class="grid-2">
         <div class="field">
-          <label for="video-file">Upload Video Sumber (MP4 / WebM / MOV)</label>
+          <label for="video-file" data-i18n="lblVideo">Upload Video Sumber (MP4 / WebM / MOV)</label>
           <input type="file" id="video-file" accept="video/*" />
-          <small id="video-info" class="hint">Belum ada video dipilih.</small>
+          <small id="video-info" class="hint" data-i18n="noVideo">Belum ada video dipilih.</small>
         </div>
 
         <div class="field">
-          <label for="hook-reorder-mode">Mode Posisi Hook dari Dokumen</label>
+          <label for="hook-reorder-mode" data-i18n="lblHookMode">Mode Posisi Hook dari Dokumen</label>
           <select id="hook-reorder-mode">
             <option value="auto-front" selected>Otomatis Pindah ke Depan VT (Jika Hook di Belakang)</option>
             <option value="as-is">Sesuai Urutan Dokumen</option>
           </select>
-          <small class="hint">Deteksi otomatis membaca rentang waktu Hook N di dokumen.</small>
+          <small class="hint" data-i18n="hookModeHint">Deteksi otomatis membaca rentang waktu Hook N di dokumen.</small>
         </div>
       </div>
 
       <div class="field">
-        <label for="doc-notes-input">Dokumen / Catatan Segmentasi (Gunakan penanda Hook 1, Hook 2... atau Klip 1, Klip 2... + rentang waktu)</label>
+        <label for="doc-notes-input" data-i18n="lblDocNotes">Dokumen / Catatan Segmentasi (Gunakan penanda Hook 1, Hook 2... atau Klip 1, Klip 2... + rentang waktu)</label>
         <textarea id="doc-notes-input" rows="7" placeholder="Contoh:
 Klip 1 (00:00 - 00:45)
 Hook 1 (00:38 - 00:43): Rahasia edit video cepat yang jarang dibahas!
@@ -88,22 +72,21 @@ Isi: Jangan potong asal di tengah kalimat tanpa cek ritme."></textarea>
       </div>
 
       <div class="doc-summary-bar" id="doc-summary-bar">
-        <span>Terdeteksi: <strong id="detected-clip-count">0</strong> segmen klip/hook dari dokumen.</span>
+        <span data-i18n="detectedPrefix">Terdeteksi:</span> <strong id="detected-clip-count">0</strong> <span data-i18n="detectedSuffix">segmen klip/hook dari dokumen.</span>
       </div>
     </section>
 
-    <!-- 2. Transkrip & Aturan Potong (Saling Mengunci Manual vs File) -->
+    <!-- 2. Transkrip & Aturan Potong -->
     <section class="panel">
       <div class="panel-head">
-        <h2>2. Transkrip &amp; Aturan Potong</h2>
-        <p>Mode Ketik Manual dan Upload File (.txt / .md) saling mengunci. Jika CC aktif, transkrip wajib diisi dan diterapkan dulu.</p>
+        <h2 data-i18n="sec2Title">2. Transkrip &amp; Aturan Potong</h2>
+        <p data-i18n="sec2Sub">Mode Ketik Manual dan Upload File (.txt / .md) saling mengunci. Jika CC aktif, transkrip wajib diisi dan diterapkan dulu.</p>
       </div>
 
       <div class="grid-2">
-        <!-- Transkrip -->
         <div class="sub-box">
           <div class="sub-box-head">
-            <h3>Transkrip Video</h3>
+            <h3 data-i18n="transcriptBoxTitle">Transkrip Video</h3>
             <div class="mode-toggle">
               <button type="button" class="mode-btn active" data-group="transcript" data-mode="manual">Manual</button>
               <button type="button" class="mode-btn" data-group="transcript" data-mode="file">Upload File</button>
@@ -121,15 +104,14 @@ Isi: Jangan potong asal di tengah kalimat tanpa cek ritme."></textarea>
           </div>
 
           <div class="action-inline">
-            <button type="button" id="btn-apply-transcript" class="btn-secondary">Terapkan Transkrip</button>
+            <button type="button" id="btn-apply-transcript" class="btn-secondary" data-i18n="btnApplyTranscript">Terapkan Transkrip</button>
             <span id="transcript-status" class="badge-status">Belum diterapkan</span>
           </div>
         </div>
 
-        <!-- Aturan Potong -->
         <div class="sub-box">
           <div class="sub-box-head">
-            <h3>Aturan Potong &amp; Deskripsi</h3>
+            <h3 data-i18n="rulesBoxTitle">Aturan Potong &amp; Deskripsi</h3>
             <div class="mode-toggle">
               <button type="button" class="mode-btn active" data-group="rules" data-mode="manual">Manual</button>
               <button type="button" class="mode-btn" data-group="rules" data-mode="file">Upload File</button>
@@ -156,12 +138,11 @@ Isi: Jangan potong asal di tengah kalimat tanpa cek ritme."></textarea>
     <!-- 3. Kontrol Tampilan, Transisi 0.5s, Hook, CC & Watermark -->
     <section class="panel">
       <div class="panel-head">
-        <h2>3. Kontrol Tampilan, Transisi 0.5s &amp; Watermark</h2>
-        <p>Atur animasi 0.5s terpisah untuk Video Hook dan Video Isi, durasi teks hook, CC, serta WM penuh dari awal sampai akhir VT.</p>
+        <h2 data-i18n="sec3Title">3. Kontrol Tampilan, Transisi 0.5s &amp; Watermark</h2>
+        <p data-i18n="sec3Sub">Atur animasi 0.5s terpisah untuk Video Hook dan Video Isi, durasi teks hook, CC, serta WM penuh dari awal sampai akhir VT.</p>
       </div>
 
       <div class="grid-3">
-        <!-- Transisi Video Hook -->
         <div class="sub-box">
           <h3>Animasi Video Hook (0.5s)</h3>
           <div class="field">
@@ -184,7 +165,6 @@ Isi: Jangan potong asal di tengah kalimat tanpa cek ritme."></textarea>
           </div>
         </div>
 
-        <!-- Transisi Video Isi -->
         <div class="sub-box">
           <h3>Animasi Video Isi (0.5s)</h3>
           <div class="field">
@@ -207,7 +187,6 @@ Isi: Jangan potong asal di tengah kalimat tanpa cek ritme."></textarea>
           </div>
         </div>
 
-        <!-- CC & Watermark -->
         <div class="sub-box">
           <h3>CC &amp; Watermark (WM)</h3>
           <div class="field">
@@ -307,7 +286,7 @@ Isi: Jangan potong asal di tengah kalimat tanpa cek ritme."></textarea>
     <section class="panel">
       <div class="toolbar-row">
         <div class="toolbar-left">
-          <button type="button" id="btn-generate-clips" class="btn-primary">Hasilkan Klip</button>
+          <button type="button" id="btn-generate-clips" class="btn-primary" data-i18n="btnGenerate">Hasilkan Klip</button>
           <button type="button" id="btn-export-zip" class="btn-secondary" disabled>Export ZIP</button>
         </div>
 
@@ -318,7 +297,7 @@ Isi: Jangan potong asal di tengah kalimat tanpa cek ritme."></textarea>
             <option value="front-hook">Hook di Depan</option>
             <option value="standard">Urutan Asli</option>
           </select>
-          <button type="button" id="btn-delete-all-clips" class="btn-danger">Hapus Semua Hasil Klip</button>
+          <button type="button" id="btn-delete-all-clips" class="btn-danger" data-i18n="btnDeleteAll">Hapus Semua Hasil Klip</button>
         </div>
       </div>
 
@@ -328,11 +307,23 @@ Isi: Jangan potong asal di tengah kalimat tanpa cek ritme."></textarea>
     <!-- 5. Hasil Klip, Preview VT, Render MP4 HD & Analitik -->
     <section class="panel">
       <div class="panel-head">
-        <h2>5. Hasil Klip, Preview VT, Render HD &amp; Analitik</h2>
-        <p>Klik putar pada tiap klip untuk melihat preview 9:16, render MP4 HD sinkron audio &amp; gerak, serta grafik retensi 1%–90%.</p>
+        <h2 data-i18n="sec5Title">5. Hasil Klip, Preview VT, Render HD &amp; Analitik</h2>
+        <p data-i18n="sec5Sub">Klik putar pada tiap klip untuk melihat preview 9:16, render MP4 HD sinkron audio &amp; gerak, serta grafik retensi 1%–90%.</p>
       </div>
       <div id="clips-container" class="clips-grid">
         <p class="empty-state">Belum ada klip dihasilkan. Masukkan dokumen Hook N / Klip N lalu klik <strong>Hasilkan Klip</strong>.</p>
+      </div>
+    </section>
+
+    <!-- Panel APK web di bawah -->
+    <section class="panel apk-panel">
+      <div class="apk-row">
+        <img
+          class="brand-logo"
+          src="./WhatsApp%20Image%202026-11-20%20at%2023.32.02.jpeg"
+          alt="APK web"
+        />
+        <strong class="apk-label">APK web</strong>
       </div>
     </section>
   </main>
