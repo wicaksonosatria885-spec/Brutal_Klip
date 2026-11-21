@@ -1,61 +1,96 @@
 (function () {
-  const APK_FILE_URL = "./brutal-klip.apk";
   let deferredInstallPrompt = null;
   let sourceVideoFile = null;
   let sourceVideoUrl = "";
   let appliedTranscriptText = "";
   let generatedClips = [];
 
+  const I18N = {
+    id: {
+      sec1Title: "1. Video Sumber & Dokumen Penanda (Hook N / Klip N)",
+      sec1Sub: "Jumlah klip 100% mengikuti dokumen/catatan berdasarkan penanda Hook 1, Hook 2... dan Klip 1, Klip 2...",
+      lblVideo: "Upload Video Sumber (MP4 / WebM / MOV)",
+      noVideo: "Belum ada video dipilih.",
+      lblHookMode: "Mode Posisi Hook dari Dokumen",
+      hookModeHint: "Deteksi otomatis membaca rentang waktu Hook N di dokumen.",
+      lblDocNotes: "Dokumen / Catatan Segmentasi (Gunakan penanda Hook 1, Hook 2... atau Klip 1, Klip 2... + rentang waktu)",
+      detectedPrefix: "Terdeteksi:",
+      detectedSuffix: "segmen klip/hook dari dokumen.",
+      sec2Title: "2. Transkrip & Aturan Potong",
+      sec2Sub: "Mode Ketik Manual dan Upload File (.txt / .md) saling mengunci. Jika CC aktif, transkrip wajib diisi dan diterapkan dulu.",
+      transcriptBoxTitle: "Transkrip Video",
+      btnApplyTranscript: "Terapkan Transkrip",
+      rulesBoxTitle: "Aturan Potong & Deskripsi",
+      sec3Title: "3. Kontrol Tampilan, Transisi 0.5s & Watermark",
+      sec3Sub: "Atur animasi 0.5s terpisah untuk Video Hook dan Video Isi, durasi teks hook, CC, serta WM penuh dari awal sampai akhir VT.",
+      btnGenerate: "Hasilkan Klip",
+      btnDeleteAll: "Hapus Semua Hasil Klip",
+      sec5Title: "5. Hasil Klip, Preview VT, Render HD & Analitik",
+      sec5Sub: "Klik putar pada tiap klip untuk melihat preview 9:16, render MP4 HD sinkron audio & gerak, serta grafik retensi 1%–90%."
+    },
+    en: {
+      sec1Title: "1. Source Video & Marker Document (Hook N / Klip N)",
+      sec1Sub: "Clip count follows 100% of the document/notes based on Hook 1, Hook 2... and Klip 1, Klip 2... markers.",
+      lblVideo: "Upload Source Video (MP4 / WebM / MOV)",
+      noVideo: "No video selected yet.",
+      lblHookMode: "Hook Position Mode from Document",
+      hookModeHint: "Automatically reads Hook N time ranges in the document.",
+      lblDocNotes: "Segmentation Document / Notes (Use Hook 1, Hook 2... or Klip 1, Klip 2... + time range)",
+      detectedPrefix: "Detected:",
+      detectedSuffix: "clip/hook segments from document.",
+      sec2Title: "2. Transcript & Cut Rules",
+      sec2Sub: "Manual Input and File Upload (.txt / .md) lock each other. When CC is ON, transcript must be entered and applied first.",
+      transcriptBoxTitle: "Video Transcript",
+      btnApplyTranscript: "Apply Transcript",
+      rulesBoxTitle: "Cut Rules & Description",
+      sec3Title: "3. Visual Controls, 0.5s Transitions & Watermark",
+      sec3Sub: "Set independent 0.5s animations for Hook Video and Body Video, hook text duration, CC, and full-length WM.",
+      btnGenerate: "Generate Clips",
+      btnDeleteAll: "Delete All Clips",
+      sec5Title: "5. Generated Clips, VT Preview, HD Render & Analytics",
+      sec5Sub: "Play any clip to preview 9:16 layout, render HD video synced with audio & motion, and view 1%–90% retention."
+    }
+  };
+
   const el = (id) => document.getElementById(id);
 
-  // --- App Browser / APK Web ---
-  const btnDownloadApk = el("btn-download-apk");
-  const btnInstallWebApp = el("btn-install-web-app");
-  const elApkStatusText = el("apk-status-text");
-
-  if (btnDownloadApk) {
-    btnDownloadApk.href = APK_FILE_URL;
-    btnDownloadApk.addEventListener("click", () => {
-      if (elApkStatusText) {
-        elApkStatusText.textContent = "Mengunduh APK web BRUTAL KLIP (tetap berjalan memuat antarmuka web).";
-      }
+  function applyLanguage(lang) {
+    const dict = I18N[lang] || I18N.id;
+    document.documentElement.lang = lang;
+    document.querySelectorAll("[data-i18n]").forEach((node) => {
+      const key = node.getAttribute("data-i18n");
+      if (dict[key]) node.textContent = dict[key];
     });
   }
+
+  document.querySelectorAll(".lang-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".lang-btn").forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      applyLanguage(btn.dataset.lang || "id");
+    });
+  });
+
+  // --- Install Web App ---
+  const btnInstallWebApp = el("btn-install-web-app");
 
   window.addEventListener("beforeinstallprompt", (event) => {
     event.preventDefault();
     deferredInstallPrompt = event;
-    if (elApkStatusText) {
-      elApkStatusText.textContent = "Browser HP siap meng-install BRUTAL KLIP sebagai web app mandiri.";
-    }
   });
 
   if (btnInstallWebApp) {
     btnInstallWebApp.addEventListener("click", async () => {
       if (deferredInstallPrompt) {
         deferredInstallPrompt.prompt();
-        const choice = await deferredInstallPrompt.userChoice.catch(() => null);
+        await deferredInstallPrompt.userChoice.catch(() => null);
         deferredInstallPrompt = null;
-        if (elApkStatusText && choice) {
-          elApkStatusText.textContent =
-            choice.outcome === "accepted"
-              ? "Web app BRUTAL KLIP berhasil di-install ke layar utama HP."
-              : "Instalasi web app dibatalkan.";
-        }
-        return;
-      }
-      if (elApkStatusText) {
-        elApkStatusText.textContent =
-          "Buka menu browser HP (titik tiga) lalu pilih 'Tambahkan ke layar utama' / 'Install app', atau unduh file APK web.";
       }
     });
   }
 
   window.addEventListener("appinstalled", () => {
     deferredInstallPrompt = null;
-    if (elApkStatusText) {
-      elApkStatusText.textContent = "BRUTAL KLIP terpasang di HP dan berjalan memuat konten web.";
-    }
   });
 
   if ("serviceWorker" in navigator) {
@@ -64,14 +99,7 @@
     });
   }
 
-  document.querySelectorAll(".lang-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll(".lang-btn").forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
-    });
-  });
-
-  // --- Mutual Lock Manual vs File (Transkrip & Aturan Potong) ---
+  // --- Mutual Lock Manual vs File ---
   function setupModeLock(group) {
     const buttons = document.querySelectorAll(`.mode-btn[data-group="${group}"]`);
     const manualWrap = el(`${group}-manual-wrap`);
@@ -187,7 +215,6 @@
     }
     if (current) blocks.push(current);
 
-    // Gabungkan Hook N dan Klip N dengan nomor yang sama menjadi satu ide VT, atau pisahkan jika berdiri sendiri
     const groupedMap = new Map();
     for (const b of blocks) {
       const key = `${b.num}`;
@@ -222,7 +249,6 @@
     const clips = Array.from(groupedMap.values());
     const reorderMode = el("hook-reorder-mode").value;
 
-    // Deteksi posisi Hook di rentang waktu belakang/akhir dari dokumen
     for (const clip of clips) {
       const bodyEnd = clip.bodyEndSec ?? (clip.bodyStartSec !== null ? clip.bodyStartSec + 45 : 60);
       const bodyStart = clip.bodyStartSec ?? 0;
@@ -254,7 +280,6 @@
   el("doc-notes-input").addEventListener("input", refreshDetectedCount);
   el("hook-reorder-mode").addEventListener("change", refreshDetectedCount);
 
-  // --- Formatting & Analytics Helpers ---
   function applyCase(text, mode) {
     if (mode === "upper") return text.toUpperCase();
     if (mode === "lower") return text.toLowerCase();
@@ -335,7 +360,6 @@
     return { fypScore, points, reason, comments };
   }
 
-  // --- Render Clip Cards ---
   function renderClips() {
     const container = el("clips-container");
     const filterVal = el("style-filter-select").value;
@@ -493,7 +517,6 @@
       .replace(/"/g, "&quot;");
   }
 
-  // --- HD Canvas + Audio MediaRecorder Renderer ---
   async function renderClipHdBlob(clip, hookStr, ccStr, wmStr, onProgress) {
     return new Promise((resolve, reject) => {
       const video = document.createElement("video");
@@ -558,7 +581,6 @@
             const pct = Math.min(100, Math.round((elapsed / totalDur) * 100));
             if (onProgress) onProgress(pct);
 
-            // Latar belakang blur/gelap + video 9:16
             ctx.fillStyle = "#0b0a0e";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -571,7 +593,6 @@
             const dy = (canvas.height - dh) / 2;
             ctx.drawImage(video, dx, dy, dw, dh);
 
-            // Hook overlay sesuai durasi hook di dokumen
             const hookDur = Math.max(2, (clip.hookEndSec || startSec + 4) - (clip.hookStartSec || startSec));
             if (elapsed <= hookDur) {
               ctx.fillStyle = "rgba(255, 42, 75, 0.88)";
@@ -582,7 +603,6 @@
               ctx.fillText(hookStr.slice(0, 42), canvas.width / 2, 200);
             }
 
-            // CC overlay
             if (ccStr) {
               ctx.fillStyle = "rgba(11, 10, 14, 0.78)";
               ctx.fillRect(60, canvas.height - 260, canvas.width - 120, 82);
@@ -592,7 +612,6 @@
               ctx.fillText(ccStr.slice(0, 56), canvas.width / 2, canvas.height - 210);
             }
 
-            // Watermark (WM) tampil penuh dari awal sampai akhir VT
             ctx.fillStyle = "rgba(11, 10, 14, 0.75)";
             ctx.fillRect(canvas.width - 250, 36, 214, 46);
             ctx.fillStyle = "#ffffff";
@@ -611,7 +630,6 @@
     });
   }
 
-  // --- Generate Clips ---
   el("btn-generate-clips").addEventListener("click", async () => {
     const ccOn = el("cc-toggle").value === "on";
     const rulesText = await readGroupText("rules");
@@ -651,7 +669,6 @@
     renderClips();
   });
 
-  // --- Filter & Delete All Clips ---
   el("style-filter-select").addEventListener("change", renderClips);
 
   el("btn-delete-all-clips").addEventListener("click", () => {
@@ -662,7 +679,6 @@
     el("process-feedback").textContent = "Semua hasil klip sudah dihapus.";
   });
 
-  // --- Export ZIP ---
   el("btn-export-zip").addEventListener("click", async () => {
     if (!generatedClips.length || typeof JSZip === "undefined") return;
     const zip = new JSZip();
