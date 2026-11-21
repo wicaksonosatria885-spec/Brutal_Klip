@@ -1,21 +1,22 @@
 {
-  "name": "Brutal Klip — Workspace VT & Hook",
-  "short_name": "Brutal Klip",
-  "start_url": "./",
+  "name": "BRUTAL KLIP",
+  "short_name": "BRUTAL KLIP",
+  "description": "Aplikasi web clipping VT yang tetap berjalan di web",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#0c0a0f",
-  "theme_color": "#120f16",
-  "description": "Workspace klipper untuk upload file, suport dana kopi & sebat, komen, preset font & warna teks hook, serta racik hook & deskripsi VT fresh.",
+  "orientation": "portrait",
+  "background_color": "#0b0a0e",
+  "theme_color": "#ff2a4b",
   "icons": [
     {
-      "src": "WhatsApp%20Image%202026-11-20%20at%2023.32.02.jpeg",
+      "src": "./WhatsApp%20Image%202026-11-20%20at%2023.32.02.jpeg",
       "sizes": "192x192",
       "type": "image/jpeg",
       "purpose": "any"
     },
     {
-      "src": "WhatsApp%20Image%202026-11-20%20at%2023.32.02.jpeg",
+      "src": "./WhatsApp%20Image%202026-11-20%20at%2023.32.02.jpeg",
       "sizes": "512x512",
       "type": "image/jpeg",
       "purpose": "any"
