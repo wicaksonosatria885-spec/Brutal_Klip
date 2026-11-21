@@ -112,11 +112,11 @@
       </div>
     </section>
 
-    <!-- 2. Kontrol Tampilan, Transisi 0.5s & Watermark -->
+    <!-- 2. Kontrol Tampilan, Transisi 0.5s, Kecepatan & Watermark -->
     <section id="editing-panel" class="panel">
       <div class="panel-head">
-        <h2 data-i18n="sec2Title">2. Kontrol Tampilan, Transisi 0.5s &amp; Watermark</h2>
-        <p data-i18n="sec2Sub">Atur animasi 0.5s terpisah untuk Video Hook dan Video Isi, CC, serta WM penuh dari awal sampai akhir VT.</p>
+        <h2 data-i18n="sec2Title">2. Kontrol Tampilan, Transisi 0.5s, Kecepatan &amp; Watermark</h2>
+        <p data-i18n="sec2Sub">Atur kecepatan putar, animasi 0.5s terpisah untuk Video Hook dan Video Isi, CC, serta WM penuh dari awal sampai akhir VT.</p>
       </div>
 
       <div class="grid-3">
@@ -165,14 +165,22 @@
         </div>
 
         <div class="sub-box">
-          <h3>Watermark (WM)</h3>
+          <h3>Watermark (WM) &amp; Kecepatan</h3>
           <div class="field">
             <label for="wm-text">Teks Watermark (Tampil Awal s/d Akhir VT)</label>
             <input type="text" id="wm-text" value="@BRUTALKLIP" />
           </div>
           <div class="field">
-            <label for="wm-color-input">Warna Font WM</label>
-            <input type="color" id="wm-color-input" value="#ffffff" />
+            <label for="playback-speed-select">Kecepatan Putar (Playback Speed)</label>
+            <select id="playback-speed-select">
+              <option value="0.95">0.95x</option>
+              <option value="1">1.0x (Normal)</option>
+              <option value="1.05" selected>1.05x (Rekomendasi Klipper)</option>
+              <option value="1.1">1.1x</option>
+              <option value="1.15">1.15x</option>
+              <option value="1.2">1.2x</option>
+              <option value="1.25">1.25x</option>
+            </select>
           </div>
         </div>
       </div>
@@ -235,7 +243,12 @@
         </div>
       </div>
 
-      <div class="grid-2 mt-12">
+      <div class="grid-3 mt-12">
+        <div class="field">
+          <label for="wm-color-input">Warna Font WM</label>
+          <input type="color" id="wm-color-input" value="#ffffff" />
+        </div>
+
         <div class="field">
           <label for="wm-bg-mode">Background WM</label>
           <select id="wm-bg-mode">
@@ -255,9 +268,9 @@
         <div class="tiktok-sample-head">
           <div>
             <h3>Contoh Penerapan Rasio TikTok (9:16)</h3>
-            <small class="hint">Simulasi tampilan seolah sudah tayang di TikTok—cek posisi Hook, CC, WM, serta area aman tombol &amp; caption TikTok.</small>
+            <small class="hint">Simulasi tampilan seolah sudah tayang di TikTok—cek posisi Hook, CC, WM, kecepatan putar, serta area aman tombol &amp; caption TikTok.</small>
           </div>
-          <span class="tiktok-badge">9:16 TikTok Live Mockup</span>
+          <span id="tiktok-speed-badge" class="tiktok-badge">9:16 • Speed 1.05x</span>
         </div>
 
         <div class="tiktok-stage-center">
