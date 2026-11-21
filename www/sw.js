@@ -1,4 +1,4 @@
-const CACHE_NAME = "brutal-klip-v2";
+const CACHE_NAME = "brutal-klip-v3";
 const CORE_ASSETS = [
   "./",
   "./index.html",
