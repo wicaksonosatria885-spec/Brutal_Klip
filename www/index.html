@@ -128,7 +128,7 @@
     <section id="editing-panel" class="panel">
       <div class="panel-head">
         <h2 data-i18n="sec2Title">2. Kontrol Tampilan, Transisi 0.5s, Kecepatan &amp; Watermark</h2>
-        <p data-i18n="sec2Sub">Atur kecepatan putar, animasi 0.5s terpisah untuk Video Hook dan Video Isi, ukuran, warna &amp; perataan Hook/CC terpisah, serta WM penuh dari awal sampai akhir VT.</p>
+        <p data-i18n="sec2Sub">Atur kecepatan putar, animasi 0.5s terpisah untuk Video Hook dan Video Isi, serta ukuran, warna, perataan &amp; kepekatan BG Hook/CC/WM terpisah.</p>
       </div>
 
       <div class="grid-3">
@@ -232,16 +232,6 @@
         </div>
 
         <div class="field">
-          <label for="bg-strength-select">Kepekatan Background</label>
-          <select id="bg-strength-select">
-            <option value="fade">Memudar</option>
-            <option value="solid" selected>Pekat</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="grid-4 mt-12">
-        <div class="field">
           <label for="hook-align-select">Perataan Teks Hook</label>
           <select id="hook-align-select">
             <option value="left">Rata Kiri</option>
@@ -249,7 +239,9 @@
             <option value="right">Rata Kanan</option>
           </select>
         </div>
+      </div>
 
+      <div class="grid-4 mt-12">
         <div class="field">
           <label for="cc-align-select">Perataan Teks CC</label>
           <select id="cc-align-select">
@@ -276,9 +268,7 @@
             <option value="large">Agak Besar</option>
           </select>
         </div>
-      </div>
 
-      <div class="grid-4 mt-12">
         <div class="field">
           <label for="wm-size-select">Ukuran Font &amp; Logo WM</label>
           <select id="wm-size-select">
@@ -287,69 +277,108 @@
             <option value="large">Besar</option>
           </select>
         </div>
+      </div>
 
-        <div class="field">
-          <label for="hook-color-input">Warna Font Hook</label>
-          <input type="color" id="hook-color-input" value="#ffffff" />
-        </div>
-
-        <div class="field">
-          <label for="cc-color-input">Warna Font CC</label>
-          <input type="color" id="cc-color-input" value="#fef08a" />
-        </div>
-
-        <div class="grid-2" style="margin-top:0;">
-          <div class="field" style="margin-top:0;">
-            <label for="bg-color-mode">BG Teks Hook &amp; CC</label>
-            <select id="bg-color-mode">
+      <div class="grid-3 mt-12">
+        <div class="sub-box">
+          <h3>Gaya &amp; BG Hook</h3>
+          <div class="field">
+            <label for="hook-color-input">Warna Font Hook</label>
+            <input type="color" id="hook-color-input" value="#ffffff" />
+          </div>
+          <div class="field">
+            <label for="hook-bg-mode">BG Teks Hook</label>
+            <select id="hook-bg-mode">
               <option value="color" selected>Pakai Warna</option>
               <option value="off">Off (Transparan)</option>
             </select>
           </div>
-
-          <div class="field" style="margin-top:0;">
-            <label for="bg-color-input">Warna BG Teks</label>
-            <input type="color" id="bg-color-input" value="#ff2a4b" />
+          <div class="grid-2" style="margin-top:8px;">
+            <div class="field" style="margin-top:0;">
+              <label for="hook-bg-color">Warna BG Hook</label>
+              <input type="color" id="hook-bg-color" value="#ff2a4b" />
+            </div>
+            <div class="field" style="margin-top:0;">
+              <label for="hook-bg-strength">Kepekatan BG Hook</label>
+              <select id="hook-bg-strength">
+                <option value="solid" selected>Pekat</option>
+                <option value="fade">Memudar</option>
+              </select>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="grid-3 mt-12">
-        <div class="field">
-          <label for="wm-pos-select">Posisi Watermark (WM)</label>
-          <select id="wm-pos-select">
-            <option value="top-right" selected>Pojok Kanan Atas</option>
-            <option value="top-left">Pojok Kiri Atas</option>
-            <option value="bottom-center">Tengah Bawah</option>
-          </select>
+        <div class="sub-box">
+          <h3>Gaya &amp; BG CC</h3>
+          <div class="field">
+            <label for="cc-color-input">Warna Font CC</label>
+            <input type="color" id="cc-color-input" value="#fef08a" />
+          </div>
+          <div class="field">
+            <label for="cc-bg-mode">BG Teks CC</label>
+            <select id="cc-bg-mode">
+              <option value="color" selected>Pakai Warna</option>
+              <option value="off">Off (Transparan)</option>
+            </select>
+          </div>
+          <div class="grid-2" style="margin-top:8px;">
+            <div class="field" style="margin-top:0;">
+              <label for="cc-bg-color">Warna BG CC</label>
+              <input type="color" id="cc-bg-color" value="#0b0a0e" />
+            </div>
+            <div class="field" style="margin-top:0;">
+              <label for="cc-bg-strength">Kepekatan BG CC</label>
+              <select id="cc-bg-strength">
+                <option value="solid" selected>Pekat</option>
+                <option value="fade">Memudar</option>
+              </select>
+            </div>
+          </div>
         </div>
 
-        <div class="field">
-          <label for="wm-clarity-select">Gaya Teks WM (Tegas / Pudar)</label>
-          <select id="wm-clarity-select">
-            <option value="solid" selected>Tegas</option>
-            <option value="faded">Pudar</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label for="wm-color-input">Warna Font WM</label>
-          <input type="color" id="wm-color-input" value="#ffffff" />
-        </div>
-      </div>
-
-      <div class="grid-2 mt-12">
-        <div class="field">
-          <label for="wm-bg-mode">BG WM</label>
-          <select id="wm-bg-mode">
-            <option value="color" selected>Pakai Warna</option>
-            <option value="off">Off</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label for="wm-bg-input">Warna BG WM</label>
-          <input type="color" id="wm-bg-input" value="#0b0a0e" />
+        <div class="sub-box">
+          <h3>Posisi, Gaya &amp; BG WM</h3>
+          <div class="field">
+            <label for="wm-pos-select">Posisi Watermark (WM)</label>
+            <select id="wm-pos-select">
+              <option value="top-right" selected>Pojok Kanan Atas</option>
+              <option value="top-left">Pojok Kiri Atas</option>
+              <option value="bottom-center">Tengah Bawah</option>
+            </select>
+          </div>
+          <div class="grid-2" style="margin-top:8px;">
+            <div class="field" style="margin-top:0;">
+              <label for="wm-clarity-select">Gaya Teks WM</label>
+              <select id="wm-clarity-select">
+                <option value="solid" selected>Tegas</option>
+                <option value="faded">Pudar</option>
+              </select>
+            </div>
+            <div class="field" style="margin-top:0;">
+              <label for="wm-color-input">Warna Font WM</label>
+              <input type="color" id="wm-color-input" value="#ffffff" />
+            </div>
+          </div>
+          <div class="grid-2" style="margin-top:8px;">
+            <div class="field" style="margin-top:0;">
+              <label for="wm-bg-mode">BG Teks WM</label>
+              <select id="wm-bg-mode">
+                <option value="color" selected>Pakai Warna</option>
+                <option value="off">Off</option>
+              </select>
+            </div>
+            <div class="field" style="margin-top:0;">
+              <label for="wm-bg-strength">Kepekatan BG WM</label>
+              <select id="wm-bg-strength">
+                <option value="solid" selected>Pekat</option>
+                <option value="fade">Memudar</option>
+              </select>
+            </div>
+          </div>
+          <div class="field" style="margin-top:8px;">
+            <label for="wm-bg-input">Warna BG WM</label>
+            <input type="color" id="wm-bg-input" value="#0b0a0e" />
+          </div>
         </div>
       </div>
 
@@ -358,14 +387,15 @@
         <div class="tiktok-sample-head">
           <div>
             <h3>Contoh Penerapan Rasio TikTok (9:16)</h3>
-            <small class="hint">Menampilkan langsung video sumber di dalam frame HP 9:16—WM aman dari search bar atas, Hook punya jarak tepi, dan CC rapi di bawah video utama.</small>
+            <small class="hint">Belakang: VT 9:16 dipergelap tipis (tanpa blur). Depan tengah: VT proporsi YouTube penuh kiri-kanan tanpa lengkung. Atas: WM &amp; Hook berjarak rapi. Bawah: CC berjarak aman.</small>
           </div>
           <span id="tiktok-speed-badge" class="tiktok-badge">9:16 • Speed 1.05x</span>
         </div>
 
         <div class="tiktok-stage-center">
           <div id="tiktok-preview-frame" class="tiktok-frame">
-            <video id="tiktok-sample-video" class="tiktok-bg-video" playsinline muted loop style="display:none;"></video>
+            <video id="tiktok-sample-bg-video" class="tiktok-bg-916" playsinline muted loop style="display:none;"></video>
+            <div class="tiktok-dim-overlay" aria-hidden="true"></div>
 
             <div class="tiktok-top-bar">
               <span>Following</span>
@@ -378,6 +408,11 @@
             </div>
 
             <div id="tiktok-sample-hook" class="tiktok-hook">CONTOH HOOK UTAMA VT</div>
+
+            <div class="tiktok-yt-slot">
+              <video id="tiktok-sample-yt-video" class="tiktok-yt-video" playsinline muted loop style="display:none;"></video>
+              <span id="tiktok-sample-yt-placeholder" class="tiktok-yt-placeholder">VT UTAMA (RASIO YOUTUBE • PENUH KIRI-KANAN)</span>
+            </div>
 
             <div id="tiktok-sample-cc" class="tiktok-cc">Contoh closed caption sesuai pengaturan warna, font &amp; kepekatan background.</div>
 
@@ -427,20 +462,29 @@
       </div>
     </section>
 
-    <!-- 5. Dukungan Trakteer & Daftar Pendukung -->
+    <!-- 5. Dukungan Trakteer, Komentar & Daftar Pendukung -->
     <section class="panel">
-      <div class="support-row">
+      <div class="support-header-bar">
         <div>
-          <h2 data-i18n="sec5Title">5. Dukungan &amp; Pendukung BRUTAL KLIP</h2>
-          <p data-i18n="sec5Sub">Dukung pengembangan alat clipping ini lewat Trakteer.</p>
+          <h2 data-i18n="sec5Title">5. Dukungan, Komentar &amp; Pendukung BRUTAL KLIP</h2>
+          <p data-i18n="sec5Sub">Dukung lewat Trakteer atau kirim nama &amp; komentar dukungan langsung di web.</p>
         </div>
-        <a
-          href="https://trakteer.id/brutal_klip/gift"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="btn-primary"
-          data-i18n="btnSupport"
-        >Traktir di Trakteer</a>
+
+        <div class="support-inline-controls">
+          <form id="support-comment-form" class="support-comment-form">
+            <input type="text" id="support-name-input" placeholder="Nama kamu..." maxlength="32" required />
+            <input type="text" id="support-msg-input" placeholder="Tulis komentar..." maxlength="140" required />
+            <button type="submit" class="btn-secondary">Kirim</button>
+          </form>
+
+          <a
+            href="https://trakteer.id/brutal_klip/gift"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-primary"
+            data-i18n="btnSupport"
+          >Traktir di Trakteer</a>
+        </div>
       </div>
 
       <div class="supporters-list" id="supporters-list"></div>
