@@ -29,11 +29,11 @@
   </header>
 
   <main class="container">
-    <!-- 1. Sumber Video & Dokumen Hook/Klip -->
+    <!-- 1. Sumber Video, Transkrip (CC ON/OFF) & Pilot Brutal Klip -->
     <section class="panel">
       <div class="panel-head">
-        <h2 data-i18n="sec1Title">1. Video Sumber &amp; Dokumen Penanda (Hook N / Klip N)</h2>
-        <p data-i18n="sec1Sub">Jumlah klip 100% mengikuti dokumen/catatan berdasarkan penanda <strong>Hook 1, Hook 2...</strong> dan <strong>Klip 1, Klip 2...</strong></p>
+        <h2 data-i18n="sec1Title">1. Transkrip, CC &amp; Pilot Brutal Klip</h2>
+        <p data-i18n="sec1Sub">Jika CC ON, terapkan transkrip dulu agar CC aktif sebelum mengisi Pilot Brutal Klip dan fitur edit. Jika CC OFF, Pilot &amp; fitur edit langsung terbuka.</p>
       </div>
 
       <div class="grid-2">
@@ -44,52 +44,30 @@
         </div>
 
         <div class="field">
-          <label for="hook-reorder-mode" data-i18n="lblHookMode">Mode Posisi Hook dari Dokumen</label>
+          <label for="hook-reorder-mode" data-i18n="lblHookMode">Mode Posisi Hook</label>
           <select id="hook-reorder-mode">
             <option value="auto-front" selected>Otomatis Pindah ke Depan VT (Jika Hook di Belakang)</option>
-            <option value="as-is">Sesuai Urutan Dokumen</option>
+            <option value="as-is">Sesuai Urutan Pilot</option>
           </select>
-          <small class="hint" data-i18n="hookModeHint">Deteksi otomatis membaca rentang waktu Hook N di dokumen.</small>
+          <small class="hint" data-i18n="hookModeHint">Teks hook diambil dari Pilot Brutal Klip, bukan dari transkrip.</small>
         </div>
       </div>
 
-      <div class="field">
-        <label for="doc-notes-input" data-i18n="lblDocNotes">Dokumen / Catatan Segmentasi (Gunakan penanda Hook 1, Hook 2... atau Klip 1, Klip 2... + rentang waktu)</label>
-        <textarea id="doc-notes-input" rows="7" placeholder="Contoh:
-Klip 1 (00:00 - 00:45)
-Hook 1 (00:38 - 00:43): Rahasia edit video cepat yang jarang dibahas!
-Isi: Ini cara menyusun alur klip biar penonton bertahan sampai habis.
-
-Klip 2 (00:45 - 01:30)
-Hook 2 (01:22 - 01:27): Kesalahan fatal pemula saat potong klip!
-Isi: Jangan potong asal di tengah kalimat tanpa cek ritme."></textarea>
-      </div>
-
-      <div class="doc-summary-bar" id="doc-summary-bar">
-        <span data-i18n="detectedPrefix">Terdeteksi:</span> <strong id="detected-clip-count">0</strong> <span data-i18n="detectedSuffix">segmen klip/hook dari dokumen.</span>
-      </div>
-    </section>
-
-    <!-- 2. Transkrip & Aturan Potong -->
-    <section class="panel">
-      <div class="panel-head">
-        <h2 data-i18n="sec2Title">2. Transkrip &amp; Aturan Potong</h2>
-        <p data-i18n="sec2Sub">Mode Ketik Manual dan Upload File (.txt / .md) saling mengunci. Jika CC aktif, transkrip wajib diisi dan diterapkan dulu.</p>
-      </div>
-
-      <div class="grid-2">
+      <div class="grid-2 mt-12">
+        <!-- Transkrip + Mode Manual/File + CC ON/OFF -->
         <div class="sub-box">
           <div class="sub-box-head">
             <h3 data-i18n="transcriptBoxTitle">Transkrip Video</h3>
             <div class="mode-toggle">
               <button type="button" class="mode-btn active" data-group="transcript" data-mode="manual">Manual</button>
               <button type="button" class="mode-btn" data-group="transcript" data-mode="file">Upload File</button>
+              <button type="button" id="btn-cc-toggle" class="mode-btn active" data-cc="on" title="Toggle Closed Caption">CC: ON</button>
             </div>
           </div>
 
           <div id="transcript-manual-wrap" class="field">
             <label for="transcript-manual">Ketik Transkrip Manual</label>
-            <textarea id="transcript-manual" rows="4" placeholder="Tempel atau ketik transkrip di sini..."></textarea>
+            <textarea id="transcript-manual" rows="4" placeholder="Tempel atau ketik transkrip di sini untuk bahan CC..."></textarea>
           </div>
 
           <div id="transcript-file-wrap" class="field is-locked">
@@ -99,41 +77,46 @@ Isi: Jangan potong asal di tengah kalimat tanpa cek ritme."></textarea>
 
           <div class="action-inline">
             <button type="button" id="btn-apply-transcript" class="btn-secondary" data-i18n="btnApplyTranscript">Terapkan Transkrip</button>
-            <span id="transcript-status" class="badge-status">Belum diterapkan</span>
+            <span id="transcript-status" class="badge-status">CC ON — Terapkan transkrip dulu</span>
           </div>
         </div>
 
-        <div class="sub-box">
+        <!-- Pilot Brutal Klip -->
+        <div id="pilot-box" class="sub-box">
           <div class="sub-box-head">
-            <h3 data-i18n="rulesBoxTitle">Aturan Potong &amp; Deskripsi</h3>
+            <h3 data-i18n="pilotBoxTitle">Pilot Brutal Klip</h3>
             <div class="mode-toggle">
-              <button type="button" class="mode-btn active" data-group="rules" data-mode="manual">Manual</button>
-              <button type="button" class="mode-btn" data-group="rules" data-mode="file">Upload File</button>
+              <button type="button" class="mode-btn active" data-group="pilot" data-mode="manual">Manual</button>
+              <button type="button" class="mode-btn" data-group="pilot" data-mode="file">Upload File</button>
             </div>
           </div>
 
-          <div id="rules-manual-wrap" class="field">
-            <label for="rules-manual">Ketik Aturan Potong Manual</label>
-            <textarea id="rules-manual" rows="4" placeholder="Contoh: Potong bagian paling padat informasi, buat deskripsi singkat, pakai #brutalklip @timklip"></textarea>
+          <div id="pilot-manual-wrap" class="field">
+            <label for="pilot-manual">Isi Pilot Brutal Klip (Hook, Potongan Klip &amp; Deskripsi)</label>
+            <textarea id="pilot-manual" rows="4" placeholder="Contoh:&#10;Klip 1 (00:00 - 00:45) | Hook: Rahasia potong klip yang bikin orang nonton sampai habis!&#10;Klip 2 (00:45 - 01:30) | Hook: Kesalahan fatal saat mulai potong VT!"></textarea>
           </div>
 
-          <div id="rules-file-wrap" class="field is-locked">
-            <label for="rules-file">Upload File Aturan Potong (.txt / .md)</label>
-            <input type="file" id="rules-file" accept=".txt,.md,text/plain,text/markdown" disabled />
+          <div id="pilot-file-wrap" class="field is-locked">
+            <label for="pilot-file">Upload File Pilot Brutal Klip (.txt / .md)</label>
+            <input type="file" id="pilot-file" accept=".txt,.md,text/plain,text/markdown" disabled />
           </div>
+
+          <small class="hint">
+            Panduan Pilot Brutal Klip: tulis penanda <strong>Klip 1, Klip 2...</strong> dan <strong>Hook 1, Hook 2...</strong> (beserta rentang waktu bila ada) langsung di Pilot.
+          </small>
 
           <div class="action-inline">
-            <span id="rules-status" class="badge-status">Siap digunakan</span>
+            <span id="pilot-status" class="badge-status">Menunggu status CC</span>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 3. Kontrol Tampilan, Transisi 0.5s, Hook, CC & Watermark -->
-    <section class="panel">
+    <!-- 2. Kontrol Tampilan, Transisi 0.5s & Watermark -->
+    <section id="editing-panel" class="panel">
       <div class="panel-head">
-        <h2 data-i18n="sec3Title">3. Kontrol Tampilan, Transisi 0.5s &amp; Watermark</h2>
-        <p data-i18n="sec3Sub">Atur animasi 0.5s terpisah untuk Video Hook dan Video Isi, durasi teks hook, CC, serta WM penuh dari awal sampai akhir VT.</p>
+        <h2 data-i18n="sec2Title">2. Kontrol Tampilan, Transisi 0.5s &amp; Watermark</h2>
+        <p data-i18n="sec2Sub">Atur animasi 0.5s terpisah untuk Video Hook dan Video Isi, CC, serta WM penuh dari awal sampai akhir VT.</p>
       </div>
 
       <div class="grid-3">
@@ -182,17 +165,14 @@ Isi: Jangan potong asal di tengah kalimat tanpa cek ritme."></textarea>
         </div>
 
         <div class="sub-box">
-          <h3>CC &amp; Watermark (WM)</h3>
-          <div class="field">
-            <label for="cc-toggle">Status Closed Caption (CC)</label>
-            <select id="cc-toggle">
-              <option value="on" selected>ON (Wajib Transkrip Diterapkan)</option>
-              <option value="off">OFF</option>
-            </select>
-          </div>
+          <h3>Watermark (WM)</h3>
           <div class="field">
             <label for="wm-text">Teks Watermark (Tampil Awal s/d Akhir VT)</label>
             <input type="text" id="wm-text" value="@BRUTALKLIP" />
+          </div>
+          <div class="field">
+            <label for="wm-color-input">Warna Font WM</label>
+            <input type="color" id="wm-color-input" value="#ffffff" />
           </div>
         </div>
       </div>
@@ -255,12 +235,7 @@ Isi: Jangan potong asal di tengah kalimat tanpa cek ritme."></textarea>
         </div>
       </div>
 
-      <div class="grid-3 mt-12">
-        <div class="field">
-          <label for="wm-color-input">Warna Font WM</label>
-          <input type="color" id="wm-color-input" value="#ffffff" />
-        </div>
-
+      <div class="grid-2 mt-12">
         <div class="field">
           <label for="wm-bg-mode">Background WM</label>
           <select id="wm-bg-mode">
@@ -276,7 +251,7 @@ Isi: Jangan potong asal di tengah kalimat tanpa cek ritme."></textarea>
       </div>
     </section>
 
-    <!-- 4. Eksekusi Generate, Filter Gaya, Hapus Semua & Export ZIP -->
+    <!-- 3. Eksekusi Generate, Filter Gaya, Hapus Semua & Export ZIP -->
     <section class="panel">
       <div class="toolbar-row">
         <div class="toolbar-left">
@@ -295,17 +270,17 @@ Isi: Jangan potong asal di tengah kalimat tanpa cek ritme."></textarea>
         </div>
       </div>
 
-      <p id="process-feedback" class="feedback-line">Siap memproses klip sesuai dokumen.</p>
+      <p id="process-feedback" class="feedback-line">Menunggu kesiapan CC &amp; Pilot Brutal Klip.</p>
     </section>
 
-    <!-- 5. Hasil Klip, Preview VT, Render MP4 HD & Analitik -->
+    <!-- 4. Hasil Klip, Preview VT, Render MP4 HD & Analitik -->
     <section class="panel">
       <div class="panel-head">
-        <h2 data-i18n="sec5Title">5. Hasil Klip, Preview VT, Render HD &amp; Analitik</h2>
-        <p data-i18n="sec5Sub">Klik putar pada tiap klip untuk melihat preview 9:16, render MP4 HD sinkron audio &amp; gerak, serta grafik retensi 1%–90%.</p>
+        <h2 data-i18n="sec4Title">4. Hasil Klip, Preview VT, Render HD &amp; Analitik</h2>
+        <p data-i18n="sec4Sub">Klik putar pada tiap klip untuk melihat preview 9:16, render MP4 HD sinkron audio &amp; gerak, serta grafik retensi 1%–90%.</p>
       </div>
       <div id="clips-container" class="clips-grid">
-        <p class="empty-state">Belum ada klip dihasilkan. Masukkan dokumen Hook N / Klip N lalu klik <strong>Hasilkan Klip</strong>.</p>
+        <p class="empty-state">Belum ada klip dihasilkan. Isi <strong>Pilot Brutal Klip</strong> lalu klik <strong>Hasilkan Klip</strong>.</p>
       </div>
     </section>
   </main>
