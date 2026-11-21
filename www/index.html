@@ -36,7 +36,7 @@
         <p data-i18n="sec1Sub">Jika CC ON, terapkan transkrip dulu agar CC aktif sebelum mengisi Pilot Brutal Klip dan fitur edit. Jika CC OFF, Pilot &amp; fitur edit langsung terbuka.</p>
       </div>
 
-      <div class="grid-2">
+      <div class="grid-3">
         <div class="field">
           <label for="video-file" data-i18n="lblVideo">Upload Video Sumber (MP4 / WebM / MOV)</label>
           <input type="file" id="video-file" accept="video/*" />
@@ -50,6 +50,16 @@
             <option value="as-is">Sesuai Urutan Pilot</option>
           </select>
           <small class="hint" data-i18n="hookModeHint">Teks hook diambil dari Pilot Brutal Klip, bukan dari transkrip.</small>
+        </div>
+
+        <div class="field">
+          <label for="brief-tags-input">Tagar / Hashtag / Mention Acuan Brief</label>
+          <input
+            type="text"
+            id="brief-tags-input"
+            placeholder="Contoh: #brutalklip #fyp @koldotid"
+          />
+          <small class="hint">Dipakai untuk mendeteksi tagar/hashtag yang sesuai atau keluar dari brief.</small>
         </div>
       </div>
 
@@ -67,7 +77,7 @@
 
           <div id="transcript-manual-wrap" class="field">
             <label for="transcript-manual">Ketik Transkrip Manual</label>
-            <textarea id="transcript-manual" rows="4" placeholder="Tempel atau ketik transkrip di sini untuk bahan CC..."></textarea>
+            <textarea id="transcript-manual" rows="4" placeholder="Tempel atau ketik transkrip di sini (keterangan waktu seperti (0:00) atau 00:15 otomatis dibuang dari CC)..."></textarea>
           </div>
 
           <div id="transcript-file-wrap" class="field is-locked">
@@ -79,6 +89,8 @@
             <button type="button" id="btn-apply-transcript" class="btn-secondary" data-i18n="btnApplyTranscript">Terapkan Transkrip</button>
             <span id="transcript-status" class="badge-status">CC ON — Terapkan transkrip dulu</span>
           </div>
+
+          <div id="transcript-applied-preview" class="transcript-applied-banner" style="display:none;"></div>
         </div>
 
         <!-- Pilot Brutal Klip -->
@@ -92,8 +104,8 @@
           </div>
 
           <div id="pilot-manual-wrap" class="field">
-            <label for="pilot-manual">Isi Pilot Brutal Klip (Hook, Potongan Klip &amp; Deskripsi)</label>
-            <textarea id="pilot-manual" rows="4" placeholder="Contoh:&#10;Klip 1 (00:00 - 00:45) | Hook: Rahasia potong klip yang bikin orang nonton sampai habis!&#10;Klip 2 (00:45 - 01:30) | Hook: Kesalahan fatal saat mulai potong VT!"></textarea>
+            <label for="pilot-manual">Isi Pilot Brutal Klip (Klip, Menit, Hook, Isi, Deskripsi &amp; Tagar)</label>
+            <textarea id="pilot-manual" rows="4" placeholder="Contoh:&#10;Klip 1 (00:00 - 00:45) | Hook: Rahasia potong klip yang bikin orang nonton sampai habis!&#10;Isi Klip 1: Membahas cara menjaga ritme awal VT agar tidak di-scroll.&#10;Hook 1 (00:00 - 00:05): Rahasia potong klip yang bikin orang nonton sampai habis!&#10;Caption &amp; Tagar 1: Rahasia potong klip biar retensi aman dari awal sampai akhir. #brutalklip #fyp"></textarea>
           </div>
 
           <div id="pilot-file-wrap" class="field is-locked">
@@ -102,7 +114,7 @@
           </div>
 
           <small class="hint">
-            Panduan Pilot Brutal Klip: tulis penanda <strong>Klip 1, Klip 2...</strong> dan <strong>Hook 1, Hook 2...</strong> (beserta rentang waktu bila ada) langsung di Pilot.
+            Panduan Pilot Brutal Klip: tulis penanda <strong>Klip 1, Klip 2...</strong>, <strong>Hook 1, Hook 2...</strong>, rentang waktu (MM:SS - MM:SS), isi klip, serta deskripsi &amp; tagar/hashtag per klip.
           </small>
 
           <div class="action-inline">
@@ -116,7 +128,7 @@
     <section id="editing-panel" class="panel">
       <div class="panel-head">
         <h2 data-i18n="sec2Title">2. Kontrol Tampilan, Transisi 0.5s, Kecepatan &amp; Watermark</h2>
-        <p data-i18n="sec2Sub">Atur kecepatan putar, animasi 0.5s terpisah untuk Video Hook dan Video Isi, CC, serta WM penuh dari awal sampai akhir VT.</p>
+        <p data-i18n="sec2Sub">Atur kecepatan putar, animasi 0.5s terpisah untuk Video Hook dan Video Isi, ukuran, warna &amp; perataan Hook/CC terpisah, serta WM penuh dari awal sampai akhir VT.</p>
       </div>
 
       <div class="grid-3">
@@ -165,11 +177,7 @@
         </div>
 
         <div class="sub-box">
-          <h3>Watermark (WM) &amp; Kecepatan</h3>
-          <div class="field">
-            <label for="wm-text">Teks Watermark (Tampil Awal s/d Akhir VT)</label>
-            <input type="text" id="wm-text" value="@BRUTALKLIP" />
-          </div>
+          <h3>Kecepatan &amp; Watermark (WM)</h3>
           <div class="field">
             <label for="playback-speed-select">Kecepatan Putar (Playback Speed)</label>
             <select id="playback-speed-select">
@@ -182,10 +190,19 @@
               <option value="1.25">1.25x</option>
             </select>
           </div>
+          <div class="field">
+            <label for="wm-text">Teks Watermark (Tampil Awal s/d Akhir VT)</label>
+            <input type="text" id="wm-text" value="@BRUTALKLIP" />
+          </div>
+          <div class="field">
+            <label for="wm-logo-file">Logo Watermark Opsional (PNG / JPG / WebP)</label>
+            <input type="file" id="wm-logo-file" accept="image/*" />
+            <small id="wm-logo-info" class="hint">Belum ada logo WM dipilih.</small>
+          </div>
         </div>
       </div>
 
-      <div class="grid-3 mt-12">
+      <div class="grid-4 mt-12">
         <div class="field">
           <label for="font-family-select">Pilihan Font</label>
           <select id="font-family-select">
@@ -213,26 +230,6 @@
             <option value="lower">huruf kecil</option>
           </select>
         </div>
-      </div>
-
-      <div class="grid-4 mt-12">
-        <div class="field">
-          <label for="text-color-input">Warna Font (Hook &amp; CC)</label>
-          <input type="color" id="text-color-input" value="#ffffff" />
-        </div>
-
-        <div class="field">
-          <label for="bg-color-mode">Background Teks (Hook &amp; CC)</label>
-          <select id="bg-color-mode">
-            <option value="color" selected>Pakai Warna</option>
-            <option value="off">Off (Transparan)</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label for="bg-color-input">Warna Background</label>
-          <input type="color" id="bg-color-input" value="#ff2a4b" />
-        </div>
 
         <div class="field">
           <label for="bg-strength-select">Kepekatan Background</label>
@@ -243,14 +240,107 @@
         </div>
       </div>
 
+      <div class="grid-4 mt-12">
+        <div class="field">
+          <label for="hook-align-select">Perataan Teks Hook</label>
+          <select id="hook-align-select">
+            <option value="left">Rata Kiri</option>
+            <option value="center" selected>Tengah</option>
+            <option value="right">Rata Kanan</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="cc-align-select">Perataan Teks CC</label>
+          <select id="cc-align-select">
+            <option value="left">Rata Kiri</option>
+            <option value="center" selected>Tengah</option>
+            <option value="right">Rata Kanan</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="hook-size-select">Ukuran Font Hook</label>
+          <select id="hook-size-select">
+            <option value="small">Kecil (Aman Teks Panjang)</option>
+            <option value="medium" selected>Sedang (Proporsional)</option>
+            <option value="large">Agak Besar</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="cc-size-select">Ukuran Font CC</label>
+          <select id="cc-size-select">
+            <option value="small">Kecil (Rapi)</option>
+            <option value="medium" selected>Sedang (Proporsional)</option>
+            <option value="large">Agak Besar</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid-4 mt-12">
+        <div class="field">
+          <label for="wm-size-select">Ukuran Font &amp; Logo WM</label>
+          <select id="wm-size-select">
+            <option value="small">Kecil</option>
+            <option value="medium" selected>Sedang</option>
+            <option value="large">Besar</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="hook-color-input">Warna Font Hook</label>
+          <input type="color" id="hook-color-input" value="#ffffff" />
+        </div>
+
+        <div class="field">
+          <label for="cc-color-input">Warna Font CC</label>
+          <input type="color" id="cc-color-input" value="#fef08a" />
+        </div>
+
+        <div class="grid-2" style="margin-top:0;">
+          <div class="field" style="margin-top:0;">
+            <label for="bg-color-mode">BG Teks Hook &amp; CC</label>
+            <select id="bg-color-mode">
+              <option value="color" selected>Pakai Warna</option>
+              <option value="off">Off (Transparan)</option>
+            </select>
+          </div>
+
+          <div class="field" style="margin-top:0;">
+            <label for="bg-color-input">Warna BG Teks</label>
+            <input type="color" id="bg-color-input" value="#ff2a4b" />
+          </div>
+        </div>
+      </div>
+
       <div class="grid-3 mt-12">
+        <div class="field">
+          <label for="wm-pos-select">Posisi Watermark (WM)</label>
+          <select id="wm-pos-select">
+            <option value="top-right" selected>Pojok Kanan Atas</option>
+            <option value="top-left">Pojok Kiri Atas</option>
+            <option value="bottom-center">Tengah Bawah</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="wm-clarity-select">Gaya Teks WM (Tegas / Pudar)</label>
+          <select id="wm-clarity-select">
+            <option value="solid" selected>Tegas</option>
+            <option value="faded">Pudar</option>
+          </select>
+        </div>
+
         <div class="field">
           <label for="wm-color-input">Warna Font WM</label>
           <input type="color" id="wm-color-input" value="#ffffff" />
         </div>
+      </div>
 
+      <div class="grid-2 mt-12">
         <div class="field">
-          <label for="wm-bg-mode">Background WM</label>
+          <label for="wm-bg-mode">BG WM</label>
           <select id="wm-bg-mode">
             <option value="color" selected>Pakai Warna</option>
             <option value="off">Off</option>
@@ -258,7 +348,7 @@
         </div>
 
         <div class="field">
-          <label for="wm-bg-input">Warna Background WM</label>
+          <label for="wm-bg-input">Warna BG WM</label>
           <input type="color" id="wm-bg-input" value="#0b0a0e" />
         </div>
       </div>
@@ -268,18 +358,23 @@
         <div class="tiktok-sample-head">
           <div>
             <h3>Contoh Penerapan Rasio TikTok (9:16)</h3>
-            <small class="hint">Simulasi tampilan seolah sudah tayang di TikTok—cek posisi Hook, CC, WM, kecepatan putar, serta area aman tombol &amp; caption TikTok.</small>
+            <small class="hint">Menampilkan langsung video sumber di dalam frame HP 9:16—WM aman dari search bar atas, Hook punya jarak tepi, dan CC rapi di bawah video utama.</small>
           </div>
           <span id="tiktok-speed-badge" class="tiktok-badge">9:16 • Speed 1.05x</span>
         </div>
 
         <div class="tiktok-stage-center">
           <div id="tiktok-preview-frame" class="tiktok-frame">
-            <div id="tiktok-sample-wm" class="tiktok-wm">@BRUTALKLIP</div>
+            <video id="tiktok-sample-video" class="tiktok-bg-video" playsinline muted loop style="display:none;"></video>
 
             <div class="tiktok-top-bar">
               <span>Following</span>
               <strong class="active-tab">For You</strong>
+            </div>
+
+            <div id="tiktok-sample-wm" class="tiktok-wm pos-top-right">
+              <img id="tiktok-sample-wm-logo" class="wm-logo-img" alt="" style="display:none;" />
+              <span id="tiktok-sample-wm-text">@BRUTALKLIP</span>
             </div>
 
             <div id="tiktok-sample-hook" class="tiktok-hook">CONTOH HOOK UTAMA VT</div>
@@ -304,21 +399,16 @@
       </div>
     </section>
 
-    <!-- 3. Eksekusi Generate, Filter Gaya, Hapus Semua & Export ZIP -->
+    <!-- 3. Eksekusi Generate Berurutan, Hentikan Antrean, Hapus Semua & Export ZIP -->
     <section class="panel">
       <div class="toolbar-row">
         <div class="toolbar-left">
           <button type="button" id="btn-generate-clips" class="btn-primary" data-i18n="btnGenerate">Hasilkan Klip</button>
+          <button type="button" id="btn-stop-queue" class="btn-secondary" disabled>Hentikan Antrean Render</button>
           <button type="button" id="btn-export-zip" class="btn-secondary" disabled>Export ZIP</button>
         </div>
 
         <div class="toolbar-right">
-          <label for="style-filter-select" class="sr-only">Filter Gaya</label>
-          <select id="style-filter-select">
-            <option value="all" selected>Semua Gaya</option>
-            <option value="front-hook">Hook di Depan</option>
-            <option value="standard">Urutan Asli</option>
-          </select>
           <button type="button" id="btn-delete-all-clips" class="btn-danger" data-i18n="btnDeleteAll">Hapus Semua Hasil Klip</button>
         </div>
       </div>
@@ -330,7 +420,7 @@
     <section class="panel">
       <div class="panel-head">
         <h2 data-i18n="sec4Title">4. Hasil Klip, Preview VT, Render HD &amp; Analitik</h2>
-        <p data-i18n="sec4Sub">Klik putar pada tiap klip untuk melihat preview 9:16, render HD sinkron audio &amp; gerak, serta grafik retensi 1%–90%.</p>
+        <p data-i18n="sec4Sub">Klip dirender satu per satu berurutan hingga selesai per klip, lengkap dengan deteksi deskripsi &amp; tagar/hashtag, komentar, serta grafik retensi 1%–90%.</p>
       </div>
       <div id="clips-container" class="clips-grid">
         <p class="empty-state">Belum ada klip dihasilkan. Isi <strong>Pilot Brutal Klip</strong> lalu klik <strong>Hasilkan Klip</strong>.</p>
@@ -353,11 +443,7 @@
         >Traktir di Trakteer</a>
       </div>
 
-      <div class="supporters-list" id="supporters-list">
-        <span class="supporter-pill">Raka P. — Paket Kopi Brutal</span>
-        <span class="supporter-pill">Dina K. — Paket Support Klipper</span>
-        <span class="supporter-pill">Bagas W. — Paket Gaspol FYP</span>
-      </div>
+      <div class="supporters-list" id="supporters-list"></div>
     </section>
   </main>
 
