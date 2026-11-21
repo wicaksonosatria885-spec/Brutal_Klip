@@ -70,12 +70,6 @@
     });
   });
 
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js").catch(() => {});
-    });
-  }
-
   // --- Mutual Lock Manual vs File ---
   function setupModeLock(group) {
     const buttons = document.querySelectorAll(`.mode-btn[data-group="${group}"]`);
