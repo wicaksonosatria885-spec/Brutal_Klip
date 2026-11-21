@@ -16,8 +16,8 @@
       transcriptBoxTitle: "Transkrip Video",
       btnApplyTranscript: "Terapkan Transkrip",
       pilotBoxTitle: "Pilot Brutal Klip",
-      sec2Title: "2. Kontrol Tampilan, Transisi 0.5s & Watermark",
-      sec2Sub: "Atur animasi 0.5s terpisah untuk Video Hook dan Video Isi, CC, serta WM penuh dari awal sampai akhir VT.",
+      sec2Title: "2. Kontrol Tampilan, Transisi 0.5s, Kecepatan & Watermark",
+      sec2Sub: "Atur kecepatan putar, animasi 0.5s terpisah untuk Video Hook dan Video Isi, CC, serta WM penuh dari awal sampai akhir VT.",
       btnGenerate: "Hasilkan Klip",
       btnDeleteAll: "Hapus Semua Hasil Klip",
       sec4Title: "4. Hasil Klip, Preview VT, Render HD & Analitik",
@@ -36,8 +36,8 @@
       transcriptBoxTitle: "Video Transcript",
       btnApplyTranscript: "Apply Transcript",
       pilotBoxTitle: "Pilot Brutal Klip",
-      sec2Title: "2. Visual Controls, 0.5s Transitions & Watermark",
-      sec2Sub: "Set independent 0.5s animations for Hook Video and Body Video, CC, and full-length WM.",
+      sec2Title: "2. Visual Controls, 0.5s Transitions, Speed & Watermark",
+      sec2Sub: "Set playback speed, independent 0.5s animations for Hook Video and Body Video, CC, and full-length WM.",
       btnGenerate: "Generate Clips",
       btnDeleteAll: "Delete All Clips",
       sec4Title: "4. Generated Clips, VT Preview, HD Render & Analytics",
@@ -49,6 +49,12 @@
   };
 
   const el = (id) => document.getElementById(id);
+
+  function getPlaybackSpeed() {
+    const node = el("playback-speed-select");
+    const parsed = node ? parseFloat(node.value) : 1.05;
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : 1.05;
+  }
 
   function applyLanguage(lang) {
     const dict = I18N[lang] || I18N.id;
@@ -97,7 +103,13 @@
     const hookNode = el("tiktok-sample-hook");
     const ccNode = el("tiktok-sample-cc");
     const wmNode = el("tiktok-sample-wm");
+    const speedBadge = el("tiktok-speed-badge");
     if (!frame || !hookNode || !ccNode || !wmNode) return;
+
+    const speed = getPlaybackSpeed();
+    if (speedBadge) {
+      speedBadge.textContent = `9:16 • Speed ${speed}x`;
+    }
 
     const fontFamily = el("font-family-select").value;
     const hookCase = el("hook-case-select").value;
@@ -133,6 +145,16 @@
     wmNode.textContent = wmText;
     wmNode.style.color = wmColor;
     wmNode.style.background = wmBgStyle;
+  }
+
+  function syncPreviewSpeed() {
+    const speed = getPlaybackSpeed();
+    document.querySelectorAll(".vt-video").forEach((vid) => {
+      if (vid.tagName === "VIDEO") {
+        vid.playbackRate = speed;
+      }
+    });
+    updateTikTokSamplePreview();
   }
 
   function setControlsLocked(locked, reasonText) {
@@ -207,6 +229,14 @@
     node.addEventListener("input", updateTikTokSamplePreview);
     node.addEventListener("change", updateTikTokSamplePreview);
   });
+
+  const speedSelect = el("playback-speed-select");
+  if (speedSelect) {
+    speedSelect.addEventListener("change", () => {
+      syncPreviewSpeed();
+      if (generatedClips.length) renderClips();
+    });
+  }
 
   el("btn-cc-toggle").addEventListener("click", () => {
     ccEnabled = !ccEnabled;
@@ -461,6 +491,7 @@
   function renderClips() {
     const container = el("clips-container");
     const filterVal = el("style-filter-select").value;
+    const speed = getPlaybackSpeed();
     const filtered = generatedClips.filter((c) => {
       if (filterVal === "front-hook") return c.movedToFront;
       if (filterVal === "standard") return !c.movedToFront;
@@ -530,7 +561,7 @@
       card.innerHTML = `
         <div class="clip-header">
           <h3 class="clip-title">${escapeHtml(clip.title)}</h3>
-          <span class="clip-badge">${clip.movedToFront ? "Hook Dipindah ke Depan" : "Urutan Pilot"}</span>
+          <span class="clip-badge">${clip.movedToFront ? "Hook Dipindah ke Depan" : "Urutan Pilot"} • ${speed}x</span>
         </div>
 
         <div class="vt-stage" style="font-family:${fontFamily};">
@@ -553,10 +584,10 @@
         </div>
 
         <div class="clip-actions">
-          <button type="button" class="btn-primary btn-render-hd" data-clip-num="${clip.num}">Render HD</button>
-          <a class="btn-secondary btn-download-clip" style="display:none;" download="brutal-klip-${clip.num}.webm">Unduh Hasil</a>
+          <button type="button" class="btn-primary btn-render-hd" data-clip-num="${clip.num}">Render HD (${speed}x)</button>
+          <a class="btn-secondary btn-download-clip" style="display:none;" download="brutal-klip-${clip.num}-${speed}x.webm">Unduh Hasil</a>
         </div>
-        <small class="hint render-status">Siap di-render (720x1280, sinkron audio &amp; gerak).</small>
+        <small class="hint render-status">Kecepatan ${speed}x • Siap di-render (720x1280, sinkron audio &amp; gerak).</small>
 
         <div class="clip-desc">${escapeHtml(clip.description)}</div>
         ${tagsHtml ? `<div class="tags-row">${tagsHtml}</div>` : ""}
@@ -575,6 +606,14 @@
         </div>
       `;
 
+      const vidEl = card.querySelector("video.vt-video");
+      if (vidEl) {
+        vidEl.playbackRate = speed;
+        vidEl.addEventListener("loadedmetadata", () => {
+          vidEl.playbackRate = getPlaybackSpeed();
+        });
+      }
+
       const btnRender = card.querySelector(".btn-render-hd");
       const linkDownload = card.querySelector(".btn-download-clip");
       const statusEl = card.querySelector(".render-status");
@@ -584,17 +623,20 @@
           statusEl.textContent = "Pilih video sumber terlebih dahulu.";
           return;
         }
+        const activeSpeed = getPlaybackSpeed();
         btnRender.disabled = true;
-        statusEl.textContent = "Merender HD sinkron audio & gerak...";
+        statusEl.textContent = `Merender HD (${activeSpeed}x) sinkron audio & gerak...`;
         try {
-          const blob = await renderClipHdBlob(clip, formattedHook, formattedCc, wmText, (pct) => {
-            statusEl.textContent = `Rendering HD: ${pct}%`;
+          const blob = await renderClipHdBlob(clip, formattedHook, formattedCc, wmText, activeSpeed, (pct) => {
+            statusEl.textContent = `Rendering HD (${activeSpeed}x): ${pct}%`;
           });
           const url = URL.createObjectURL(blob);
           clip.renderedBlob = blob;
+          clip.renderedSpeed = activeSpeed;
           linkDownload.href = url;
+          linkDownload.download = `brutal-klip-${clip.num}-${activeSpeed}x.webm`;
           linkDownload.style.display = "inline-flex";
-          statusEl.textContent = "Render HD selesai. Siap diunduh atau di-export ZIP.";
+          statusEl.textContent = `Render HD (${activeSpeed}x) selesai. Siap diunduh atau di-export ZIP.`;
         } catch (err) {
           statusEl.textContent = "Render gagal: " + (err && err.message ? err.message : "browser tidak mendukung");
         } finally {
@@ -606,7 +648,7 @@
     }
   }
 
-  async function renderClipHdBlob(clip, hookStr, ccStr, wmStr, onProgress) {
+  async function renderClipHdBlob(clip, hookStr, ccStr, wmStr, speed, onProgress) {
     return new Promise((resolve, reject) => {
       const video = document.createElement("video");
       video.src = sourceVideoUrl;
@@ -624,6 +666,8 @@
       const dest = audioCtx ? audioCtx.createMediaStreamDestination() : null;
 
       video.addEventListener("loadedmetadata", () => {
+        video.playbackRate = speed;
+
         if (audioCtx) {
           const srcNode = audioCtx.createMediaElementSource(video);
           srcNode.connect(dest);
@@ -656,6 +700,7 @@
         video.currentTime = startSec;
         video.addEventListener("seeked", function onSeeked() {
           video.removeEventListener("seeked", onSeeked);
+          video.playbackRate = speed;
           recorder.start(250);
           video.play().catch(reject);
 
@@ -735,6 +780,7 @@
       return;
     }
 
+    const speed = getPlaybackSpeed();
     generatedClips = parsed.map((item) => {
       const baseDesc = item.movedToFront
         ? `${item.hookText} — ${item.bodyText}`
@@ -744,15 +790,17 @@
 
       return {
         ...item,
+        speed,
         description: baseDesc,
         tagsAndMentions: [...hashtags, ...mentions],
         analytics: buildRetentionAnalytics(item, pilotText, ccEnabled, appliedTranscriptText),
-        renderedBlob: null
+        renderedBlob: null,
+        renderedSpeed: null
       };
     });
 
     el("process-feedback").textContent =
-      `Berhasil menghasilkan ${generatedClips.length} klip dari Pilot Brutal Klip.`;
+      `Berhasil menghasilkan ${generatedClips.length} klip (kecepatan ${speed}x) dari Pilot Brutal Klip.`;
     renderClips();
   });
 
@@ -770,10 +818,13 @@
     if (!generatedClips.length || typeof JSZip === "undefined") return;
     const zip = new JSZip();
     const folder = zip.folder("brutal-klip-hasil");
+    const currentSpeed = getPlaybackSpeed();
 
     for (const clip of generatedClips) {
+      const usedSpeed = clip.renderedSpeed || clip.speed || currentSpeed;
       const info = [
         `Judul: ${clip.title}`,
+        `Kecepatan Putar: ${usedSpeed}x`,
         `Posisi Hook: ${clip.movedToFront ? "Dipindah ke Depan VT" : "Sesuai Pilot"}`,
         `Hook: ${clip.hookText}`,
         `Isi: ${clip.bodyText}`,
@@ -785,7 +836,7 @@
 
       folder.file(`klip-${clip.num}-info.txt`, info);
       if (clip.renderedBlob) {
-        folder.file(`klip-${clip.num}.webm`, clip.renderedBlob);
+        folder.file(`klip-${clip.num}-${usedSpeed}x.webm`, clip.renderedBlob);
       }
     }
 
