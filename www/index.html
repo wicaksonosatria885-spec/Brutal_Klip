@@ -12,7 +12,7 @@
       --bg-input: #241621;
       --text: #ffffff;
       --muted: #b8a8b4;
-      --border: rgba(255, 59, 92, 0.22);
+      --border: rgba(255, 59, 92, 0.24);
       --accent: #ff2a4b;
       --accent-glow: rgba(255, 42, 75, 0.36);
       --accent-soft: rgba(255, 42, 75, 0.16);
@@ -261,11 +261,11 @@
       background: #060508;
       border-radius: 14px;
       overflow: hidden;
-      border: 1px solid rgba(255, 52, 86, 0.3);
+      border: 1px solid rgba(255, 52, 86, 0.32);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 44px 0 36px;
+      padding: 18px 0 16px;
     }
 
     .vt-916-stage:fullscreen {
@@ -275,7 +275,7 @@
       margin: 0 auto;
       aspect-ratio: 9 / 16;
       border-radius: 0;
-      padding: 64px 0 56px;
+      padding: 44px 0 40px;
     }
 
     .vt-blur-bg {
@@ -293,28 +293,29 @@
     .vt-dim-scrim {
       position: absolute;
       inset: 0;
-      background: rgba(6, 5, 8, 0.34);
+      background: rgba(6, 5, 8, 0.36);
       pointer-events: none;
       z-index: 2;
     }
 
     .vt-hook-wm-stack {
       position: relative;
-      z-index: 4;
+      z-index: 5;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 5px;
       padding: 0 10px;
+      pointer-events: none;
     }
 
     .vt-hook-pill {
       max-width: 96%;
       padding: 5px 10px;
       border-radius: 8px;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 800;
-      line-height: 1.28;
+      line-height: 1.25;
       text-align: center;
       display: -webkit-box;
       -webkit-line-clamp: 2;
@@ -323,15 +324,14 @@
     }
 
     .vt-916-stage:fullscreen .vt-hook-pill {
-      font-size: 20px;
-      padding: 8px 16px;
+      font-size: 18px;
+      padding: 8px 14px;
     }
 
     .vt-hook-pill.is-impact {
       font-weight: 700;
-      letter-spacing: 0.05em;
-      line-height: 1.35;
-      word-spacing: 0.12em;
+      letter-spacing: 0.04em;
+      line-height: 1.3;
     }
 
     .vt-attached-wm {
@@ -342,7 +342,7 @@
       border-radius: 6px;
       font-size: 9px;
       font-weight: 600;
-      color: rgba(255, 255, 255, 0.9);
+      color: rgba(255, 255, 255, 0.92);
       pointer-events: none;
     }
 
@@ -371,7 +371,7 @@
     .vt-video-el {
       width: 100%;
       height: auto;
-      max-height: 205px;
+      max-height: 190px;
       object-fit: cover;
       border-radius: 0;
       display: block;
@@ -379,30 +379,34 @@
     }
 
     .vt-916-stage:fullscreen .vt-video-el {
-      max-height: 44vh;
+      max-height: 42vh;
     }
 
     .vt-cc-zone {
       position: relative;
-      z-index: 4;
+      z-index: 5;
       width: 100%;
-      padding: 6px 12px 0;
+      padding: 6px 10px 2px;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 34px;
+      min-height: 36px;
+      pointer-events: none;
     }
 
     .vt-cc-text {
-      max-width: 94%;
+      max-width: 95%;
       padding: 4px 9px;
       border-radius: 6px;
       color: #ffffff;
       font-size: 10px;
-      font-weight: 600;
-      line-height: 1.32;
+      font-weight: 700;
+      line-height: 1.28;
       text-align: center;
-      pointer-events: none;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
     .vt-916-stage:fullscreen .vt-cc-text {
@@ -1244,7 +1248,7 @@
 
   <script>
     (function () {
-      const STORAGE_KEY = "brutal_klip_full_state_v25";
+      const STORAGE_KEY = "brutal_klip_full_state_v26";
       const TRAKTEER_URL = "https://trakteer.id/brutal_klip";
       const RANDOM_NAME_COLORS = [
         "#f43f5e",
@@ -1261,6 +1265,7 @@
       const renderedClipUrls = new Map();
       const cardPlayers = new Map();
       let isRenderingVideo = false;
+      let cancelAutoRenderFlag = false;
 
       const I18N = {
         id: {
@@ -1345,8 +1350,8 @@
           btn_reset_wm: "Hapus Watermark",
           wm_none: "Watermark: Belum diatur",
           wm_active_prefix: "Watermark di bawah hook",
-          hook_preview_default: "Arah tren baru mulai kelihatan di sini",
-          cc_preview_default: "Contoh teks CC berjalan di bawah tengah video",
+          hook_preview_default: "Arah tren baru mulai kelihatan",
+          cc_preview_default: "CC aktif di bawah tengah video",
           wm_info_prefix: "WM: Di Bawah Hook",
           cc_info_prefix: "CC",
           cc_off_short: "Mati",
@@ -1461,8 +1466,8 @@
           btn_reset_wm: "Clear Watermark",
           wm_none: "Watermark: Not set",
           wm_active_prefix: "Watermark below hook",
-          hook_preview_default: "Where this trend shift starts to show",
-          cc_preview_default: "Sample live CC centered below the video",
+          hook_preview_default: "Where this trend shift starts",
+          cc_preview_default: "Live CC centered below video",
           wm_info_prefix: "WM: Below Hook",
           cc_info_prefix: "CC",
           cc_off_short: "Off",
@@ -1561,6 +1566,12 @@
         return RANDOM_NAME_COLORS[Math.floor(Math.random() * RANDOM_NAME_COLORS.length)];
       }
 
+      function compactHookText(str) {
+        const words = String(str || "").trim().split(/\s+/).filter(Boolean);
+        if (words.length <= 7) return words.join(" ");
+        return words.slice(0, 7).join(" ");
+      }
+
       function applyTextCase(str, mode) {
         const txt = String(str || "");
         if (!txt) return "";
@@ -1651,10 +1662,10 @@
       function getBgRgba(bgName, strength) {
         if (!bgName || bgName === "off") return "transparent";
         const isSolid = strength === "solid";
-        const alpha = isSolid ? 0.96 : 0.54;
+        const alpha = isSolid ? 0.96 : 0.56;
         const map = {
           black: `rgba(10, 8, 13, ${alpha})`,
-          white: `rgba(255, 255, 255, ${isSolid ? 0.96 : 0.7})`,
+          white: `rgba(255, 255, 255, ${isSolid ? 0.96 : 0.72})`,
           blue: `rgba(37, 99, 235, ${alpha})`,
           yellow: `rgba(250, 204, 21, ${isSolid ? 0.96 : 0.68})`,
           red: `rgba(225, 29, 72, ${alpha})`,
@@ -1725,7 +1736,7 @@
         elHookPreview.style.border = hookBgCss === "transparent" ? "none" : "1px solid rgba(255,255,255,0.14)";
 
         if (typeof textOverride === "string" && textOverride.trim()) {
-          elHookPreview.textContent = applyTextCase(textOverride.trim(), hookCase);
+          elHookPreview.textContent = applyTextCase(compactHookText(textOverride.trim()), hookCase);
         } else {
           elHookPreview.textContent = applyTextCase(elHookPreview.textContent || t("hook_preview_default"), hookCase);
         }
@@ -1787,7 +1798,7 @@
           pill.style.color = hookColor;
           pill.style.backgroundColor = hookBgCss;
           pill.style.border = hookBgCss === "transparent" ? "none" : "1px solid rgba(255,255,255,0.14)";
-          const rawHook = pill.getAttribute("data-raw-hook") || pill.textContent || "";
+          const rawHook = compactHookText(pill.getAttribute("data-raw-hook") || pill.textContent || "");
           pill.textContent = applyTextCase(rawHook, hookCase);
         });
 
@@ -1916,7 +1927,7 @@
           } else if (people.length) {
             topicLabel = `Obrolan ${people.slice(0, 2).join(" & ")}`;
           } else if (cleaned) {
-            topicLabel = cleaned.split(/[|•\n]/)[0].trim().split(/\s+/).slice(0, 4).join(" ");
+            topicLabel = cleaned.split(/[|•\n]/)[0].trim().split(/\s+/).slice(0, 3).join(" ");
           } else {
             topicLabel = t("default_topic");
           }
@@ -1924,7 +1935,7 @@
 
         const personPhrase =
           people.length >= 2
-            ? `${people[0]} dan ${people[1]}`
+            ? `${people[0]} & ${people[1]}`
             : people.length === 1
             ? people[0]
             : null;
@@ -1985,34 +1996,34 @@
 
         const hookBankId = hasTopicKw
           ? [
-              `Arah tren ${info.topicLabel} mulai kelihatan berubah`,
-              `Kenapa pola main di ${info.topicLabel} sekarang beda?`,
-              `${subjectRef} ngulik sisi penting soal ${info.topicLabel}`,
-              `Bagian ini nunjukin poin paling krusial di obrolan ini`
+              `Arah tren ${info.topicLabel} mulai berubah`,
+              `Kenapa pola ${info.topicLabel} sekarang beda?`,
+              `${subjectRef} bahas sisi penting ${info.topicLabel}`,
+              `Poin krusial di obrolan ini mulai kerasa`
             ]
           : [
-              `Poin penting dari ${subjectRef} mulai kerasa di sini`,
-              `Ada bagian menarik dari ${subjectRef} yang layak disimak`,
-              `Pembahasan ${subjectRef} ini langsung ke inti masalahnya`,
-              `Sisi lain dari ${subjectRef} yang bikin makin penasaran`
+              `Poin penting ${subjectRef} mulai di sini`,
+              `Bagian menarik ${subjectRef} layak disimak`,
+              `Inti bahasan ${subjectRef} langsung ke titiknya`,
+              `Sudut pandang ${subjectRef} bikin penasaran`
             ];
 
         const hookBankEn = hasTopicKw
           ? [
-              `How ${info.topicLabel} is shifting right in front of us`,
-              `Why the playbook around ${info.topicLabel} feels different now`,
-              `${subjectRef} breaks down what really matters here`,
-              `A closer look at the key shift in this segment`
+              `How ${info.topicLabel} is shifting now`,
+              `Why ${info.topicLabel} feels different today`,
+              `${subjectRef} breaks down what matters`,
+              `Key turning point in this segment`
             ]
           : [
-              `The key takeaway from ${subjectRef} starts right here`,
-              `A standout moment from ${subjectRef} worth catching`,
-              `${subjectRef} gets straight to the point in this clip`,
-              `Another angle on ${subjectRef} you do not want to miss`
+              `Key takeaway from ${subjectRef} right here`,
+              `Standout moment from ${subjectRef} to watch`,
+              `${subjectRef} gets straight to the point`,
+              `Fresh angle from ${subjectRef} worth catching`
             ];
 
         const activeHookPool = isEn ? hookBankEn : hookBankId;
-        const hook = activeHookPool[Math.abs(packIndex) % activeHookPool.length];
+        const hook = compactHookText(activeHookPool[Math.abs(packIndex) % activeHookPool.length]);
 
         const focusDetailId = info.hasWajahAturan
           ? `fokus pada ekspresi dan obrolan ${subjectRef} di frame`
@@ -2027,30 +2038,30 @@
 
         const ccLinesId = hasTopicKw
           ? [
-              `Inti bahasan: ${info.topicLabel}`,
-              `${subjectRef} menyoroti perubahan arah tren`,
-              `Simak poin penting yang sering terlewat`,
-              `Kesimpulan singkat dari potongan obrolan ini`
+              `Fokus: ${info.topicLabel}`,
+              `${subjectRef} soroti perubahan tren`,
+              `Simak detail penting bagian ini`,
+              `Ringkasan singkat segmen klip`
             ]
           : [
-              `Sorotan utama dari ${subjectRef}`,
-              `Poin penting mulai dibahas di bagian ini`,
-              `Catatan singkat yang relevan buat disimak`,
-              `Penutup dari segmen klip ini`
+              `Sorotan: ${subjectRef}`,
+              `Inti bahasan mulai di sini`,
+              `Catatan penting buat disimak`,
+              `Penutup potongan klip ini`
             ];
 
         const ccLinesEn = hasTopicKw
           ? [
-              `Key topic: ${info.topicLabel}`,
-              `${subjectRef} highlights the shift in trends`,
-              `Watch the detail most viewers miss`,
-              `Quick takeaway from this segment`
+              `Focus: ${info.topicLabel}`,
+              `${subjectRef} highlights the shift`,
+              `Watch the detail viewers miss`,
+              `Quick takeaway from this clip`
             ]
           : [
-              `Highlight from ${subjectRef}`,
-              `The main point kicks off right here`,
-              `A quick note worth catching`,
-              `Wrap-up of this clip segment`
+              `Highlight: ${subjectRef}`,
+              `Main point starts right here`,
+              `Note worth catching here`,
+              `Wrap-up of this clip cut`
             ];
 
         const ccLines = ccLang === "en" ? ccLinesEn : ccLinesId;
@@ -2060,7 +2071,7 @@
 
         if (info.personPhrase) {
           info.personPhrase
-            .split(/\s+dan\s+|\s+/)
+            .split(/\s*&\s*|\s+/)
             .map((w) => w.replace(/[^a-zA-Z0-9]/g, ""))
             .filter((w) => w.length >= 3 && !["Kak", "Ko", "Bang", "Mas", "Mbak"].includes(w))
             .slice(0, 2)
@@ -2205,7 +2216,7 @@
         const cfg = st.config || {};
         const seg = item.timing || { cutStart: 0, cutEnd: 20, hookStart: 0, hookEnd: 3 };
         const startSec = Math.max(0, Number(seg.cutStart) || 0);
-        const endSec = Math.max(startSec + 4, Math.min(startSec + 40, Number(seg.cutEnd) || startSec + 20));
+        const endSec = Math.max(startSec + 4, Math.min(startSec + 35, Number(seg.cutEnd) || startSec + 20));
         const rate = getPlaybackRateFromConfig(cfg);
         const hookCase = cfg.hookCase || "mixed";
 
@@ -2284,7 +2295,7 @@
 
         const wmText = cfg.wmUsername && cfg.wmUsername.trim() ? cfg.wmUsername.trim() : "";
         const ccOn = cfg.ccEnabled !== "off";
-        const formattedHook = applyTextCase(item.hook || "", hookCase);
+        const formattedHook = applyTextCase(compactHookText(item.hook || ""), hookCase);
 
         function drawFrame() {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -2385,14 +2396,14 @@
           if (helperVideo.currentTime >= safeEndSec || helperVideo.ended) {
             helperVideo.pause();
             cancelAnimationFrame(rafId);
-            recorder.stop();
+            if (recorder.state !== "inactive") recorder.stop();
             return;
           }
           rafId = requestAnimationFrame(stepLoop);
         };
         rafId = requestAnimationFrame(stepLoop);
 
-        const estMs = Math.max(3000, ((safeEndSec - startSec) / Math.max(0.25, rate) + 1.5) * 1000);
+        const estMs = Math.max(2500, ((safeEndSec - startSec) / Math.max(0.25, rate) + 1.2) * 1000);
         const safetyTimer = setTimeout(() => {
           helperVideo.pause();
           cancelAnimationFrame(rafId);
@@ -2407,14 +2418,22 @@
 
       async function autoRenderItems(targetItems) {
         const listToRender = (targetItems || []).filter((it) => Boolean(resolveVideoUrlForItem(it)));
-        if (!listToRender.length || isRenderingVideo) return;
+        if (!listToRender.length) return;
+        if (isRenderingVideo) {
+          cancelAutoRenderFlag = true;
+          await new Promise((r) => setTimeout(r, 120));
+        }
 
+        cancelAutoRenderFlag = false;
         isRenderingVideo = true;
         try {
           for (let i = 0; i < listToRender.length; i++) {
+            if (cancelAutoRenderFlag) break;
             const it = listToRender[i];
+            if (!loadState().items.some((x) => x.id === it.id)) continue;
             elRenderBanner.textContent = `${t("rendering_clip")} (${i + 1}/${listToRender.length})`;
             const blob = await renderVtClipVideoBlob(it);
+            if (!loadState().items.some((x) => x.id === it.id)) continue;
             renderedClipBlobs.set(it.id, blob);
             const prevUrl = renderedClipUrls.get(it.id);
             if (prevUrl) URL.revokeObjectURL(prevUrl);
@@ -2422,14 +2441,17 @@
             renderedClipUrls.set(it.id, nextUrl);
             bindVideoSourcesToCards();
           }
-          elRenderBanner.textContent =
-            loadState().lang === "en"
-              ? `Done: ${listToRender.length} MP4 clip(s) rendered & ready.`
-              : `Selesai: ${listToRender.length} klip MP4 sudah dirender & siap.`;
+          if (!cancelAutoRenderFlag) {
+            elRenderBanner.textContent =
+              loadState().lang === "en"
+                ? `Done: ${listToRender.length} MP4 clip(s) rendered & ready.`
+                : `Selesai: ${listToRender.length} klip MP4 sudah dirender & siap.`;
+          }
         } catch (err) {
           elRenderBanner.textContent = "";
         } finally {
           isRenderingVideo = false;
+          cancelAutoRenderFlag = false;
         }
       }
 
@@ -2536,31 +2558,40 @@
       function bindVideoSourcesToCards() {
         const st = loadState();
         const fallbackFile = st.files[0] || null;
+        const ccOn = st.config.ccEnabled !== "off";
 
         cardPlayers.forEach((entry, itemId) => {
+          const item = st.items.find((x) => x.id === itemId);
           const renderedUrl = renderedClipUrls.get(itemId);
+
+          if (entry.hookStack) entry.hookStack.style.display = "flex";
+          if (entry.ccZone) {
+            entry.ccZone.style.display = ccOn ? "flex" : "none";
+            if (ccOn && entry.ccTextEl && item) {
+              const line = getCcLineAtTime(item, entry.mainVideo.currentTime || 0);
+              entry.ccTextEl.setAttribute("data-raw-cc", line);
+              entry.ccTextEl.textContent = line;
+            }
+          }
+
           if (renderedUrl) {
             entry.isRendered = true;
             if (entry.mainVideo.src !== renderedUrl) {
               entry.mainVideo.src = renderedUrl;
             }
             entry.blurVideo.style.display = "none";
-            if (entry.hookStack) entry.hookStack.style.display = "none";
-            if (entry.ccZone) entry.ccZone.style.display = "none";
-            entry.mainVideo.style.maxHeight = "100%";
-            entry.mainVideo.style.height = "100%";
-            entry.mainVideo.style.objectFit = "contain";
+            entry.mainVideo.style.maxHeight = "190px";
+            entry.mainVideo.style.height = "auto";
+            entry.mainVideo.style.objectFit = "cover";
             return;
           }
 
           entry.isRendered = false;
           entry.blurVideo.style.display = "block";
-          if (entry.hookStack) entry.hookStack.style.display = "flex";
-          entry.mainVideo.style.maxHeight = "205px";
+          entry.mainVideo.style.maxHeight = "190px";
           entry.mainVideo.style.height = "auto";
           entry.mainVideo.style.objectFit = "cover";
 
-          const item = st.items.find((x) => x.id === itemId);
           const fid = (item && item.sourceId) || (fallbackFile && fallbackFile.id) || "";
           const url = fid ? videoBlobUrls.get(fid) : "";
           if (url && entry.mainVideo.src !== url) {
@@ -2600,8 +2631,9 @@
             .map((item, idx) => {
               const clipNum = items.length - idx;
               const fypVal = clamp1to90(item.fypScore || 78);
-              const shownHook = applyTextCase(item.hook || "", hookCase);
-              const shownCc = applyTextCase(item.ccSample || item.hook || "", ccCase);
+              const cleanHook = compactHookText(item.hook || "");
+              const shownHook = applyTextCase(cleanHook, hookCase);
+              const shownCc = applyTextCase(item.ccSample || cleanHook, ccCase);
               return `
             <article class="vt-card" data-id="${esc(item.id)}">
               <div class="vt-top">
@@ -2618,7 +2650,7 @@
 
                   <div class="vt-hook-box">
                     <div class="box-tag">${esc(t("box_hook"))}</div>
-                    <p class="vt-hook-val" data-raw-hook="${esc(item.hook)}">${esc(shownHook)}</p>
+                    <p class="vt-hook-val" data-raw-hook="${esc(cleanHook)}">${esc(shownHook)}</p>
                   </div>
 
                   <div class="vt-desc-box">
@@ -2660,7 +2692,7 @@
                     <div class="vt-dim-scrim" aria-hidden="true"></div>
 
                     <div class="vt-hook-wm-stack">
-                      <span class="vt-hook-pill" data-raw-hook="${esc(item.hook)}">${esc(shownHook)}</span>
+                      <span class="vt-hook-pill" data-raw-hook="${esc(cleanHook)}">${esc(shownHook)}</span>
                       <span class="vt-attached-wm" style="display: none;"></span>
                     </div>
 
@@ -2669,7 +2701,7 @@
                     </div>
 
                     <div class="vt-cc-zone">
-                      <span class="vt-cc-text" data-raw-cc="${esc(item.ccSample || item.hook)}">${esc(shownCc)}</span>
+                      <span class="vt-cc-text" data-raw-cc="${esc(item.ccSample || cleanHook)}">${esc(shownCc)}</span>
                     </div>
                   </div>
                   <div class="player-controls-bar">
@@ -2958,6 +2990,7 @@
         };
         saveState(st);
         applyHookStyle();
+        bindVideoSourcesToCards();
       }
 
       elFont.addEventListener("change", handleConfigChange);
@@ -3060,12 +3093,7 @@
 
       elFilterGaya.addEventListener("change", renderList);
 
-      elList.addEventListener("click", async (e) => {
-        const btn = e.target.closest("button[data-act]");
-        if (!btn) return;
-
-        const act = btn.getAttribute("data-act");
-        const id = btn.getAttribute("data-id");
+      async function handleVtCardAction(act, id, btn) {
         const st = loadState();
         const idx = st.items.findIndex((x) => x.id === id);
         if (idx === -1) return;
@@ -3082,6 +3110,7 @@
         }
 
         if (act === "delete") {
+          cancelAutoRenderFlag = true;
           renderedClipBlobs.delete(id);
           const oldRUrl = renderedClipUrls.get(id);
           if (oldRUrl) {
@@ -3094,52 +3123,14 @@
           return;
         }
 
-        if (act === "download") {
-          if (isRenderingVideo) return;
-          let videoBlob = renderedClipBlobs.get(id);
-          if (!videoBlob) {
-            if (!resolveVideoUrlForItem(current)) {
-              alert(t("reselect_video_note"));
-              elFileInput.click();
-              return;
-            }
-            isRenderingVideo = true;
-            const prevLabel = btn.textContent;
-            btn.textContent = t("rendering_clip");
-            try {
-              videoBlob = await renderVtClipVideoBlob(current);
-              renderedClipBlobs.set(id, videoBlob);
-              const nextUrl = URL.createObjectURL(videoBlob);
-              renderedClipUrls.set(id, nextUrl);
-              bindVideoSourcesToCards();
-              btn.textContent = prevLabel;
-            } catch (err) {
-              btn.textContent = prevLabel;
-              alert(t("reselect_video_note"));
-              return;
-            } finally {
-              isRenderingVideo = false;
-            }
-          }
-
-          const num = btn.getAttribute("data-num") || String(idx + 1);
-          const safeName =
-            String(current.judul || "klip_vt")
-              .toLowerCase()
-              .replace(/[^a-z0-9]+/g, "_")
-              .replace(/^_|_$/g, "") || "klip_vt";
-          saveBlobAsFile(videoBlob, `${safeName}_vt_${num}.mp4`);
-          const oldTxt = btn.textContent;
-          btn.textContent = t("btn_downloaded");
-          btn.classList.add("copied");
-          setTimeout(() => {
-            btn.textContent = oldTxt;
-            btn.classList.remove("copied");
-          }, 1500);
-          return;
-        }
-
         if (act === "regen") {
+          cancelAutoRenderFlag = true;
+          renderedClipBlobs.delete(id);
+          const oldRUrl = renderedClipUrls.get(id);
+          if (oldRUrl) {
+            URL.revokeObjectURL(oldRUrl);
+            renderedClipUrls.delete(id);
+          }
           const nextVariant = (current.variantCount || 0) + 1;
           const targetDur = Number(elDurasiTarget.value || 40);
           const ccLang = st.config.ccLang || "id";
@@ -3173,15 +3164,66 @@
           if (resolveVideoUrlForItem(updatedItem)) {
             await autoRenderItems([updatedItem]);
           }
+          return;
         }
+
+        if (act === "download") {
+          let videoBlob = renderedClipBlobs.get(id);
+          if (!videoBlob) {
+            if (!resolveVideoUrlForItem(current)) {
+              alert(t("reselect_video_note"));
+              elFileInput.click();
+              return;
+            }
+            const prevLabel = btn ? btn.textContent : "";
+            if (btn) btn.textContent = t("rendering_clip");
+            try {
+              videoBlob = await renderVtClipVideoBlob(current);
+              renderedClipBlobs.set(id, videoBlob);
+              const nextUrl = URL.createObjectURL(videoBlob);
+              renderedClipUrls.set(id, nextUrl);
+              bindVideoSourcesToCards();
+            } catch (err) {
+              alert(t("reselect_video_note"));
+              return;
+            } finally {
+              if (btn && prevLabel) btn.textContent = prevLabel;
+            }
+          }
+
+          const num = (btn && btn.getAttribute("data-num")) || String(idx + 1);
+          const safeName =
+            String(current.judul || "klip_vt")
+              .toLowerCase()
+              .replace(/[^a-z0-9]+/g, "_")
+              .replace(/^_|_$/g, "") || "klip_vt";
+          saveBlobAsFile(videoBlob, `${safeName}_vt_${num}.mp4`);
+          if (btn) {
+            const oldTxt = btn.textContent;
+            btn.textContent = t("btn_downloaded");
+            btn.classList.add("copied");
+            setTimeout(() => {
+              btn.textContent = oldTxt;
+              btn.classList.remove("copied");
+            }, 1500);
+          }
+        }
+      }
+
+      elList.addEventListener("click", (e) => {
+        const target = e.target instanceof Element ? e.target : null;
+        const btn = target ? target.closest("button[data-act]") : null;
+        if (!btn) return;
+        const act = btn.getAttribute("data-act");
+        const id = btn.getAttribute("data-id");
+        if (!act || !id) return;
+        handleVtCardAction(act, id, btn).catch(() => {});
       });
 
       document.getElementById("btn-unduh-semua").addEventListener("click", async () => {
-        if (isRenderingVideo) return;
         const ordered = getFilteredItems().slice().reverse();
         if (!ordered.length) return;
 
-        isRenderingVideo = true;
         const btnAll = document.getElementById("btn-unduh-semua");
         const oldAllLabel = btnAll.textContent;
 
@@ -3230,10 +3272,9 @@
             btnAll.textContent = oldAllLabel;
           }, 1500);
         } catch (err) {
-          btnAll.textContent = oldAllLabel;
           alert(t("reselect_video_note"));
         } finally {
-          isRenderingVideo = false;
+          btnAll.textContent = oldAllLabel;
         }
       });
     })();
