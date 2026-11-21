@@ -73,6 +73,68 @@
     });
   }
 
+  function applyCase(text, mode) {
+    if (mode === "upper") return text.toUpperCase();
+    if (mode === "lower") return text.toLowerCase();
+    if (mode === "title") {
+      return text.replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
+    }
+    return text;
+  }
+
+  function hexToRgba(hex, alpha) {
+    const clean = (hex || "#000000").replace("#", "");
+    const num = parseInt(clean, 16);
+    if (Number.isNaN(num)) return `rgba(0, 0, 0, ${alpha})`;
+    const r = (num >> 16) & 255;
+    const g = (num >> 8) & 255;
+    const b = num & 255;
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
+
+  function updateTikTokSamplePreview() {
+    const frame = el("tiktok-preview-frame");
+    const hookNode = el("tiktok-sample-hook");
+    const ccNode = el("tiktok-sample-cc");
+    const wmNode = el("tiktok-sample-wm");
+    if (!frame || !hookNode || !ccNode || !wmNode) return;
+
+    const fontFamily = el("font-family-select").value;
+    const hookCase = el("hook-case-select").value;
+    const ccCase = el("cc-case-select").value;
+    const textColor = el("text-color-input").value;
+    const bgMode = el("bg-color-mode").value;
+    const bgColor = el("bg-color-input").value;
+    const strength = el("bg-strength-select").value;
+    const wmText = el("wm-text").value || "@BRUTALKLIP";
+    const wmColor = el("wm-color-input").value;
+    const wmBgMode = el("wm-bg-mode").value;
+    const wmBgColor = el("wm-bg-input").value;
+
+    const alpha = strength === "pekat" || strength === "solid" ? 0.92 : 0.45;
+    const textBgStyle = bgMode === "color" ? hexToRgba(bgColor, alpha) : "transparent";
+    const wmBgStyle = wmBgMode === "color" ? hexToRgba(wmBgColor, 0.78) : "transparent";
+
+    frame.style.fontFamily = fontFamily;
+
+    hookNode.textContent = applyCase("Contoh Hook Utama VT", hookCase);
+    hookNode.style.color = textColor;
+    hookNode.style.background = textBgStyle;
+
+    const ccSource =
+      ccEnabled && appliedTranscriptText.trim()
+        ? appliedTranscriptText.trim()
+        : "Contoh closed caption sesuai pengaturan warna, font & kepekatan background.";
+    ccNode.textContent = applyCase(ccSource.slice(0, 96), ccCase);
+    ccNode.style.color = textColor;
+    ccNode.style.background = textBgStyle;
+    ccNode.style.display = ccEnabled ? "block" : "none";
+
+    wmNode.textContent = wmText;
+    wmNode.style.color = wmColor;
+    wmNode.style.background = wmBgStyle;
+  }
+
   function setControlsLocked(locked, reasonText) {
     const pilotBox = el("pilot-box");
     const editingPanel = el("editing-panel");
@@ -104,6 +166,7 @@
     if (!ccEnabled) {
       el("transcript-status").textContent = "CC OFF — Tidak memakai transkrip/CC";
       setControlsLocked(false, "CC OFF: Pilot Brutal Klip & fitur editing terbuka.");
+      updateTikTokSamplePreview();
       if (generatedClips.length) renderClips();
       return;
     }
@@ -123,7 +186,27 @@
       );
       if (generatedClips.length) renderClips();
     }
+    updateTikTokSamplePreview();
   }
+
+  [
+    "font-family-select",
+    "hook-case-select",
+    "cc-case-select",
+    "text-color-input",
+    "bg-color-mode",
+    "bg-color-input",
+    "bg-strength-select",
+    "wm-text",
+    "wm-color-input",
+    "wm-bg-mode",
+    "wm-bg-input"
+  ].forEach((id) => {
+    const node = el(id);
+    if (!node) return;
+    node.addEventListener("input", updateTikTokSamplePreview);
+    node.addEventListener("change", updateTikTokSamplePreview);
+  });
 
   el("btn-cc-toggle").addEventListener("click", () => {
     ccEnabled = !ccEnabled;
@@ -304,24 +387,6 @@
     return clips;
   }
 
-  function applyCase(text, mode) {
-    if (mode === "upper") return text.toUpperCase();
-    if (mode === "lower") return text.toLowerCase();
-    if (mode === "title") {
-      return text.replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
-    }
-    return text;
-  }
-
-  function hexToRgba(hex, alpha) {
-    const clean = hex.replace("#", "");
-    const num = parseInt(clean, 16);
-    const r = (num >> 16) & 255;
-    const g = (num >> 8) & 255;
-    const b = num & 255;
-    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-  }
-
   function getAnimClass(type, pos, stage) {
     if (!type || type === "none") return "";
     const map = {
@@ -383,6 +448,14 @@
     }));
 
     return { fypScore, points, reason, comments };
+  }
+
+  function escapeHtml(str) {
+    return String(str || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
   }
 
   function renderClips() {
@@ -531,14 +604,6 @@
 
       container.appendChild(card);
     }
-  }
-
-  function escapeHtml(str) {
-    return String(str || "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
   }
 
   async function renderClipHdBlob(clip, hookStr, ccStr, wmStr, onProgress) {
