@@ -21,7 +21,10 @@
       btnGenerate: "Hasilkan Klip",
       btnDeleteAll: "Hapus Semua Hasil Klip",
       sec4Title: "4. Hasil Klip, Preview VT, Render HD & Analitik",
-      sec4Sub: "Klik putar pada tiap klip untuk melihat preview 9:16, render HD sinkron audio & gerak, serta grafik retensi 1%–90%."
+      sec4Sub: "Klik putar pada tiap klip untuk melihat preview 9:16, render HD sinkron audio & gerak, serta grafik retensi 1%–90%.",
+      sec5Title: "5. Dukungan & Pendukung BRUTAL KLIP",
+      sec5Sub: "Dukung pengembangan alat clipping ini lewat Trakteer.",
+      btnSupport: "Traktir di Trakteer"
     },
     en: {
       sec1Title: "1. Transcript, CC & Pilot Brutal Klip",
@@ -38,7 +41,10 @@
       btnGenerate: "Generate Clips",
       btnDeleteAll: "Delete All Clips",
       sec4Title: "4. Generated Clips, VT Preview, HD Render & Analytics",
-      sec4Sub: "Play any clip to preview 9:16 layout, render HD video synced with audio & motion, and view 1%–90% retention."
+      sec4Sub: "Play any clip to preview 9:16 layout, render HD video synced with audio & motion, and view 1%–90% retention.",
+      sec5Title: "5. Support & Supporters of BRUTAL KLIP",
+      sec5Sub: "Support this clipping tool via Trakteer.",
+      btnSupport: "Support on Trakteer"
     }
   };
 
@@ -67,7 +73,6 @@
     });
   }
 
-  // --- Kunci Workflow Berdasarkan Status CC (ON/OFF) & Transkrip ---
   function setControlsLocked(locked, reasonText) {
     const pilotBox = el("pilot-box");
     const editingPanel = el("editing-panel");
@@ -125,7 +130,6 @@
     syncCcWorkflow();
   });
 
-  // --- Mutual Lock Manual vs File ---
   function setupModeLock(group) {
     const buttons = document.querySelectorAll(`.mode-btn[data-group="${group}"]`);
     const manualWrap = el(`${group}-manual-wrap`);
@@ -177,7 +181,6 @@
     syncCcWorkflow();
   });
 
-  // --- Video File Handler ---
   el("video-file").addEventListener("change", (e) => {
     const file = e.target.files && e.target.files[0];
     if (!file) return;
@@ -187,7 +190,6 @@
     el("video-info").textContent = `Dipilih: ${file.name} (${(file.size / (1024 * 1024)).toFixed(1)} MB)`;
   });
 
-  // --- Parser Pilot Brutal Klip ---
   function parseTimeToSec(str) {
     if (!str) return null;
     const parts = str.trim().split(":").map(Number);
@@ -339,6 +341,11 @@
     return { hashtags, mentions };
   }
 
+  function randomNeonColor() {
+    const hue = Math.floor(Math.random() * 360);
+    return `hsl(${hue}, 100%, 66%)`;
+  }
+
   function buildRetentionAnalytics(clip, pilotText, ccActive, transcriptText) {
     const base = clip.movedToFront ? 76 : 64;
     const bonus = Math.min(14, (ccActive && transcriptText ? 6 : 0) + (pilotText.length > 0 ? 5 : 0) + (clip.num % 3));
@@ -362,7 +369,6 @@
     }
     const reason = `Retensi terjaga karena ${reasonParts.join(", ")}.`;
 
-    const glowColors = ["#ff4d6d", "#38bdf8", "#a78bfa", "#34d399", "#fbbf24"];
     const sampleUsers = ["@klip_ace", "@vid_hunter", "@edit_lab", "@vt_daily"];
     const sampleComments = [
       "Pembukanya langsung kena sih ini.",
@@ -372,7 +378,7 @@
 
     const comments = sampleUsers.slice(0, 3).map((user, idx) => ({
       author: user,
-      color: glowColors[Math.floor(Math.random() * glowColors.length)],
+      authorColor: randomNeonColor(),
       text: sampleComments[idx]
     }));
 
@@ -444,7 +450,7 @@
       const commentsHtml = clip.analytics.comments
         .map(
           (c) =>
-            `<div class="comment-item"><span class="comment-author" style="color:${c.color};text-shadow:0 0 10px ${c.color};">${escapeHtml(c.author)}</span><span>${escapeHtml(c.text)}</span></div>`
+            `<div class="comment-item"><span class="comment-author" style="color:${c.authorColor};text-shadow:0 0 8px ${c.authorColor},0 0 16px ${c.authorColor};">${escapeHtml(c.author)}</span><span class="comment-body">${escapeHtml(c.text)}</span></div>`
         )
         .join("");
 
