@@ -1217,13 +1217,13 @@
             const vw = video.videoWidth || 1280;
             const vh = video.videoHeight || 720;
 
-            /* 1. Latar belakang: VT 9:16 penuh, dipergelap lebih pekat (tanpa blur) tapi tetap tampak */
+            /* 1. Latar belakang: VT 9:16 penuh, gelap pekat seperti contoh tapi bayangan tetap samar */
             const bgScale = Math.max(canvas.width / vw, canvas.height / vh);
             const bgW = vw * bgScale;
             const bgH = vh * bgScale;
             ctx.drawImage(video, (canvas.width - bgW) / 2, (canvas.height - bgH) / 2, bgW, bgH);
 
-            ctx.fillStyle = "rgba(5, 4, 9, 0.78)";
+            ctx.fillStyle = "rgba(3, 3, 5, 0.94)";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             /* 2. VT utama tepat di tengah: rasio YouTube (16:9), penuh kiri-kanan tanpa spasi & tanpa lengkung */
