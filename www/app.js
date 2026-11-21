@@ -27,13 +27,13 @@
       btnApplyTranscript: "Terapkan Transkrip",
       pilotBoxTitle: "Pilot Brutal Klip",
       sec2Title: "2. Kontrol Tampilan, Transisi 0.5s, Kecepatan & Watermark",
-      sec2Sub: "Atur kecepatan putar, animasi 0.5s terpisah untuk Video Hook dan Video Isi, ukuran, warna & perataan Hook/CC terpisah, serta WM penuh dari awal sampai akhir VT.",
+      sec2Sub: "Atur kecepatan putar, animasi 0.5s terpisah untuk Video Hook dan Video Isi, serta ukuran, warna, perataan & kepekatan BG Hook/CC/WM terpisah.",
       btnGenerate: "Hasilkan Klip",
       btnDeleteAll: "Hapus Semua Hasil Klip",
       sec4Title: "4. Hasil Klip, Preview VT, Render HD & Analitik",
       sec4Sub: "Klip dirender satu per satu berurutan hingga selesai per klip, lengkap dengan deteksi deskripsi & tagar/hashtag, komentar, serta grafik retensi 1%–90%.",
-      sec5Title: "5. Dukungan & Pendukung BRUTAL KLIP",
-      sec5Sub: "Dukung pengembangan alat clipping ini lewat Trakteer.",
+      sec5Title: "5. Dukungan, Komentar & Pendukung BRUTAL KLIP",
+      sec5Sub: "Dukung lewat Trakteer atau kirim nama & komentar dukungan langsung di web.",
       btnSupport: "Traktir di Trakteer"
     },
     en: {
@@ -47,13 +47,13 @@
       btnApplyTranscript: "Apply Transcript",
       pilotBoxTitle: "Pilot Brutal Klip",
       sec2Title: "2. Visual Controls, 0.5s Transitions, Speed & Watermark",
-      sec2Sub: "Set playback speed, independent 0.5s animations for Hook Video and Body Video, separate Hook & CC sizes/colors/alignments, and full-length WM.",
+      sec2Sub: "Set playback speed, independent 0.5s animations for Hook Video and Body Video, and separate Hook/CC/WM sizes, colors, alignments & BG strength.",
       btnGenerate: "Generate Clips",
       btnDeleteAll: "Delete All Clips",
       sec4Title: "4. Generated Clips, VT Preview, HD Render & Analytics",
       sec4Sub: "Clips render sequentially one by one until each clip finishes, with description & hashtag checks, comments, and 1%–90% retention.",
-      sec5Title: "5. Support & Supporters of BRUTAL KLIP",
-      sec5Sub: "Support this clipping tool via Trakteer.",
+      sec5Title: "5. Support, Comments & Supporters of BRUTAL KLIP",
+      sec5Sub: "Support via Trakteer or send your name & comment directly on the web.",
       btnSupport: "Support on Trakteer"
     }
   };
@@ -77,9 +77,31 @@
     const wrap = el("supporters-list");
     if (!wrap) return;
     wrap.innerHTML = SUPPORTERS.map((s) => {
-      const color = randomNeonColor();
+      const color = s.color || randomNeonColor();
+      s.color = color;
       return `<span class="supporter-pill"><span style="color:${color};text-shadow:0 0 8px ${color},0 0 16px ${color};">${escapeHtml(s.name)}</span> <span class="supporter-role">— ${escapeHtml(s.role)}</span></span>`;
     }).join("");
+  }
+
+  const supportForm = el("support-comment-form");
+  if (supportForm) {
+    supportForm.addEventListener("submit", (ev) => {
+      ev.preventDefault();
+      const nameInput = el("support-name-input");
+      const msgInput = el("support-msg-input");
+      const nameVal = nameInput ? nameInput.value.trim() : "";
+      const msgVal = msgInput ? msgInput.value.trim() : "";
+      if (!nameVal || !msgVal) return;
+
+      SUPPORTERS.push({
+        name: nameVal,
+        role: msgVal,
+        color: randomNeonColor()
+      });
+      renderSupporters();
+      if (nameInput) nameInput.value = "";
+      if (msgInput) msgInput.value = "";
+    });
   }
 
   function cleanTranscriptTimestamps(raw) {
@@ -183,22 +205,53 @@
     return `rgba(${r}, ${g}, ${b}, ${alpha})`;
   }
 
+  function resolveBgStyle(modeId, colorId, strengthId, defaultAlpha) {
+    const mode = el(modeId) ? el(modeId).value : "color";
+    if (mode !== "color") return "transparent";
+    const color = el(colorId) ? el(colorId).value : "#0b0a0e";
+    const strength = el(strengthId) ? el(strengthId).value : "solid";
+    const alpha = strength === "fade" ? Math.min(0.45, defaultAlpha * 0.48) : defaultAlpha;
+    return hexToRgba(color, alpha);
+  }
+
   function syncSampleVideoSource() {
-    const sampleVid = el("tiktok-sample-video");
-    if (!sampleVid) return;
+    const bgVid = el("tiktok-sample-bg-video");
+    const ytVid = el("tiktok-sample-yt-video");
+    const ytPh = el("tiktok-sample-yt-placeholder");
     const speed = getPlaybackSpeed();
+
     if (sourceVideoUrl) {
-      if (sampleVid.getAttribute("src") !== sourceVideoUrl) {
-        sampleVid.src = sourceVideoUrl;
-        sampleVid.style.display = "block";
-        sampleVid.load();
+      if (bgVid) {
+        if (bgVid.getAttribute("src") !== sourceVideoUrl) {
+          bgVid.src = sourceVideoUrl;
+          bgVid.style.display = "block";
+          bgVid.load();
+        }
+        bgVid.playbackRate = speed;
+        bgVid.play().catch(() => {});
       }
-      sampleVid.playbackRate = speed;
-      sampleVid.play().catch(() => {});
+      if (ytVid) {
+        if (ytVid.getAttribute("src") !== sourceVideoUrl) {
+          ytVid.src = sourceVideoUrl;
+          ytVid.style.display = "block";
+          ytVid.load();
+        }
+        ytVid.playbackRate = speed;
+        ytVid.play().catch(() => {});
+      }
+      if (ytPh) ytPh.style.display = "none";
     } else {
-      sampleVid.pause();
-      sampleVid.removeAttribute("src");
-      sampleVid.style.display = "none";
+      if (bgVid) {
+        bgVid.pause();
+        bgVid.removeAttribute("src");
+        bgVid.style.display = "none";
+      }
+      if (ytVid) {
+        ytVid.pause();
+        ytVid.removeAttribute("src");
+        ytVid.style.display = "none";
+      }
+      if (ytPh) ytPh.style.display = "inline";
     }
   }
 
@@ -245,21 +298,15 @@
     const ccAlign = getAlignValue("cc-align-select");
     const hookColor = el("hook-color-input").value;
     const ccColor = el("cc-color-input").value;
-    const bgMode = el("bg-color-mode").value;
-    const bgColor = el("bg-color-input").value;
-    const strength = el("bg-strength-select").value;
+
+    const hookBgStyle = resolveBgStyle("hook-bg-mode", "hook-bg-color", "hook-bg-strength", 0.92);
+    const ccBgStyle = resolveBgStyle("cc-bg-mode", "cc-bg-color", "cc-bg-strength", 0.86);
 
     const wmText = el("wm-text").value || "@BRUTALKLIP";
     const wmColor = el("wm-color-input").value;
-    const wmBgMode = el("wm-bg-mode").value;
-    const wmBgColor = el("wm-bg-input").value;
+    const wmBgStyle = resolveBgStyle("wm-bg-mode", "wm-bg-input", "wm-bg-strength", 0.85);
     const wmPosClass = getWmPosClass();
     const wmClarity = getWmClarity();
-
-    const alpha = strength === "pekat" || strength === "solid" ? 0.92 : 0.45;
-    const textBgStyle = bgMode === "color" ? hexToRgba(bgColor, alpha) : "transparent";
-    const wmBgAlpha = wmClarity === "faded" ? 0.35 : 0.82;
-    const wmBgStyle = wmBgMode === "color" ? hexToRgba(wmBgColor, wmBgAlpha) : "transparent";
 
     frame.style.fontFamily = fontFamily;
 
@@ -267,7 +314,7 @@
     hookNode.style.fontSize = getHookCssSize();
     hookNode.style.textAlign = hookAlign;
     hookNode.style.color = hookColor;
-    hookNode.style.background = textBgStyle;
+    hookNode.style.background = hookBgStyle;
 
     const cleanCc = cleanTranscriptTimestamps(appliedTranscriptText);
     const ccSource =
@@ -278,7 +325,7 @@
     ccNode.style.fontSize = getCcCssSize();
     ccNode.style.textAlign = ccAlign;
     ccNode.style.color = ccColor;
-    ccNode.style.background = textBgStyle;
+    ccNode.style.background = ccBgStyle;
     ccNode.style.display = ccEnabled ? "block" : "none";
 
     wmNode.className = `tiktok-wm ${wmPosClass}`;
@@ -304,7 +351,7 @@
 
   function syncPreviewSpeed() {
     const speed = getPlaybackSpeed();
-    document.querySelectorAll(".vt-video").forEach((vid) => {
+    document.querySelectorAll(".vt-video, .vt-bg-916").forEach((vid) => {
       if (vid.tagName === "VIDEO") {
         vid.playbackRate = speed;
       }
@@ -380,14 +427,18 @@
     "wm-size-select",
     "hook-color-input",
     "cc-color-input",
-    "bg-color-mode",
-    "bg-color-input",
-    "bg-strength-select",
+    "hook-bg-mode",
+    "hook-bg-color",
+    "hook-bg-strength",
+    "cc-bg-mode",
+    "cc-bg-color",
+    "cc-bg-strength",
     "wm-pos-select",
     "wm-clarity-select",
     "wm-text",
     "wm-color-input",
     "wm-bg-mode",
+    "wm-bg-strength",
     "wm-bg-input"
   ].forEach((id) => {
     const node = el(id);
@@ -829,27 +880,21 @@
     const wmSize = getWmCssSize();
     const hookColor = el("hook-color-input").value;
     const ccColor = el("cc-color-input").value;
-    const bgMode = el("bg-color-mode").value;
-    const bgColor = el("bg-color-input").value;
-    const strength = el("bg-strength-select").value;
+
+    const hookBgStyle = resolveBgStyle("hook-bg-mode", "hook-bg-color", "hook-bg-strength", 0.92);
+    const ccBgStyle = resolveBgStyle("cc-bg-mode", "cc-bg-color", "cc-bg-strength", 0.86);
 
     const wmText = el("wm-text").value || "@BRUTALKLIP";
     const wmColor = el("wm-color-input").value;
-    const wmBgMode = el("wm-bg-mode").value;
-    const wmBgColor = el("wm-bg-input").value;
+    const wmBgStyle = resolveBgStyle("wm-bg-mode", "wm-bg-input", "wm-bg-strength", 0.85);
     const wmPosClass = getWmPosClass();
     const wmClarity = getWmClarity();
+    const wmOpacity = wmClarity === "faded" ? "0.52" : "1";
 
     const hookAnimType = el("hook-anim-type").value;
     const hookAnimPos = el("hook-anim-pos").value;
     const bodyAnimType = el("body-anim-type").value;
     const bodyAnimPos = el("body-anim-pos").value;
-
-    const alpha = strength === "pekat" || strength === "solid" ? 0.92 : 0.45;
-    const textBgStyle = bgMode === "color" ? hexToRgba(bgColor, alpha) : "transparent";
-    const wmBgAlpha = wmClarity === "faded" ? 0.35 : 0.82;
-    const wmBgStyle = wmBgMode === "color" ? hexToRgba(wmBgColor, wmBgAlpha) : "transparent";
-    const wmOpacity = wmClarity === "faded" ? "0.52" : "1";
 
     const hookAnimClass = getAnimClass(hookAnimType, hookAnimPos, "in");
     const bodyAnimClass = getAnimClass(bodyAnimType, bodyAnimPos, "in");
@@ -898,15 +943,23 @@
         <div class="vt-stage" style="font-family:${fontFamily};">
           ${
             sourceVideoUrl
-              ? `<video class="vt-video ${bodyAnimClass}" src="${sourceVideoUrl}" controls playsinline></video>`
-              : `<div class="vt-video ${bodyAnimClass}" style="display:grid;place-items:center;color:#9e97ae;font-size:12px;">Upload video sumber untuk preview &amp; render HD</div>`
+              ? `<video class="vt-bg-916" src="${sourceVideoUrl}" muted loop playsinline></video>`
+              : ""
           }
-          <div class="vt-hook-box ${hookAnimClass}" style="font-size:${hookSize};text-align:${hookAlign};color:${hookColor};background:${textBgStyle};">
+          <div class="vt-dim-overlay" aria-hidden="true"></div>
+          <div class="vt-hook-box ${hookAnimClass}" style="font-size:${hookSize};text-align:${hookAlign};color:${hookColor};background:${hookBgStyle};">
             ${escapeHtml(formattedHook)}
+          </div>
+          <div class="vt-yt-slot">
+            ${
+              sourceVideoUrl
+                ? `<video class="vt-video ${bodyAnimClass}" src="${sourceVideoUrl}" controls playsinline></video>`
+                : `<div class="vt-video ${bodyAnimClass}" style="display:grid;place-items:center;color:#9e97ae;font-size:12px;">Upload video sumber untuk preview &amp; render HD</div>`
+            }
           </div>
           ${
             ccEnabled && formattedCc
-              ? `<div class="vt-cc-box" style="font-size:${ccSize};text-align:${ccAlign};color:${ccColor};background:${textBgStyle};">${escapeHtml(formattedCc.slice(0, 110))}</div>`
+              ? `<div class="vt-cc-box" style="font-size:${ccSize};text-align:${ccAlign};color:${ccColor};background:${ccBgStyle};">${escapeHtml(formattedCc.slice(0, 110))}</div>`
               : ""
           }
           <div class="vt-wm-box ${wmPosClass}" style="font-size:${wmSize};color:${wmColor};background:${wmBgStyle};opacity:${wmOpacity};">
@@ -956,11 +1009,20 @@
       `;
 
       const vidEl = card.querySelector("video.vt-video");
+      const bgVidEl = card.querySelector("video.vt-bg-916");
       if (vidEl) {
         vidEl.playbackRate = speed;
         vidEl.addEventListener("loadedmetadata", () => {
           vidEl.playbackRate = getPlaybackSpeed();
         });
+        if (bgVidEl) {
+          bgVidEl.playbackRate = speed;
+          vidEl.addEventListener("play", () => bgVidEl.play().catch(() => {}));
+          vidEl.addEventListener("pause", () => bgVidEl.pause());
+          vidEl.addEventListener("seeked", () => {
+            bgVidEl.currentTime = vidEl.currentTime;
+          });
+        }
       }
 
       const commentForm = card.querySelector(".comment-form");
@@ -1013,6 +1075,9 @@
               hookColor,
               ccColor,
               wmColor,
+              hookBgStyle,
+              ccBgStyle,
+              wmBgStyle,
               hookAlign,
               ccAlign,
               wmPos: el("wm-pos-select").value,
@@ -1146,76 +1211,105 @@
             const pct = Math.min(100, Math.round((elapsed / totalDur) * 100));
             if (onProgress) onProgress(pct);
 
-            ctx.fillStyle = "#0b0a0e";
+            ctx.fillStyle = "#09080c";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             const vw = video.videoWidth || 1280;
             const vh = video.videoHeight || 720;
-            const scale = Math.min(canvas.width / vw, canvas.height / vh);
-            const dw = vw * scale;
-            const dh = vh * scale;
-            const dx = (canvas.width - dw) / 2;
-            const dy = (canvas.height - dh) / 2;
-            ctx.drawImage(video, dx, dy, dw, dh);
 
+            /* 1. Latar belakang: VT 9:16 penuh, dipergelap (tanpa blur) tapi tetap tampak */
+            const bgScale = Math.max(canvas.width / vw, canvas.height / vh);
+            const bgW = vw * bgScale;
+            const bgH = vh * bgScale;
+            ctx.drawImage(video, (canvas.width - bgW) / 2, (canvas.height - bgH) / 2, bgW, bgH);
+
+            ctx.fillStyle = "rgba(6, 5, 10, 0.62)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            /* 2. VT utama di tengah: rasio YouTube (16:9), penuh kiri-kanan tanpa spasi & tanpa lengkung */
+            const ytH = Math.round((canvas.width * 9) / 16);
+            const ytY = Math.round((canvas.height - ytH) / 2);
+            ctx.fillStyle = "#0b0a0e";
+            ctx.fillRect(0, ytY, canvas.width, ytH);
+            ctx.drawImage(video, 0, ytY, canvas.width, ytH);
+
+            /* 3. HOOK di atas VT utama dengan jarak aman */
             const hookDur = Math.max(2, (clip.hookEndSec || startSec + 4) - (clip.hookStartSec || startSec));
             if (elapsed <= hookDur) {
-              const hx = 72;
-              const hw = canvas.width - 144;
-              ctx.fillStyle = "rgba(255, 42, 75, 0.88)";
-              ctx.fillRect(hx, 150, hw, 92);
+              const hx = 56;
+              const hw = canvas.width - 112;
+              const hy = Math.max(150, ytY - 148);
+              if (styleOpts.hookBgStyle && styleOpts.hookBgStyle !== "transparent") {
+                ctx.fillStyle = styleOpts.hookBgStyle;
+                ctx.fillRect(hx, hy, hw, 86);
+              }
               ctx.fillStyle = styleOpts.hookColor || "#ffffff";
               ctx.font = `bold ${styleOpts.hookSizePx || 32}px system-ui, sans-serif`;
               if (styleOpts.hookAlign === "left") {
                 ctx.textAlign = "left";
-                ctx.fillText(hookStr.slice(0, 38), hx + 18, 208);
+                ctx.fillText(hookStr.slice(0, 38), hx + 18, hy + 54);
               } else if (styleOpts.hookAlign === "right") {
                 ctx.textAlign = "right";
-                ctx.fillText(hookStr.slice(0, 38), hx + hw - 18, 208);
+                ctx.fillText(hookStr.slice(0, 38), hx + hw - 18, hy + 54);
               } else {
                 ctx.textAlign = "center";
-                ctx.fillText(hookStr.slice(0, 38), canvas.width / 2, 208);
+                ctx.fillText(hookStr.slice(0, 38), canvas.width / 2, hy + 54);
               }
             }
 
+            /* 4. CC di bawah VT utama dengan jarak aman */
             if (ccEnabled && ccStr) {
-              const cx = 64;
-              const cw = canvas.width - 210;
-              ctx.fillStyle = "rgba(11, 10, 14, 0.82)";
-              ctx.fillRect(cx, canvas.height - 275, cw, 78);
+              const cx = 56;
+              const cw = canvas.width - 196;
+              const cy = Math.min(canvas.height - 310, ytY + ytH + 44);
+              if (styleOpts.ccBgStyle && styleOpts.ccBgStyle !== "transparent") {
+                ctx.fillStyle = styleOpts.ccBgStyle;
+                ctx.fillRect(cx, cy, cw, 76);
+              }
               ctx.fillStyle = styleOpts.ccColor || "#fef08a";
               ctx.font = `600 ${styleOpts.ccSizePx || 25}px system-ui, sans-serif`;
               if (styleOpts.ccAlign === "left") {
                 ctx.textAlign = "left";
-                ctx.fillText(ccStr.slice(0, 48), cx + 16, canvas.height - 226);
+                ctx.fillText(ccStr.slice(0, 48), cx + 16, cy + 47);
               } else if (styleOpts.ccAlign === "right") {
                 ctx.textAlign = "right";
-                ctx.fillText(ccStr.slice(0, 48), cx + cw - 16, canvas.height - 226);
+                ctx.fillText(ccStr.slice(0, 48), cx + cw - 16, cy + 47);
               } else {
                 ctx.textAlign = "center";
-                ctx.fillText(ccStr.slice(0, 48), cx + cw / 2, canvas.height - 226);
+                ctx.fillText(ccStr.slice(0, 48), cx + cw / 2, cy + 47);
               }
             }
 
+            /* 5. WM dengan jarak aman */
             ctx.save();
             ctx.globalAlpha = styleOpts.wmClarity === "faded" ? 0.52 : 1;
+            const wmY = styleOpts.wmPos === "bottom-center" ? canvas.height - 335 : 84;
+            if (styleOpts.wmBgStyle && styleOpts.wmBgStyle !== "transparent") {
+              ctx.fillStyle = styleOpts.wmBgStyle;
+              if (styleOpts.wmPos === "top-left") {
+                ctx.fillRect(46, wmY - 34, 230, 48);
+              } else if (styleOpts.wmPos === "bottom-center") {
+                ctx.fillRect(canvas.width / 2 - 125, wmY - 34, 250, 48);
+              } else {
+                ctx.fillRect(canvas.width - 276, wmY - 34, 230, 48);
+              }
+            }
             ctx.fillStyle = styleOpts.wmColor || "#ffffff";
             ctx.font = `bold ${styleOpts.wmSizePx || 21}px system-ui, sans-serif`;
-            const wmY = styleOpts.wmPos === "bottom-center" ? canvas.height - 335 : 96;
             if (styleOpts.wmPos === "top-left") {
               ctx.textAlign = "left";
               if (wmLogoImgEl && wmLogoImgEl.complete && wmLogoImgEl.naturalWidth > 0) {
-                ctx.drawImage(wmLogoImgEl, 52, wmY - 20, 26, 26);
-                ctx.fillText(wmStr, 86, wmY);
+                ctx.drawImage(wmLogoImgEl, 56, wmY - 22, 26, 26);
+                ctx.fillText(wmStr, 90, wmY);
               } else {
-                ctx.fillText(wmStr, 52, wmY);
+                ctx.fillText(wmStr, 56, wmY);
               }
             } else if (styleOpts.wmPos === "bottom-center") {
               ctx.textAlign = "center";
               ctx.fillText(wmStr, canvas.width / 2, wmY);
             } else {
               ctx.textAlign = "right";
-              ctx.fillText(wmStr, canvas.width - 52, wmY);
+              ctx.fillText(wmStr, canvas.width - 56, wmY);
             }
             ctx.restore();
 
@@ -1243,8 +1337,11 @@
     const ccAlign = getAlignValue("cc-align-select");
     const hookColor = el("hook-color-input").value;
     const ccColor = el("cc-color-input").value;
+    const hookBgStyle = resolveBgStyle("hook-bg-mode", "hook-bg-color", "hook-bg-strength", 0.92);
+    const ccBgStyle = resolveBgStyle("cc-bg-mode", "cc-bg-color", "cc-bg-strength", 0.86);
     const wmText = el("wm-text").value || "@BRUTALKLIP";
     const wmColor = el("wm-color-input").value;
+    const wmBgStyle = resolveBgStyle("wm-bg-mode", "wm-bg-input", "wm-bg-strength", 0.85);
     const wmPos = el("wm-pos-select").value;
     const wmClarity = getWmClarity();
     const cleanCc = cleanTranscriptTimestamps(appliedTranscriptText);
@@ -1253,6 +1350,9 @@
       hookColor,
       ccColor,
       wmColor,
+      hookBgStyle,
+      ccBgStyle,
+      wmBgStyle,
       hookAlign,
       ccAlign,
       wmPos,
