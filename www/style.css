@@ -350,7 +350,7 @@ body {
   justify-content: center;
 }
 
-/* Latar belakang: VT beresolusi 9:16, dipergelap lebih pekat tapi tetap sedikit tampak (tanpa blur) */
+/* Latar belakang: VT beresolusi 9:16, gelap pekat seperti contoh tapi bayangan tetap samar (tanpa blur) */
 .tiktok-bg-916 {
   position: absolute;
   inset: 0;
@@ -363,7 +363,7 @@ body {
 .tiktok-dim-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(5, 4, 9, 0.78);
+  background: rgba(3, 3, 5, 0.94);
   z-index: 2;
   pointer-events: none;
 }
@@ -710,7 +710,7 @@ button:disabled {
 .vt-dim-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(5, 4, 9, 0.78);
+  background: rgba(3, 3, 5, 0.94);
   z-index: 2;
   pointer-events: none;
 }
