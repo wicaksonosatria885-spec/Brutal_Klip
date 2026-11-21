@@ -7,7 +7,7 @@
   --muted: #9e97ae;
   --accent: #ff2a4b;
   --accent-hover: #ff4563;
-  --accent-glow: rgba(255, 42, 75, 0.6);
+  --accent-glow: rgba(255, 42, 75, 0.55);
   --danger: #ef4444;
   --danger-glow: rgba(239, 68, 68, 0.5);
   --radius: 14px;
@@ -40,13 +40,12 @@ body {
   position: sticky;
   top: 0;
   z-index: 30;
-  max-width: 1120px;
-  margin: 0 auto;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  padding: 16px 16px;
+  gap: 14px;
+  padding: 14px 20px;
   background: rgba(11, 10, 14, 0.92);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
@@ -63,16 +62,22 @@ body {
   height: 72px;
   border-radius: 16px;
   object-fit: cover;
-  border: 1.5px solid rgba(255, 42, 75, 0.65);
-  box-shadow: 0 0 26px var(--accent-glow);
+  border: 1px solid rgba(255, 42, 75, 0.55);
+  box-shadow: 0 0 22px var(--accent-glow);
 }
 
 .brand-title {
   margin: 0;
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 900;
-  letter-spacing: 0.6px;
+  letter-spacing: 0.4px;
   line-height: 1.15;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .lang-switch {
@@ -88,9 +93,9 @@ body {
   border: 0;
   background: transparent;
   color: var(--muted);
-  font-weight: 700;
+  font-weight: 800;
   font-size: 12px;
-  padding: 6px 12px;
+  padding: 6px 11px;
   border-radius: 8px;
   cursor: pointer;
   transition: transform 0.14s ease, box-shadow 0.18s ease, background-color 0.18s ease, color 0.18s ease;
@@ -621,11 +626,11 @@ button:disabled {
   }
 
   .brand-logo {
-    width: 58px;
-    height: 58px;
+    width: 56px;
+    height: 56px;
   }
 
   .brand-title {
-    font-size: 20px;
+    font-size: 21px;
   }
 }
