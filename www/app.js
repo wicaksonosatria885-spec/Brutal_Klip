@@ -2,52 +2,43 @@
   let sourceVideoFile = null;
   let sourceVideoUrl = "";
   let appliedTranscriptText = "";
+  let ccEnabled = true;
   let generatedClips = [];
 
   const I18N = {
     id: {
-      sec1Title: "1. Video Sumber & Dokumen Penanda (Hook N / Klip N)",
-      sec1Sub: "Jumlah klip 100% mengikuti dokumen/catatan berdasarkan penanda Hook 1, Hook 2... dan Klip 1, Klip 2...",
+      sec1Title: "1. Transkrip, CC & Pilot Brutal Klip",
+      sec1Sub: "Jika CC ON, terapkan transkrip dulu agar CC aktif sebelum mengisi Pilot Brutal Klip dan fitur edit. Jika CC OFF, Pilot & fitur edit langsung terbuka.",
       lblVideo: "Upload Video Sumber (MP4 / WebM / MOV)",
       noVideo: "Belum ada video dipilih.",
-      lblHookMode: "Mode Posisi Hook dari Dokumen",
-      hookModeHint: "Deteksi otomatis membaca rentang waktu Hook N di dokumen.",
-      lblDocNotes: "Dokumen / Catatan Segmentasi (Gunakan penanda Hook 1, Hook 2... atau Klip 1, Klip 2... + rentang waktu)",
-      detectedPrefix: "Terdeteksi:",
-      detectedSuffix: "segmen klip/hook dari dokumen.",
-      sec2Title: "2. Transkrip & Aturan Potong",
-      sec2Sub: "Mode Ketik Manual dan Upload File (.txt / .md) saling mengunci. Jika CC aktif, transkrip wajib diisi dan diterapkan dulu.",
+      lblHookMode: "Mode Posisi Hook",
+      hookModeHint: "Teks hook diambil dari Pilot Brutal Klip, bukan dari transkrip.",
       transcriptBoxTitle: "Transkrip Video",
       btnApplyTranscript: "Terapkan Transkrip",
-      rulesBoxTitle: "Aturan Potong & Deskripsi",
-      sec3Title: "3. Kontrol Tampilan, Transisi 0.5s & Watermark",
-      sec3Sub: "Atur animasi 0.5s terpisah untuk Video Hook dan Video Isi, durasi teks hook, CC, serta WM penuh dari awal sampai akhir VT.",
+      pilotBoxTitle: "Pilot Brutal Klip",
+      sec2Title: "2. Kontrol Tampilan, Transisi 0.5s & Watermark",
+      sec2Sub: "Atur animasi 0.5s terpisah untuk Video Hook dan Video Isi, CC, serta WM penuh dari awal sampai akhir VT.",
       btnGenerate: "Hasilkan Klip",
       btnDeleteAll: "Hapus Semua Hasil Klip",
-      sec5Title: "5. Hasil Klip, Preview VT, Render HD & Analitik",
-      sec5Sub: "Klik putar pada tiap klip untuk melihat preview 9:16, render MP4 HD sinkron audio & gerak, serta grafik retensi 1%–90%."
+      sec4Title: "4. Hasil Klip, Preview VT, Render HD & Analitik",
+      sec4Sub: "Klik putar pada tiap klip untuk melihat preview 9:16, render HD sinkron audio & gerak, serta grafik retensi 1%–90%."
     },
     en: {
-      sec1Title: "1. Source Video & Marker Document (Hook N / Klip N)",
-      sec1Sub: "Clip count follows 100% of the document/notes based on Hook 1, Hook 2... and Klip 1, Klip 2... markers.",
+      sec1Title: "1. Transcript, CC & Pilot Brutal Klip",
+      sec1Sub: "When CC is ON, apply transcript first so CC is active before filling Pilot Brutal Klip and edit controls. When CC is OFF, Pilot & edit controls open right away.",
       lblVideo: "Upload Source Video (MP4 / WebM / MOV)",
       noVideo: "No video selected yet.",
-      lblHookMode: "Hook Position Mode from Document",
-      hookModeHint: "Automatically reads Hook N time ranges in the document.",
-      lblDocNotes: "Segmentation Document / Notes (Use Hook 1, Hook 2... or Klip 1, Klip 2... + time range)",
-      detectedPrefix: "Detected:",
-      detectedSuffix: "clip/hook segments from document.",
-      sec2Title: "2. Transcript & Cut Rules",
-      sec2Sub: "Manual Input and File Upload (.txt / .md) lock each other. When CC is ON, transcript must be entered and applied first.",
+      lblHookMode: "Hook Position Mode",
+      hookModeHint: "Hook text comes from Pilot Brutal Klip, not from the transcript.",
       transcriptBoxTitle: "Video Transcript",
       btnApplyTranscript: "Apply Transcript",
-      rulesBoxTitle: "Cut Rules & Description",
-      sec3Title: "3. Visual Controls, 0.5s Transitions & Watermark",
-      sec3Sub: "Set independent 0.5s animations for Hook Video and Body Video, hook text duration, CC, and full-length WM.",
+      pilotBoxTitle: "Pilot Brutal Klip",
+      sec2Title: "2. Visual Controls, 0.5s Transitions & Watermark",
+      sec2Sub: "Set independent 0.5s animations for Hook Video and Body Video, CC, and full-length WM.",
       btnGenerate: "Generate Clips",
       btnDeleteAll: "Delete All Clips",
-      sec5Title: "5. Generated Clips, VT Preview, HD Render & Analytics",
-      sec5Sub: "Play any clip to preview 9:16 layout, render HD video synced with audio & motion, and view 1%–90% retention."
+      sec4Title: "4. Generated Clips, VT Preview, HD Render & Analytics",
+      sec4Sub: "Play any clip to preview 9:16 layout, render HD video synced with audio & motion, and view 1%–90% retention."
     }
   };
 
@@ -76,6 +67,64 @@
     });
   }
 
+  // --- Kunci Workflow Berdasarkan Status CC (ON/OFF) & Transkrip ---
+  function setControlsLocked(locked, reasonText) {
+    const pilotBox = el("pilot-box");
+    const editingPanel = el("editing-panel");
+    const btnGen = el("btn-generate-clips");
+
+    pilotBox.classList.toggle("is-locked", locked);
+    editingPanel.classList.toggle("is-locked", locked);
+    btnGen.disabled = locked;
+
+    pilotBox.querySelectorAll("input, textarea, select, button").forEach((ctrl) => {
+      if (!ctrl.classList.contains("mode-btn")) ctrl.disabled = locked;
+    });
+    editingPanel.querySelectorAll("input, textarea, select, button").forEach((ctrl) => {
+      ctrl.disabled = locked;
+    });
+
+    if (reasonText) {
+      el("pilot-status").textContent = reasonText;
+      el("process-feedback").textContent = reasonText;
+    }
+  }
+
+  function syncCcWorkflow() {
+    const btnCc = el("btn-cc-toggle");
+    btnCc.textContent = ccEnabled ? "CC: ON" : "CC: OFF";
+    btnCc.classList.toggle("active", ccEnabled);
+    btnCc.dataset.cc = ccEnabled ? "on" : "off";
+
+    if (!ccEnabled) {
+      el("transcript-status").textContent = "CC OFF — Tidak memakai transkrip/CC";
+      setControlsLocked(false, "CC OFF: Pilot Brutal Klip & fitur editing terbuka.");
+      if (generatedClips.length) renderClips();
+      return;
+    }
+
+    const ccReady = Boolean(appliedTranscriptText.trim());
+    if (!ccReady) {
+      el("transcript-status").textContent = "CC ON — Isi & klik Terapkan Transkrip dulu";
+      setControlsLocked(
+        true,
+        "CC ON: Terapkan transkrip dulu agar CC berjalan normal sebelum mengisi Pilot Brutal Klip dan membuat klip."
+      );
+    } else {
+      el("transcript-status").textContent = `CC ON & Aktif (${appliedTranscriptText.trim().split(/\s+/).length} kata)`;
+      setControlsLocked(
+        false,
+        "CC ON & aktif: Pilot Brutal Klip, WM, transisi, dan hasilkan klip sudah terbuka."
+      );
+      if (generatedClips.length) renderClips();
+    }
+  }
+
+  el("btn-cc-toggle").addEventListener("click", () => {
+    ccEnabled = !ccEnabled;
+    syncCcWorkflow();
+  });
+
   // --- Mutual Lock Manual vs File ---
   function setupModeLock(group) {
     const buttons = document.querySelectorAll(`.mode-btn[data-group="${group}"]`);
@@ -102,7 +151,7 @@
   }
 
   setupModeLock("transcript");
-  setupModeLock("rules");
+  setupModeLock("pilot");
 
   async function readGroupText(group) {
     const activeBtn = document.querySelector(`.mode-btn[data-group="${group}"].active`);
@@ -121,11 +170,11 @@
     const text = await readGroupText("transcript");
     if (!text) {
       appliedTranscriptText = "";
-      el("transcript-status").textContent = "Transkrip kosong!";
+      syncCcWorkflow();
       return;
     }
     appliedTranscriptText = text;
-    el("transcript-status").textContent = "Transkrip diterapkan (" + text.split(/\s+/).length + " kata)";
+    syncCcWorkflow();
   });
 
   // --- Video File Handler ---
@@ -138,7 +187,7 @@
     el("video-info").textContent = `Dipilih: ${file.name} (${(file.size / (1024 * 1024)).toFixed(1)} MB)`;
   });
 
-  // --- Timestamp & Document Segment Parser (Hook N / Klip N) ---
+  // --- Parser Pilot Brutal Klip ---
   function parseTimeToSec(str) {
     if (!str) return null;
     const parts = str.trim().split(":").map(Number);
@@ -157,7 +206,7 @@
     };
   }
 
-  function parseDocumentSegments(rawText) {
+  function parsePilotSegments(rawText) {
     const lines = rawText
       .split(/\r?\n/)
       .map((l) => l.trim())
@@ -175,13 +224,11 @@
         const rest = markerMatch[3] || "";
         const range = extractTimeRange(line);
         current = {
-          id: `${type}-${num}-${blocks.length + 1}`,
           type,
           num,
-          label: `${type === "hook" ? "Hook" : "Klip"} ${num}`,
           startSec: range.startSec,
           endSec: range.endSec,
-          lines: rest ? [rest.replace(/^[:\-–\s]+/, "")] : []
+          lines: rest ? [rest.replace(/^[:\-–|\s]+/, "")] : []
         };
       } else if (current) {
         const range = extractTimeRange(line);
@@ -210,14 +257,20 @@
         });
       }
       const item = groupedMap.get(key);
-      const content = b.lines.join(" ").trim();
+      const joined = b.lines.join(" ").trim();
+
+      const inlineHookMatch = joined.match(/hook\s*[:\-]\s*([^|]+)(?:\||$)/i);
+      if (inlineHookMatch && !item.hookText) {
+        item.hookText = inlineHookMatch[1].trim();
+      }
 
       if (b.type === "hook") {
-        item.hookText = content || `Hook ${b.num}`;
+        item.hookText = joined || `Hook ${b.num}`;
         item.hookStartSec = b.startSec;
         item.hookEndSec = b.endSec;
       } else {
-        item.bodyText = content || `Klip ${b.num}`;
+        const cleanBody = joined.replace(/\|?\s*hook\s*[:\-]\s*[^|]+/i, "").trim();
+        item.bodyText = cleanBody || `Klip ${b.num}`;
         item.bodyStartSec = b.startSec;
         item.bodyEndSec = b.endSec;
       }
@@ -248,14 +301,6 @@
 
     return clips;
   }
-
-  function refreshDetectedCount() {
-    const clips = parseDocumentSegments(el("doc-notes-input").value || "");
-    el("detected-clip-count").textContent = String(clips.length);
-  }
-
-  el("doc-notes-input").addEventListener("input", refreshDetectedCount);
-  el("hook-reorder-mode").addEventListener("change", refreshDetectedCount);
 
   function applyCase(text, mode) {
     if (mode === "upper") return text.toUpperCase();
@@ -294,9 +339,9 @@
     return { hashtags, mentions };
   }
 
-  function buildRetentionAnalytics(clip, transcript, rulesText) {
+  function buildRetentionAnalytics(clip, pilotText, ccActive, transcriptText) {
     const base = clip.movedToFront ? 76 : 64;
-    const bonus = Math.min(14, (transcript.length > 0 ? 6 : 0) + (rulesText.length > 0 ? 5 : 0) + (clip.num % 3));
+    const bonus = Math.min(14, (ccActive && transcriptText ? 6 : 0) + (pilotText.length > 0 ? 5 : 0) + (clip.num % 3));
     const fypScore = Math.min(96, base + bonus);
 
     const points = [];
@@ -308,24 +353,21 @@
 
     const reasonParts = [];
     if (clip.movedToFront) {
-      reasonParts.push("Hook di bagian akhir dipindah ke depan VT agar pembuka lebih kuat");
+      reasonParts.push("Hook dari Pilot dipindah ke depan VT agar pembuka lebih kuat");
     }
-    if (transcript) {
-      reasonParts.push("CC sinkron dengan transkrip yang sudah diterapkan");
+    if (ccActive && transcriptText) {
+      reasonParts.push("CC aktif sinkron dengan transkrip yang sudah diterapkan");
+    } else if (!ccActive) {
+      reasonParts.push("mode CC OFF fokus pada ritme hook & potongan Pilot");
     }
-    if (rulesText) {
-      reasonParts.push("mengikuti aturan potong & ritme klip");
-    }
-    const reason = reasonParts.length
-      ? `Retensi terjaga karena ${reasonParts.join(", ")}.`
-      : "Retensi dihitung dari durasi segmen dan pembuka VT.";
+    const reason = `Retensi terjaga karena ${reasonParts.join(", ")}.`;
 
     const glowColors = ["#ff4d6d", "#38bdf8", "#a78bfa", "#34d399", "#fbbf24"];
     const sampleUsers = ["@klip_ace", "@vid_hunter", "@edit_lab", "@vt_daily"];
     const sampleComments = [
       "Pembukanya langsung kena sih ini.",
       "Bagian hook ditaruh depan jadi makin pas.",
-      "CC-nya jelas dan enak dibaca."
+      "Potongan klipnya rapi dan enak ditonton."
     ];
 
     const comments = sampleUsers.slice(0, 3).map((user, idx) => ({
@@ -350,7 +392,7 @@
 
     if (!filtered.length) {
       container.innerHTML =
-        '<p class="empty-state">Tidak ada klip untuk ditampilkan. Periksa dokumen Hook N / Klip N atau filter gaya.</p>';
+        '<p class="empty-state">Tidak ada klip untuk ditampilkan. Periksa isi Pilot Brutal Klip atau filter gaya.</p>';
       return;
     }
 
@@ -365,7 +407,6 @@
     const wmColor = el("wm-color-input").value;
     const wmBgMode = el("wm-bg-mode").value;
     const wmBgColor = el("wm-bg-input").value;
-    const ccOn = el("cc-toggle").value === "on";
 
     const hookAnimType = el("hook-anim-type").value;
     const hookAnimPos = el("hook-anim-pos").value;
@@ -386,8 +427,8 @@
       card.className = "clip-card";
 
       const formattedHook = applyCase(clip.hookText, hookCase);
-      const ccSource = ccOn ? appliedTranscriptText || clip.bodyText : "";
-      const formattedCc = applyCase(ccSource, ccCase);
+      const ccSource = ccEnabled ? appliedTranscriptText : "";
+      const formattedCc = ccEnabled && ccSource ? applyCase(ccSource, ccCase) : "";
 
       const barsHtml = clip.analytics.points
         .map(
@@ -410,7 +451,7 @@
       card.innerHTML = `
         <div class="clip-header">
           <h3 class="clip-title">${escapeHtml(clip.title)}</h3>
-          <span class="clip-badge">${clip.movedToFront ? "Hook Dipindah ke Depan" : "Urutan Dokumen"}</span>
+          <span class="clip-badge">${clip.movedToFront ? "Hook Dipindah ke Depan" : "Urutan Pilot"}</span>
         </div>
 
         <div class="vt-stage" style="font-family:${fontFamily};">
@@ -423,7 +464,7 @@
             ${escapeHtml(formattedHook)}
           </div>
           ${
-            ccOn && formattedCc
+            ccEnabled && formattedCc
               ? `<div class="vt-cc-box" style="color:${textColor};background:${textBgStyle};">${escapeHtml(formattedCc.slice(0, 120))}</div>`
               : ""
           }
@@ -433,7 +474,7 @@
         </div>
 
         <div class="clip-actions">
-          <button type="button" class="btn-primary btn-render-hd" data-clip-num="${clip.num}">Render MP4 HD</button>
+          <button type="button" class="btn-primary btn-render-hd" data-clip-num="${clip.num}">Render HD</button>
           <a class="btn-secondary btn-download-clip" style="display:none;" download="brutal-klip-${clip.num}.webm">Unduh Hasil</a>
         </div>
         <small class="hint render-status">Siap di-render (720x1280, sinkron audio &amp; gerak).</small>
@@ -465,7 +506,7 @@
           return;
         }
         btnRender.disabled = true;
-        statusEl.textContent = "Merender MP4/WebM HD sinkron audio & gerak...";
+        statusEl.textContent = "Merender HD sinkron audio & gerak...";
         try {
           const blob = await renderClipHdBlob(clip, formattedHook, formattedCc, wmText, (pct) => {
             statusEl.textContent = `Rendering HD: ${pct}%`;
@@ -580,7 +621,7 @@
               ctx.fillText(hookStr.slice(0, 42), canvas.width / 2, 200);
             }
 
-            if (ccStr) {
+            if (ccEnabled && ccStr) {
               ctx.fillStyle = "rgba(11, 10, 14, 0.78)";
               ctx.fillRect(60, canvas.height - 260, canvas.width - 120, 82);
               ctx.fillStyle = "#ffffff";
@@ -608,19 +649,18 @@
   }
 
   el("btn-generate-clips").addEventListener("click", async () => {
-    const ccOn = el("cc-toggle").value === "on";
-    const rulesText = await readGroupText("rules");
+    const pilotText = await readGroupText("pilot");
 
-    if (ccOn && !appliedTranscriptText.trim()) {
+    if (ccEnabled && !appliedTranscriptText.trim()) {
       el("process-feedback").textContent =
         "CC sedang ON: isi transkrip lalu klik 'Terapkan Transkrip' terlebih dahulu sebelum menghasilkan klip.";
       return;
     }
 
-    const parsed = parseDocumentSegments(el("doc-notes-input").value || "");
+    const parsed = parsePilotSegments(pilotText);
     if (!parsed.length) {
       el("process-feedback").textContent =
-        "Tidak ada penanda Hook 1, Hook 2... atau Klip 1, Klip 2... yang terdeteksi di dokumen/catatan.";
+        "Tidak ada penanda Hook 1, Hook 2... atau Klip 1, Klip 2... yang terdeteksi di Pilot Brutal Klip.";
       return;
     }
 
@@ -628,21 +668,20 @@
       const baseDesc = item.movedToFront
         ? `${item.hookText} — ${item.bodyText}`
         : `${item.bodyText} (${item.hookText})`;
-      const descWithRules = rulesText ? `${baseDesc}\nAturan: ${rulesText}` : baseDesc;
-      const combinedForTags = `${item.hookText} ${item.bodyText} ${rulesText} ${appliedTranscriptText}`;
+      const combinedForTags = `${item.hookText} ${item.bodyText} ${pilotText} ${ccEnabled ? appliedTranscriptText : ""}`;
       const { hashtags, mentions } = extractTagsAndMentions(combinedForTags);
 
       return {
         ...item,
-        description: descWithRules,
+        description: baseDesc,
         tagsAndMentions: [...hashtags, ...mentions],
-        analytics: buildRetentionAnalytics(item, appliedTranscriptText, rulesText),
+        analytics: buildRetentionAnalytics(item, pilotText, ccEnabled, appliedTranscriptText),
         renderedBlob: null
       };
     });
 
     el("process-feedback").textContent =
-      `Berhasil menghasilkan ${generatedClips.length} klip sesuai dokumen (100% dari penanda Hook N / Klip N).`;
+      `Berhasil menghasilkan ${generatedClips.length} klip dari Pilot Brutal Klip.`;
     renderClips();
   });
 
@@ -664,7 +703,7 @@
     for (const clip of generatedClips) {
       const info = [
         `Judul: ${clip.title}`,
-        `Posisi Hook: ${clip.movedToFront ? "Dipindah ke Depan VT" : "Sesuai Dokumen"}`,
+        `Posisi Hook: ${clip.movedToFront ? "Dipindah ke Depan VT" : "Sesuai Pilot"}`,
         `Hook: ${clip.hookText}`,
         `Isi: ${clip.bodyText}`,
         `Skor FYP: ${clip.analytics.fypScore}/100`,
@@ -686,5 +725,5 @@
     a.click();
   });
 
-  refreshDetectedCount();
+  syncCcWorkflow();
 })();
